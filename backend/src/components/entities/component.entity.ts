@@ -18,10 +18,4 @@ export abstract class Component {
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   variant: string;
-
-  @Column({ type: 'simple-array', nullable: true })
-  upc: string[];
-
-  @Column({ type: 'simple-array', nullable: true })
-  ean: string[];
 }
