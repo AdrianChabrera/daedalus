@@ -1,6 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { Component } from '../component.entity';
-import { RamType } from '../secondary-entities/ram-type.entity';
 
 @Entity('rams')
 export class Ram extends Component {
@@ -25,6 +24,9 @@ export class Ram extends Component {
   })
   voltage: number | null;
 
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  type: string | null;
+
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'form_factor' })
   formFactor: string | null;
 
@@ -39,8 +41,4 @@ export class Ram extends Component {
 
   @Column({ type: 'boolean', nullable: true })
   ecc: boolean | null;
-
-  @ManyToOne(() => RamType, { nullable: true, eager: true })
-  @JoinColumn({ name: 'ram_type_id' })
-  ramType: RamType | null;
 }

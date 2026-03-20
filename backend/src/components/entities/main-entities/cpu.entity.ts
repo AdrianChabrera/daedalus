@@ -1,6 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { Component } from '../component.entity';
-import { Socket } from '../secondary-entities/socket.entity';
 
 @Entity('cpus')
 export class Cpu extends Component {
@@ -52,6 +51,9 @@ export class Cpu extends Component {
   @Column({ type: 'int', nullable: true, name: 'tdp' })
   tdp: number | null;
 
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  socket: string | null;
+
   @Column({
     type: 'varchar',
     length: 100,
@@ -84,10 +86,6 @@ export class Cpu extends Component {
     name: 'simultaneous_multithreading',
   })
   simultaneousMultithreading: boolean | null;
-
-  @ManyToOne(() => Socket, { nullable: true, eager: true })
-  @JoinColumn({ name: 'socket_id' })
-  socket: Socket | null;
 
   @Column({ type: 'jsonb', nullable: true, name: 'specs' })
   specs: object | null;

@@ -1,5 +1,3 @@
-import { Socket } from '../entities/secondary-entities/socket.entity';
-import { RamType } from '../entities/secondary-entities/ram-type.entity';
 import * as dotenv from 'dotenv';
 import { DataSource, EntityTarget, ObjectLiteral, Repository } from 'typeorm';
 import { Cpu } from '../entities/main-entities/cpu.entity';
@@ -27,7 +25,7 @@ interface CategoryConfig<T extends ObjectLiteral> {
 }
 
 const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
-  /* {
+  {
     repoFolder: 'CPU',
     entity: Cpu,
     mapper: mapCpu,
@@ -39,18 +37,19 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     mapper: mapRam,
     conflictPath: 'buildcoresId',
   },
+  /*
   {
     repoFolder: 'Storage',
     entity: Storage,
     mapper: mapStorage,
     conflictPath: 'buildcoresId',
-  }, */
+  }, 
   {
     repoFolder: 'GPU',
     entity: Gpu,
     mapper: mapGpu,
     conflictPath: 'buildcoresId',
-  },
+  },*/
 ];
 
 const REPO_OWNER = 'buildcores';
@@ -67,7 +66,7 @@ function createDataSource(): DataSource {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Socket, RamType, Cpu, Ram, Storage, Gpu],
+    entities: [Cpu, Ram, Storage, Gpu],
     synchronize: true,
     logging: false,
   });
