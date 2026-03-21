@@ -24,7 +24,7 @@ export function mapCpuCooler(raw: Record<string, unknown>): CpuCooler {
   entity.waterCooled = bool(raw.water_cooled);
   entity.fanless = bool(raw.fanless);
 
-  // Añadir sockets
+  entity.supportedSockets = arr(raw.cpu_sockets) ?? [];
 
   return entity;
 }

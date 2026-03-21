@@ -1,24 +1,8 @@
 import { str, num, bool, obj } from 'src/components/utils/utils';
 import { Cpu } from '../../entities/main-entities/cpu.entity';
-import { Socket } from '../../entities/secondary-entities/socket.entity';
-import { DataSource, Repository } from 'typeorm';
 
-async function findOrCreateSocket(
-  name: string,
-  socketRepository: Repository<Socket>,
-): Promise<Socket> {
-  const existing = await socketRepository.findOneBy({ name });
-  if (existing) return existing;
-  return socketRepository.save(socketRepository.create({ name }));
-}
-
-export async function mapCpu(
-  raw: Record<string, unknown>,
-  dataSource: DataSource,
-): Promise<Cpu> {
+export function mapCpu(raw: Record<string, unknown>): Cpu {
   const entity = new Cpu();
-
-  const socketRepository = dataSource.getRepository(Socket);
 
   const meta = obj(raw.metadata);
   const cores = obj(raw.cores);
@@ -38,11 +22,7 @@ export async function mapCpu(
 
   entity.microarchitecture = str(raw.microarchitecture);
   entity.coreFamily = str(raw.coreFamily);
-
-  const socketName = str(raw.socket);
-  entity.socket = socketName
-    ? await findOrCreateSocket(socketName, socketRepository)
-    : null;
+  entity.socket = str(raw.socket);
 
   entity.coreCount = num(cores.total);
   entity.threadCount = num(cores.threads);
@@ -62,8 +42,6 @@ export async function mapCpu(
 
   entity.maxSupportedMemory = num(memory.maxSupport);
   //TODO: añadir supportedMemoryTypes cuando se añadan las RAMs
-
-  entity.specs = raw as object;
 
   return entity;
 }

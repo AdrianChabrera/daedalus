@@ -1,24 +1,8 @@
 import { Ram } from 'src/components/entities/main-entities/ram.entity';
-import { RamType } from 'src/components/entities/secondary-entities/ram-type.entity';
 import { str, num, bool, obj } from 'src/components/utils/utils';
-import { DataSource, Repository } from 'typeorm';
 
-async function findOrCreateRamType(
-  name: string,
-  ramTypeRepository: Repository<RamType>,
-): Promise<RamType> {
-  const existing = await ramTypeRepository.findOneBy({ name });
-  if (existing) return existing;
-  return ramTypeRepository.save(ramTypeRepository.create({ name }));
-}
-
-export async function mapRam(
-  raw: Record<string, unknown>,
-  dataSource: DataSource,
-): Promise<Ram> {
+export function mapRam(raw: Record<string, unknown>): Ram {
   const entity = new Ram();
-
-  const ramTypeRepository = dataSource.getRepository(RamType);
 
   const meta = obj(raw.metadata);
   const modules = obj(raw.modules);
@@ -40,11 +24,7 @@ export async function mapRam(
   entity.ecc = bool(raw.ecc) ?? null;
   entity.heatSpreader = bool(raw.heat_spreader) ?? null;
   entity.rgb = bool(raw.rgb) ?? null;
-
-  const ramTypeName = str(raw.ram_type);
-  entity.ramType = ramTypeName
-    ? await findOrCreateRamType(ramTypeName, ramTypeRepository)
-    : null;
+  entity.type = str(raw.ram_type);
 
   return entity;
 }
