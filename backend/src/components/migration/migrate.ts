@@ -4,17 +4,19 @@ import { Cpu } from '../entities/main-entities/cpu.entity';
 import { Ram } from '../entities/main-entities/ram.entity';
 import { Storage } from '../entities/main-entities/storage.entity';
 import { Octokit } from '@octokit/rest';
-import { mapCpu } from './mappers/cpu.mapper';
-import { mapRam } from './mappers/ram.mapper';
-import { mapStorage } from './mappers/storage.mapper';
 import { Gpu } from '../entities/main-entities/gpu.entity';
-import { mapGpu } from './mappers/gpu.mapper';
 import { CpuCooler } from '../entities/main-entities/cpu-cooler.entity';
-import { mapCpuCooler } from './mappers/cpu-cooler.mapper';
 import { PowerSupply } from '../entities/main-entities/power-supply.entity';
-import { mapPowerSupply } from './mappers/power-supply.mapper';
 import { Case } from '../entities/main-entities/case.entity';
-import { mapCase } from './mappers/case.mapper';
+import {
+  mapCase,
+  mapCpu,
+  mapCpuCooler,
+  mapGpu,
+  mapPowerSupply,
+  mapRam,
+  mapStorage,
+} from './mappers';
 
 dotenv.config();
 
@@ -31,7 +33,6 @@ interface CategoryConfig<T extends ObjectLiteral> {
 }
 
 const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
-  /*
   {
     repoFolder: 'CPU',
     entity: Cpu,
@@ -49,7 +50,7 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     entity: Storage,
     mapper: mapStorage,
     conflictPath: 'buildcoresId',
-  }, 
+  },
   {
     repoFolder: 'GPU',
     entity: Gpu,
@@ -68,7 +69,6 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     mapper: mapPowerSupply,
     conflictPath: 'buildcoresId',
   },
-  */
   {
     repoFolder: 'PCCase',
     entity: Case,
