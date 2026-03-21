@@ -13,6 +13,8 @@ import { CpuCooler } from '../entities/main-entities/cpu-cooler.entity';
 import { mapCpuCooler } from './mappers/cpu-cooler.mapper';
 import { PowerSupply } from '../entities/main-entities/power-supply.entity';
 import { mapPowerSupply } from './mappers/power-supply.mapper';
+import { Case } from '../entities/main-entities/case.entity';
+import { mapCase } from './mappers/case.mapper';
 
 dotenv.config();
 
@@ -60,11 +62,17 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     mapper: mapCpuCooler,
     conflictPath: 'buildcoresId',
   },
-  */
   {
     repoFolder: 'PSU',
     entity: PowerSupply,
     mapper: mapPowerSupply,
+    conflictPath: 'buildcoresId',
+  },
+  */
+  {
+    repoFolder: 'PCCase',
+    entity: Case,
+    mapper: mapCase,
     conflictPath: 'buildcoresId',
   },
 ];
@@ -83,7 +91,7 @@ function createDataSource(): DataSource {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Cpu, Ram, Storage, Gpu, CpuCooler, PowerSupply],
+    entities: [Cpu, Ram, Storage, Gpu, CpuCooler, PowerSupply, Case],
     synchronize: true,
     logging: false,
   });
