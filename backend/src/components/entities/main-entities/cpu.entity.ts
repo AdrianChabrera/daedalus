@@ -71,8 +71,12 @@ export class Cpu extends Component {
   @Column({ type: 'int', nullable: true, name: 'max_supported_memory' })
   maxSupportedMemory: number | null;
 
-  // TODO: To be implemented when RAM's are added
-  //supportedMemoryTypes
+  @Column({
+    type: 'simple-array',
+    nullable: true,
+    name: 'supported_memory_types',
+  })
+  supportedMemoryTypes: string[] | null;
 
   @Column({ type: 'boolean', nullable: true, name: 'ecc_support' })
   eccSupport: boolean | null;
