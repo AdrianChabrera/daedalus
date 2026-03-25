@@ -160,13 +160,13 @@ export function mapGpu(raw: Record<string, unknown>): Gpu {
 
   const entity = mapBaseEntity(new Gpu(), raw);
 
-  entity.memory = num(raw.memory);
-  entity.coreBaseClock = num(raw.core_base_clock);
-  entity.coreBoostClock = num(raw.core_boost_clock);
-  entity.effectiveMemoryClock = num(raw.effective_memory_clock);
-  entity.memoryBus = num(raw.memory_bus);
-  entity.length = num(raw.length);
-  entity.tdp = num(raw.tdp);
+  entity.memory = num(raw.memory) || null;
+  entity.coreBaseClock = num(raw.core_base_clock) || null;
+  entity.coreBoostClock = num(raw.core_boost_clock) || null;
+  entity.effectiveMemoryClock = num(raw.effective_memory_clock) || null;
+  entity.memoryBus = num(raw.memory_bus) || null;
+  entity.length = num(raw.length) || null;
+  entity.tdp = num(raw.tdp) || null;
   entity.pcie6Pin = num(powerConnectors.pcie_6_pin);
   entity.pcie8Pin = num(powerConnectors.pcie_8_pin);
   entity.pcie12VHPWR = num(powerConnectors.pcie_12VHPWR);
@@ -322,13 +322,14 @@ export function mapRam(raw: Record<string, unknown>): Ram {
 
   entity.capacity = num(raw.capacity) ?? null;
   entity.speed = num(raw.speed) ?? null;
-  entity.formFactor = str(raw.form_factor) ?? '';
+  entity.formFactor = str(raw.form_factor) ?? null;
   entity.casLatency = num(raw.cas_latency) ?? null;
   entity.voltage = num(raw.voltage) ?? null;
-  entity.ecc = bool(raw.ecc) ?? null;
+  entity.ecc = str(raw.ecc) == 'ECC' ? true : false;
   entity.heatSpreader = bool(raw.heat_spreader) ?? null;
   entity.rgb = bool(raw.rgb) ?? null;
   entity.type = str(raw.ram_type);
+  entity.timings = str(raw.timings);
 
   return entity;
 }

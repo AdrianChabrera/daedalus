@@ -6,13 +6,31 @@ export class Gpu extends Component {
   @Column({ type: 'int', nullable: true })
   memory: number | null;
 
-  @Column({ type: 'int', nullable: true, name: 'core_base_clock' })
+  @Column({
+    type: 'decimal',
+    precision: 8,
+    scale: 2,
+    nullable: true,
+    name: 'core_base_clock',
+  })
   coreBaseClock: number | null;
 
-  @Column({ type: 'int', nullable: true, name: 'core_boost_clock' })
+  @Column({
+    type: 'decimal',
+    precision: 8,
+    scale: 2,
+    nullable: true,
+    name: 'core_boost_clock',
+  })
   coreBoostClock: number | null;
 
-  @Column({ type: 'int', nullable: true, name: 'effective_memory_clock' })
+  @Column({
+    type: 'decimal',
+    precision: 8,
+    scale: 2,
+    nullable: true,
+    name: 'effective_memory_clock',
+  })
   effectiveMemoryClock: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'memory_bus' })
