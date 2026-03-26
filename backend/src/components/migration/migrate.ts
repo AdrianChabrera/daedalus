@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 import { DataSource, EntityTarget, ObjectLiteral, Repository } from 'typeorm';
 import { Cpu } from '../entities/main-entities/cpu.entity';
 import { Ram } from '../entities/main-entities/ram.entity';
-import { Storage } from '../entities/main-entities/storage.entity';
+import { StorageDrive } from '../entities/main-entities/storage.entity';
 import { Octokit } from '@octokit/rest';
 import { Gpu } from '../entities/main-entities/gpu.entity';
 import { CpuCooler } from '../entities/main-entities/cpu-cooler.entity';
@@ -12,11 +12,23 @@ import {
   mapCase,
   mapCpu,
   mapCpuCooler,
+  mapFan,
   mapGpu,
+  mapKeyboard,
+  mapMonitor,
+  mapMotherboard,
+  mapMouse,
   mapPowerSupply,
   mapRam,
   mapStorage,
 } from './mappers';
+import { Fan } from '../entities/main-entities/fan.entity';
+import { Motherboard } from '../entities/main-entities/motherboard.entity';
+import { Monitor } from '../entities/main-entities/monitor.entity';
+import { Mouse } from '../entities/main-entities/mouse.entity';
+import { Keyboard } from '../entities/main-entities/keyboard.entity';
+import { M2Slot } from '../entities/secondary-entities/m2-slot.entity';
+import { PcieSlot } from '../entities/secondary-entities/pcie-slot.entity';
 
 dotenv.config();
 
@@ -47,7 +59,7 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
   },
   {
     repoFolder: 'Storage',
-    entity: Storage,
+    entity: StorageDrive,
     mapper: mapStorage,
     conflictPath: 'buildcoresId',
   },
@@ -75,13 +87,44 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     mapper: mapCase,
     conflictPath: 'buildcoresId',
   },
+  {
+    repoFolder: 'CaseFan',
+    entity: Fan,
+    mapper: mapFan,
+    conflictPath: 'buildcoresId',
+  },
+
+  {
+    repoFolder: 'Motherboard',
+    entity: Motherboard,
+    mapper: mapMotherboard,
+    conflictPath: 'buildcoresId',
+  },
+  {
+    repoFolder: 'Monitor',
+    entity: Monitor,
+    mapper: mapMonitor,
+    conflictPath: 'buildcoresId',
+  },
+  {
+    repoFolder: 'Mouse',
+    entity: Mouse,
+    mapper: mapMouse,
+    conflictPath: 'buildcoresId',
+  },
+  {
+    repoFolder: 'Keyboard',
+    entity: Keyboard,
+    mapper: mapKeyboard,
+    conflictPath: 'buildcoresId',
+  },
 ];
 
 const REPO_OWNER = 'buildcores';
 const REPO_NAME = 'buildcores-open-db';
 const OPEN_DB_PATH = 'open-db';
-const BATCH_SIZE = 5;
-const BATCH_DELAY = 50;
+const BATCH_SIZE = 10;
+const BATCH_DELAY = 0;
 
 function createDataSource(): DataSource {
   return new DataSource({
@@ -91,7 +134,22 @@ function createDataSource(): DataSource {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Cpu, Ram, Storage, Gpu, CpuCooler, PowerSupply, Case],
+    entities: [
+      Cpu,
+      Ram,
+      StorageDrive,
+      Gpu,
+      CpuCooler,
+      PowerSupply,
+      Case,
+      Fan,
+      Motherboard,
+      Monitor,
+      Mouse,
+      Keyboard,
+      PcieSlot,
+      M2Slot,
+    ],
     synchronize: true,
     logging: false,
   });
