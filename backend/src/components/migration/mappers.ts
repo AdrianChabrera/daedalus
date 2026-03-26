@@ -230,7 +230,7 @@ export async function mapMotherboard(
 
   const entity = mapBaseEntity(new Motherboard(), raw);
 
-  entity.maxMemory = num(memory.max);
+  entity.maxMemory = num(memory.max) || null;
   entity.memorySlots = num(memory.slots);
   entity.sata6GbSPorts = num(storageDevices.sata_6_gb_s);
   entity.sata3GbSPorts = num(storageDevices.sata_3_gb_s);
@@ -277,7 +277,7 @@ export async function mapMotherboard(
   });
   await Promise.all(
     m2Slots.map((m) =>
-      pcieSlotRepository.save({
+      m2SlotRepository.save({
         ...m,
         motherboard: entity,
       }),
