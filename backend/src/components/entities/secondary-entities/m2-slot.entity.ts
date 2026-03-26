@@ -13,13 +13,13 @@ export class M2Slot {
   id: number;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  size: string;
+  size: string | null;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  key: string;
+  key: string | null;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  interface: string;
+  interface: string | null;
 
   @ManyToOne(() => Motherboard, (m) => m.m2Slots)
   @JoinColumn({ name: 'motherboard_id' })

@@ -13,7 +13,7 @@ export class PcieSlot {
   id: number;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  gen: string;
+  gen: string | null;
 
   @Column({ type: 'int', nullable: true })
   quantity: number | null;
