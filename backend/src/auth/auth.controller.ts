@@ -10,27 +10,31 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/auth.guard';
+import { AuthDto } from './dto/auth.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private usersService: UsersService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() input: { username: string; password: string }) {
-    console.log('login llamado con:', input);
+  login(@Body() input: AuthDto) {
     return this.authService.authenticate(input);
   }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
-  register(@Body() input: { username: string; password: string }) {
+  register(@Body() input: AuthDto) {
     return this.authService.register(input.username, input.password);
   }
 
   @UseGuards(AuthGuard)
   @Get('me')
-  getUserInfo(@Request() request) {
-    return request.user;
+  async getUserInfo(@Request() request) {
+    return this.usersService.findUserByName(request.user.username);
   }
 }
