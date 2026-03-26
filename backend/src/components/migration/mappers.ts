@@ -196,17 +196,16 @@ export function mapMonitor(raw: Record<string, unknown>): Monitor {
 
   const entity = mapBaseEntity(new Monitor(), raw);
 
-  entity.horizontalRes = num(resolution.horizontalRes);
-  entity.verticalRes = num(resolution.verticalRes);
-  entity.refreshRate = num(raw.refresh_rate);
-  entity.responseTime = num(raw.response_time);
-  entity.screenSize = num(raw.screen_size);
+  entity.horizontalRes = num(resolution.horizontalRes) || null;
+  entity.verticalRes = num(resolution.verticalRes) || null;
+  entity.refreshRate = num(raw.refresh_rate) || null;
+  entity.responseTime = num(raw.response_time) || null;
+  entity.screenSize = num(raw.screen_size) || null;
   entity.panelType = str(raw.panel_type);
   entity.aspectRatio = str(raw.aspect_ratio);
   entity.connectors = str(raw.connectors);
   entity.maxBrightness = str(raw.max_brightness);
-  entity.hdr = str(raw.hdr);
-  entity.adaptativeSync = str(raw.adaptative_sync);
+  entity.adaptiveSync = str(raw.adaptive_sync);
 
   return entity;
 }
