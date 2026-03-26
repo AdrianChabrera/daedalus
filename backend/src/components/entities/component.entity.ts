@@ -5,17 +5,17 @@ export abstract class Component {
   buildcoresId: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  name: string;
+  name: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  manufacturer: string;
+  manufacturer: string | null;
 
   @Column({ type: 'int', nullable: true, name: 'release_year' })
-  releaseYear: number;
+  releaseYear: number | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  series: string;
+  series: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  variant: string;
+  variant: string | null;
 }

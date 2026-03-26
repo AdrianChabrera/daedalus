@@ -37,17 +37,17 @@ export function mapCase(raw: Record<string, unknown>): Case {
 
   const entity = mapBaseEntity(new Case(), raw);
 
-  entity.width = num(dimensions.width);
-  entity.height = num(dimensions.height);
-  entity.depth = num(dimensions.depth);
-  entity.maxVideoCardLength = num(raw.max_video_card_length);
-  entity.maxCpuCoolerHeight = num(raw.max_cpu_cooler_height);
+  entity.width = num(dimensions.width) || null;
+  entity.height = num(dimensions.height) || null;
+  entity.depth = num(dimensions.depth) || null;
+  entity.maxVideoCardLength = num(raw.max_video_card_length) || null;
+  entity.maxCpuCoolerHeight = num(raw.max_cpu_cooler_height) || null;
   entity.internal35bays = num(raw.internal_3_5_bays);
   entity.internal25bays = num(raw.internal_2_5_bays);
   entity.expansionSlots = num(raw.expansion_slots);
   entity.riserExpansionSlots = num(raw.riser_expansion_slots);
-  entity.volume = num(raw.volume);
-  entity.weight = num(raw.weight);
+  entity.volume = num(raw.volume) || null;
+  entity.weight = num(raw.weight) || null;
   entity.formFactor = str(raw.form_factor);
   entity.powerSupply = str(raw.power_supply);
   entity.sidePanel = str(raw.side_panel);
@@ -107,14 +107,14 @@ export function mapCpu(raw: Record<string, unknown>): Cpu {
 export function mapCpuCooler(raw: Record<string, unknown>): CpuCooler {
   const entity = mapBaseEntity(new CpuCooler(), raw);
 
-  entity.minFanRpm = num(raw.min_fan_rpm);
-  entity.maxFanRpm = num(raw.max_fan_rpm);
-  entity.fanSize = num(raw.fan_size);
+  entity.minFanRpm = num(raw.min_fan_rpm) || null;
+  entity.maxFanRpm = num(raw.max_fan_rpm) || null;
+  entity.fanSize = num(raw.fan_size) || null;
   entity.fanQuantity = num(raw.fan_quantity);
-  entity.minNoiseLevel = num(raw.min_noise_level);
-  entity.maxNoiseLevel = num(raw.max_noise_level);
-  entity.height = num(raw.height);
-  entity.radiatorSize = num(raw.radiator_size);
+  entity.minNoiseLevel = num(raw.min_noise_level) || null;
+  entity.maxNoiseLevel = num(raw.max_noise_level) || null;
+  entity.height = num(raw.height) || null;
+  entity.radiatorSize = num(raw.radiator_size) || null;
   entity.waterCooled = bool(raw.water_cooled);
   entity.fanless = bool(raw.fanless);
 
@@ -127,24 +127,24 @@ export function mapFan(raw: Record<string, unknown>): Fan {
   const entity = mapBaseEntity(new Fan(), raw);
 
   entity.quantity = num(raw.quantity);
-  entity.minNoiseLevel = num(raw.min_noise_level);
-  entity.maxNoiseLevel = num(raw.max_noise_level);
+  entity.minNoiseLevel = num(raw.min_noise_level) || null;
+  entity.maxNoiseLevel = num(raw.max_noise_level) || null;
   const minAirflow = num(raw.min_airflow);
   entity.minAirflow =
-    minAirflow != null
+    minAirflow != null && minAirflow !== 0
       ? minAirflow > 100
         ? minAirflow / 1000
         : minAirflow
       : null;
   const maxAirflow = num(raw.max_airflow);
   entity.maxAirflow =
-    maxAirflow != null
+    maxAirflow != null && maxAirflow !== 0
       ? maxAirflow > 100
         ? maxAirflow / 1000
         : maxAirflow
       : null;
-  entity.size = num(raw.size);
-  entity.staticPressure = num(raw.static_pressure);
+  entity.size = num(raw.size) || null;
+  entity.staticPressure = num(raw.static_pressure) || null;
   entity.led = str(raw.led);
   entity.connector = str(raw.connector);
   entity.controller = str(raw.controller);
@@ -303,8 +303,8 @@ export function mapPowerSupply(raw: Record<string, unknown>): PowerSupply {
   entity.pcie12Vhpwr = num(connectors.pcie_12vhpwr);
   entity.pcie6Plus2Pin = num(connectors.pcie_6_plus_2_pin);
   entity.sata = num(connectors.sata);
-  entity.wattage = num(raw.wattage);
-  entity.length = num(raw.length);
+  entity.wattage = num(raw.wattage) || 0;
+  entity.length = num(raw.length) || 0;
   entity.fanless = bool(raw.fanless);
   entity.formFactor = str(raw.form_factor);
   entity.efficiencyRating = str(raw.efficiency_rating);

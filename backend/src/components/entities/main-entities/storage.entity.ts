@@ -2,7 +2,7 @@ import { Column, Entity } from 'typeorm';
 import { Component } from '../component.entity';
 
 @Entity('storages')
-export class Storage extends Component {
+export class StorageDrive extends Component {
   @Column({ type: 'int', nullable: true })
   capacity: number | null;
 
