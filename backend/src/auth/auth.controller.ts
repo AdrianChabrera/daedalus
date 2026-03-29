@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -12,6 +13,8 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthDto } from './dto/auth.dto';
 import { UsersService } from 'src/users/users.service';
+import { CurrentUser } from './decorators/current-user.decorator';
+import * as authInterfaces from './interfaces/auth.interfaces';
 
 @Controller('auth')
 export class AuthController {
@@ -34,7 +37,14 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('me')
-  async getUserInfo(@Request() request) {
-    return this.usersService.findUserByName(request.user.username);
+  async getUserInfo(@CurrentUser() user: authInterfaces.SignInData) {
+    return this.usersService.findUserByName(user.username);
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('delete')
+  async delete(@CurrentUser() loggedUser: authInterfaces.SignInData) {
+    return this.usersService.delete(loggedUser.userId);
   }
 }

@@ -15,12 +15,23 @@ export class UsersService {
     return this.userRepository.findOne({ where: { username } });
   }
 
+  async findUserById(id: number): Promise<User | null> {
+    return this.userRepository.findOne({ where: { id } });
+  }
+
   async register(username: string, password: string): Promise<User> {
     const existing = await this.findUserByName(username);
     if (existing) throw new ConflictException('Username already in use');
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = this.userRepository.create({ username, password: hashedPassword });
+    const user = this.userRepository.create({
+      username,
+      password: hashedPassword,
+    });
     return this.userRepository.save(user);
+  }
+
+  async delete(userId: number): Promise<void> {
+    await this.userRepository.delete(userId);
   }
 }
