@@ -1,3 +1,4 @@
+import { IsNotEmpty } from 'class-validator';
 import {
   Entity,
   Column,
@@ -11,6 +12,7 @@ export class User {
   id: number;
 
   @Column({ unique: true })
+  @IsNotEmpty()
   username: string;
 
   @Column()
