@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import styles from './AuthScreen.module.css';
 import { Eye, EyeOff, AlertCircle, User, Lock, Check, X } from 'lucide-react';
 

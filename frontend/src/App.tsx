@@ -1,9 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Layout from './components/Layout';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import HomeScreen from './screens/HomeScreen';  
+import LoginScreen from './screens/auth/LoginScreen';
+import RegisterScreen from './screens/auth/RegisterScreen';
+import HomeScreen from './screens/home/HomeScreen';  
+import ProtectedRoute from './components/ProtectedRoute';
+import ProfileScreen from './screens/profile/ProfileScreen';
 
 export default function App() {
   return (
@@ -13,6 +15,14 @@ export default function App() {
           <Route element={<Layout />}>
             <Route path="/login"    element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfileScreen />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/" element={<HomeScreen />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
