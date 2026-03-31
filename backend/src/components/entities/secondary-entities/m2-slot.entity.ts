@@ -19,7 +19,7 @@ export class M2Slot {
   key: string | null;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  interface: string | null;
+  m2Interface: string | null;
 
   @ManyToOne(() => Motherboard, (m) => m.m2Slots)
   @JoinColumn({ name: 'motherboard_id' })

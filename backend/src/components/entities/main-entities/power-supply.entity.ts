@@ -46,7 +46,7 @@ export class PowerSupply extends Component {
     nullable: true,
     name: 'efficency_rating',
   })
-  efficiencyRating: string | null;
+  efficencyRating: string | null;
 
   @Column({
     type: 'varchar',

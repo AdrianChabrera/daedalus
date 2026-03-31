@@ -12,7 +12,7 @@ export class StorageDrive extends Component {
     nullable: true,
     name: 'type',
   })
-  type: string | null;
+  storageType: string | null;
 
   @Column({
     type: 'varchar',
@@ -23,7 +23,7 @@ export class StorageDrive extends Component {
   formFactor: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  interface: string | null;
+  storageInterface: string | null;
 
   @Column({ type: 'boolean', nullable: true })
   nvme: boolean | null;

@@ -74,19 +74,23 @@ export function mapCpu(raw: Record<string, unknown>): Cpu {
   entity.coreFamily = str(raw.coreFamily);
   entity.socket = str(raw.socket);
 
-  entity.coreCount = num(cores.total);
-  entity.threadCount = num(cores.threads);
+  entity.coreCount = num(cores.total) || null;
+  entity.threadCount = num(cores.threads) || null;
 
   const baseClock = num(clocksPerformance.base);
   entity.baseClock =
-    baseClock != null ? (baseClock > 100 ? baseClock / 1000 : baseClock) : null;
+    (baseClock != null
+      ? baseClock > 100
+        ? baseClock / 1000
+        : baseClock
+      : null) || null;
   const boostClock = num(clocksPerformance.boost);
   entity.boostClock =
-    boostClock != null
+    (boostClock != null
       ? boostClock > 100
         ? boostClock / 1000
         : boostClock
-      : null;
+      : null) || null;
 
   entity.cachel1 = str(cache.l1);
   entity.cachel2 = num(cache.l2);
@@ -132,14 +136,14 @@ export function mapFan(raw: Record<string, unknown>): Fan {
   const minAirflow = num(raw.min_airflow);
   entity.minAirflow =
     minAirflow != null && minAirflow !== 0
-      ? minAirflow > 100
+      ? minAirflow > 1000
         ? minAirflow / 1000
         : minAirflow
       : null;
   const maxAirflow = num(raw.max_airflow);
   entity.maxAirflow =
     maxAirflow != null && maxAirflow !== 0
-      ? maxAirflow > 100
+      ? maxAirflow > 1000
         ? maxAirflow / 1000
         : maxAirflow
       : null;
@@ -180,7 +184,7 @@ export function mapGpu(raw: Record<string, unknown>): Gpu {
   entity.vga = num(videoOutputs.vga);
   entity.chipset = str(raw.chipset);
   entity.memoryType = str(raw.memory_type);
-  entity.interface = str(raw.interface);
+  entity.gpuInterface = str(raw.interface);
 
   return entity;
 }
@@ -277,6 +281,7 @@ export async function mapMotherboard(
   await Promise.all(
     m2Slots.map((m) =>
       m2SlotRepository.save({
+        m2Interface: str(m.interface),
         ...m,
         motherboard: entity,
       }),
@@ -306,7 +311,7 @@ export function mapPowerSupply(raw: Record<string, unknown>): PowerSupply {
   entity.length = num(raw.length) || 0;
   entity.fanless = bool(raw.fanless);
   entity.formFactor = str(raw.form_factor);
-  entity.efficiencyRating = str(raw.efficiency_rating);
+  entity.efficencyRating = str(raw.efficiency_rating);
   entity.modular = str(raw.modular);
 
   return entity;
@@ -327,7 +332,7 @@ export function mapRam(raw: Record<string, unknown>): Ram {
   entity.ecc = str(raw.ecc) == 'ECC' ? true : false;
   entity.heatSpreader = bool(raw.heat_spreader) ?? null;
   entity.rgb = bool(raw.rgb) ?? null;
-  entity.type = str(raw.ram_type);
+  entity.memoryType = str(raw.ram_type);
   entity.timings = str(raw.timings);
 
   return entity;
@@ -337,9 +342,9 @@ export function mapStorage(raw: Record<string, unknown>): StorageDrive {
   const entity = mapBaseEntity(new StorageDrive(), raw);
 
   entity.capacity = num(raw.capacity);
-  entity.type = str(raw.storage_type);
+  entity.storageType = str(raw.storage_type);
   entity.formFactor = str(raw.form_factor);
-  entity.interface = str(raw.interface);
+  entity.storageInterface = str(raw.interface);
   entity.nvme = bool(raw.nvme);
 
   return entity;

@@ -87,5 +87,5 @@ export class Gpu extends Component {
   memoryType: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  interface: string | null;
+  gpuInterface: string | null;
 }

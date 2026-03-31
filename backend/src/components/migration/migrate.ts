@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 import { DataSource, EntityTarget, ObjectLiteral, Repository } from 'typeorm';
 import { Cpu } from '../entities/main-entities/cpu.entity';
 import { Ram } from '../entities/main-entities/ram.entity';
@@ -30,7 +31,7 @@ import { Keyboard } from '../entities/main-entities/keyboard.entity';
 import { M2Slot } from '../entities/secondary-entities/m2-slot.entity';
 import { PcieSlot } from '../entities/secondary-entities/pcie-slot.entity';
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '../../../../.env') });
 
 type Mapper<T extends ObjectLiteral> = (
   raw: Record<string, unknown>,
