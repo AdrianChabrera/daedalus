@@ -1,4 +1,4 @@
-import styles from './DeleteAccountModal.module.css';
+import styles from '../styles/DeleteAccountModal.module.css';
 
 interface Props {
   isOpen: boolean;

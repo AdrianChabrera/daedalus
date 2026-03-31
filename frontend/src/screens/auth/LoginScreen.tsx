@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import styles from './AuthScreen.module.css';
+import styles from '../../styles/AuthScreen.module.css';
 import { Eye, EyeOff, AlertCircle, User, Lock } from 'lucide-react';
 
 
