@@ -62,6 +62,7 @@ export class ComponentsService {
     page: number = 1,
     limit: number = 16,
     filters: Record<string, any> = {},
+    order: string = 'name-ASC',
   ): Promise<PaginatedResult<Component>> {
     const repository = this.repositories[componentType.toLowerCase()];
 
@@ -71,11 +72,23 @@ export class ComponentsService {
 
     const skip = (page - 1) * limit;
 
-    const [data, total] = await repository.findAndCount({
-      where: filters,
-      skip: skip,
-      take: limit,
-    });
-    return { data, total, page, limit };
+    const orderParams = order.split('-');
+    const field = orderParams[0] || 'name';
+    const direction = orderParams[1]?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+    try {
+      const [data, total] = await repository.findAndCount({
+        where: filters,
+        skip: skip,
+        take: limit,
+        order: {
+          [field]: { direction, nulls: 'LAST' },
+        },
+      });
+      return { data, total, page, limit };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new BadRequestException(message);
+    }
   }
 }

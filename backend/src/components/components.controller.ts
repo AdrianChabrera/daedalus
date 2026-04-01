@@ -18,10 +18,11 @@ export class ComponentsController {
     @Param('componentType') componentType: string,
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '16',
+    @Query('order') order: string = 'name-ASC',
     @Query() queryParams: Record<string, any>,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { page: _p, limit: _l, ...filters } = queryParams;
+    const { page: _p, limit: _l, order: _o, ...filters } = queryParams;
 
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
@@ -31,6 +32,7 @@ export class ComponentsController {
       pageNumber,
       limitNumber,
       filters,
+      order,
     );
   }
 }
