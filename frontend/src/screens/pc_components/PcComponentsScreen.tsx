@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from '../../styles/PcComponentsScreen.module.css';
-import { Cpu, Gpu, Layers, HardDrive, MemoryStick, Fan, Keyboard, Mouse, Zap, PcCase, Thermometer, Monitor } from 'lucide-react';
+import { Cpu, Gpu, Layers, HardDrive, MemoryStick, Fan, Keyboard, Mouse, Zap, PcCase, Thermometer, Monitor, ArrowUpDown, ArrowDown, ArrowUp } from 'lucide-react';
 import { API_ROUTES } from '../../config/api';
 import type { PaginatedResult } from '../../types/PaginatedResult.type';
-import type { PcComponent, PcComponentTypeConfig } from '../../types/PcComponents.types';
+import type { ActiveSort, PcComponent, PcComponentTypeConfig, SortDirection } from '../../types/PcComponents.types';
 import { PcComponentCard } from '../../components/PcComponentCard';
 import { PcComponentSkeletonCard } from '../../components/PcComponentSkeletonCard';
 import { TypeDropdown } from '../../components/PcComponentsDropdown';
@@ -17,6 +17,11 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     label: 'CPU',
     endpoint: 'cpu',
     icon: <Cpu size={16} />,
+    sortFields: [
+      { label: 'Total Cores', field: 'coreCount' },
+      { label: 'Boost Clock', field: 'boostClock' },
+      { label: 'TDP', field: 'tdp' },
+    ],
     subtitle: (c) => {
       const cpu = c as PcComponent & { boostClock?: number; coreCount?: number; socket?: string };
       const boostClock = cpu.boostClock ? `${cpu.boostClock} GHz` : 'N/A';
@@ -33,14 +38,19 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     label: 'GPU',
     endpoint: 'gpu',
     icon: <Gpu size={16} />,
+    sortFields: [
+      { label: 'Memory', field: 'memory' },
+      { label: 'Boost Clock', field: 'coreBoostClock' },
+      { label: 'TDP', field: 'tdp' },
+    ],
     subtitle: (c) => {
-      const gpu = c as PcComponent & { memory?: number; memoryType?: string; chipset?: string };
+      const gpu = c as PcComponent & { memory?: number; coreBoostClock?: number; chipset?: string };
       const memory = gpu.memory ? `${gpu.memory} GB` : 'N/A';
-      const memoryType = gpu.memoryType ?? 'N/A';
+      const coreBoostClock = gpu.coreBoostClock ? `${gpu.coreBoostClock} GHz` : 'N/A';
       const chipset = gpu.chipset ?? 'N/A';
       return <div>
               <p>Memory: {memory}</p>
-              <p>Type: {memoryType}</p>
+              <p>Boost Clock: {coreBoostClock}</p>
               <p>Chipset: {chipset}</p>
             </div>
     },
@@ -49,6 +59,10 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     label: 'Motherboard',
     endpoint: 'motherboard',
     icon: <Layers size={16} />,
+    sortFields: [
+      { label: 'Max Memory', field: 'maxMemory' },
+      { label: 'Memory Slots', field: 'memorySlots' },
+    ],
     subtitle: (c) => {
       const mb = c as PcComponent & { socket?: string; formFactor?: string; chipset?: string };
       const socket = mb.socket ?? 'N/A';
@@ -65,6 +79,11 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     label: 'RAM',
     endpoint: 'ram',
     icon: <MemoryStick size={16} />,
+    sortFields: [
+      { label: 'Capacity', field: 'capacity' },
+      { label: 'Speed', field: 'speed' },
+      { label: 'CAS Latency', field: 'casLatency' },
+    ],
     subtitle: (c) => {
       const ram = c as PcComponent & { speed?: number; capacity?: number; memoryType?: string };
       const speed = ram.speed ? `${ram.speed} MHz` : 'N/A';
@@ -81,6 +100,9 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     label: 'Storage',
     endpoint: 'storage',
     icon: <HardDrive size={16} />,
+    sortFields: [
+      { label: 'Capacity', field: 'capacity' },
+    ],
     subtitle: (c) => {
       const s = c as PcComponent & { capacity?: number; storageType?: string; storageInterface?: string };
       const capacity = s.capacity ? `${s.capacity} GB` : 'N/A';
@@ -97,6 +119,10 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     label: 'CPU Cooler',
     endpoint: 'cpu-cooler',
     icon: <Thermometer size={16} />,
+    sortFields: [
+      { label: 'Max Fan RPM', field: 'maxFanRpm' },
+      { label: 'Noise Level', field: 'maxNoiseLevel' },
+    ],
     subtitle: (c) => {
       const cc = c as PcComponent & { waterCooled?: boolean; };
       const waterCooled = cc.waterCooled ? 'Water Cooled' : 'Air Cooled';
@@ -107,6 +133,10 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     label: 'Case',
     endpoint: 'case',
     icon: <PcCase size={16} />,
+    sortFields: [
+      { label: 'Volume', field: 'volume' },
+      { label: 'Weight', field: 'weight' },
+    ],
     subtitle: (c) => {
       const cs = c as PcComponent & { formFactor?: string };
       const formFactor = cs.formFactor ?? 'N/A';
@@ -117,6 +147,9 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     label: 'Power Supply',
     endpoint: 'power-supply',
     icon: <Zap size={16} />,
+    sortFields: [
+      { label: 'Wattage', field: 'wattage' },
+    ],
     subtitle: (c) => {
       const ps = c as PcComponent & { wattage?: number; efficencyRating?: string; };
       const wattage = ps.wattage ? `${ps.wattage} W` : 'N/A';
@@ -139,6 +172,11 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     label: 'Monitor',
     endpoint: 'monitor',
     icon: <Monitor size={16} />,
+    sortFields: [
+      { label: 'Screen Size', field: 'screenSize' },
+      { label: 'Refresh Rate', field: 'refreshRate' },
+      { label: 'Response Time', field: 'responseTime' },
+    ],
     subtitle: (c) => {
       const m = c as PcComponent & { verticalRes?: string; horizontalRes?: string, screenSize?: number; };
       const resolution = m.verticalRes && m.horizontalRes ? `${m.horizontalRes}x${m.verticalRes}` : 'N/A';
@@ -167,6 +205,18 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
   },
 ];
 
+function nextDirection(current: SortDirection): SortDirection {
+  if (current === null) return 'ASC';
+  if (current === 'ASC') return 'DESC';
+  return null;
+}
+ 
+function SortIcon({ direction }: { direction: SortDirection }) {
+  if (direction === 'ASC') return <ArrowUp size={13} />;
+  if (direction === 'DESC') return <ArrowDown size={13} />;
+  return <ArrowUpDown size={13} />;
+}
+
 export default function ComponentsScreen() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -179,15 +229,29 @@ export default function ComponentsScreen() {
   const [result, setResult] = useState<PaginatedResult<PcComponent> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeSort, setActiveSort] = useState<ActiveSort>({ field: '', direction: 'ASC' });
+
+  useEffect(() => {
+    setActiveSort({ field: '', direction: 'ASC' });
+  }, [currentType.endpoint]);
+ 
+  const buildOrderParam = useCallback((sort: ActiveSort): string | undefined => {
+    if (sort.direction === null) return undefined;
+    return `${sort.field}-${sort.direction}`;
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
-
+ 
     const fetchComponents = async () => {
       setLoading(true);
       setError(null);
       try {
-        const url = API_ROUTES.COMPONENTS(currentType.endpoint) + `?page=${pageParam}&limit=${PAGE_SIZE}`;
+        const orderParam = buildOrderParam(activeSort);
+        const url =
+          API_ROUTES.COMPONENTS(currentType.endpoint) +
+          `?page=${pageParam}&limit=${PAGE_SIZE}` +
+          (orderParam ? `&order=${orderParam}` : '');
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Error ${res.status}`);
         const data: PaginatedResult<PcComponent> = await res.json();
@@ -198,10 +262,10 @@ export default function ComponentsScreen() {
         if (!cancelled) setLoading(false);
       }
     };
-
+ 
     fetchComponents();
     return () => { cancelled = true; };
-  }, [currentType.endpoint, pageParam]);
+  }, [currentType.endpoint, pageParam, activeSort, buildOrderParam]);
 
   const totalPages = result ? Math.ceil(result.total / PAGE_SIZE) : 1;
 
@@ -218,6 +282,26 @@ export default function ComponentsScreen() {
     navigate(`/components/${currentType.endpoint}/${component.buildcoresId}`);
   };
 
+  const handleSortClick = (field: string) => {
+    setActiveSort(prev => {
+      if (prev.field === field) {
+        const next = nextDirection(prev.direction);
+        if (next === null) return { field: '', direction: 'ASC' };
+        return { field, direction: next };
+      }
+      return { field, direction: 'ASC' };
+    });
+    setSearchParams({ type: currentType.endpoint, page: '1' });
+  };
+ 
+  // TODO: add rating order when reviews are implemented.
+  const fixedSortButtons = [
+    { label: 'Alphabetical', field: 'name' },
+  ];
+ 
+  const extraSortButtons = currentType.sortFields ?? [];
+  const allSortButtons = [...fixedSortButtons, ...extraSortButtons];
+
   return (
     <div className={styles.page}>
       <div className="bgGlow" aria-hidden />
@@ -226,6 +310,26 @@ export default function ComponentsScreen() {
       <div className={styles.inner}>
         <div className={styles.header}>
           <TypeDropdown current={currentType} onChange={handleTypeChange} pcComponentTypes={COMPONENT_TYPES} />
+        </div>
+
+        <div className={styles.sortBar}>
+          <span className={styles.sortLabel}>Order by:</span>
+          <div className={styles.sortButtons}>
+            {allSortButtons.map((btn) => {
+              const isActive = activeSort.field === btn.field && activeSort.direction !== null;
+              const direction = isActive ? activeSort.direction : null;
+              return (
+                <button
+                  key={btn.field}
+                  className={`${styles.sortBtn} ${isActive ? styles.sortBtnActive : ''}`}
+                  onClick={() => handleSortClick(btn.field)}
+                >
+                  <SortIcon direction={direction} />
+                  <span>{btn.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {error ? (

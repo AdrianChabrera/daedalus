@@ -13,4 +13,17 @@ export interface PcComponentTypeConfig {
   endpoint: string;
   icon: React.ReactNode;
   subtitle: (c: PcComponent) => React.ReactNode;
+  sortFields?: SortField[]; 
+}
+
+export type SortDirection = 'ASC' | 'DESC' | null;
+
+export interface SortField {
+  label: string;
+  field: string;
+}
+
+export interface ActiveSort {
+  field: string;
+  direction: SortDirection;
 }
