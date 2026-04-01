@@ -96,13 +96,13 @@ export function mapCpu(raw: Record<string, unknown>): Cpu {
   entity.cachel2 = num(cache.l2);
   entity.cachel3 = num(cache.l3);
 
-  entity.tdp = num(specs.tdp);
+  entity.tdp = num(specs.tdp) || null;
   entity.simultaneousMultithreading = bool(specs.simultaneousMultithreading);
   entity.eccSupport = bool(specs.eccSupport);
   entity.includesCooler = bool(specs.includesCooler);
   entity.integratedGraphics = str(igpu.model);
 
-  entity.maxSupportedMemory = num(memory.maxSupport);
+  entity.maxSupportedMemory = num(memory.maxSupport) || null;
   entity.supportedMemoryTypes = arr(memory.types);
 
   return entity;
@@ -324,14 +324,14 @@ export function mapRam(raw: Record<string, unknown>): Ram {
 
   entity.quantity = num(modules.quantity);
 
-  entity.capacity = num(raw.capacity) ?? null;
-  entity.speed = num(raw.speed) ?? null;
-  entity.formFactor = str(raw.form_factor) ?? null;
-  entity.casLatency = num(raw.cas_latency) ?? null;
-  entity.voltage = num(raw.voltage) ?? null;
+  entity.capacity = num(raw.capacity) || null;
+  entity.speed = num(raw.speed) || null;
+  entity.formFactor = str(raw.form_factor) || null;
+  entity.casLatency = num(raw.cas_latency) || null;
+  entity.voltage = num(raw.voltage) || null;
   entity.ecc = str(raw.ecc) == 'ECC' ? true : false;
-  entity.heatSpreader = bool(raw.heat_spreader) ?? null;
-  entity.rgb = bool(raw.rgb) ?? null;
+  entity.heatSpreader = bool(raw.heat_spreader) || null;
+  entity.rgb = bool(raw.rgb) || null;
   entity.memoryType = str(raw.ram_type);
   entity.timings = str(raw.timings);
 

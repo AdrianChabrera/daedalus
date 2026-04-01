@@ -14,7 +14,13 @@ import { Ram } from './entities/main-entities/ram.entity';
 import { Case } from './entities/main-entities/case.entity';
 import { CpuCooler } from './entities/main-entities/cpu-cooler.entity';
 import { StorageDrive } from './entities/main-entities/storage.entity';
-import { PaginatedResult } from './interfaces/pc-components.interfaces';
+import {
+  FilterOptions,
+  PaginatedResult,
+  ParsedFilters,
+} from './interfaces/pc-components.interfaces';
+import { SelectQueryBuilder } from 'typeorm/browser';
+import { COMPONENT_FILTER_SCHEMAS } from './utils/filter-schemas';
 
 @Injectable()
 export class ComponentsService {
@@ -61,7 +67,7 @@ export class ComponentsService {
     componentType: string,
     page: number = 1,
     limit: number = 16,
-    filters: Record<string, any> = {},
+    filters: ParsedFilters = { ranges: {}, multiStrings: {}, booleans: {} },
     order: string = 'name-ASC',
   ): Promise<PaginatedResult<Component>> {
     const repository = this.repositories[componentType.toLowerCase()];
@@ -72,23 +78,130 @@ export class ComponentsService {
 
     const skip = (page - 1) * limit;
 
-    const orderParams = order.split('-');
-    const field = orderParams[0] || 'name';
-    const direction = orderParams[1]?.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+    const [orderField, orderDir = 'ASC'] = order.split('-');
+    const direction = orderDir.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+    const cType = componentType.toLowerCase();
+    const alias = cType.replace('-', '_');
 
     try {
-      const [data, total] = await repository.findAndCount({
-        where: filters,
-        skip: skip,
-        take: limit,
-        order: {
-          [field]: { direction, nulls: 'LAST' },
-        },
-      });
+      const qb: SelectQueryBuilder<Component> = repository
+        .createQueryBuilder(alias)
+        .skip(skip)
+        .take(limit);
+
+      if (orderField) {
+        qb.orderBy(
+          `CASE WHEN ${alias}.${orderField} IS NULL THEN 1 ELSE 0 END`,
+          'ASC',
+        ).addOrderBy(`${alias}.${orderField}`, direction);
+      }
+
+      this.applyFilters(qb, alias, cType, filters);
+
+      const [data, total] = await qb.getManyAndCount();
+
       return { data, total, page, limit };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new BadRequestException(message);
     }
+  }
+
+  private applyFilters(
+    qb: SelectQueryBuilder<Component>,
+    alias: string,
+    type: string,
+    filters: ParsedFilters,
+  ): void {
+    const schema = COMPONENT_FILTER_SCHEMAS[type];
+    if (!schema) return;
+
+    let paramIndex = 0;
+
+    for (const [key, { min, max }] of Object.entries(filters.ranges)) {
+      const def = schema[key];
+      if (!def || def.type !== 'range') continue;
+
+      const col = `${alias}.${def.field}`;
+
+      if (min !== undefined && max !== undefined) {
+        const pMin = `p${paramIndex++}`;
+        const pMax = `p${paramIndex++}`;
+        qb.andWhere(`${col} BETWEEN :${pMin} AND :${pMax}`, {
+          [pMin]: min,
+          [pMax]: max,
+        });
+      } else if (min !== undefined) {
+        const p = `p${paramIndex++}`;
+        qb.andWhere(`${col} >= :${p}`, { [p]: min });
+      } else if (max !== undefined) {
+        const p = `p${paramIndex++}`;
+        qb.andWhere(`${col} <= :${p}`, { [p]: max });
+      }
+    }
+
+    for (const [key, values] of Object.entries(filters.multiStrings)) {
+      const def = schema[key];
+      if (!def || def.type !== 'multi-string' || values.length === 0) continue;
+
+      const p = `p${paramIndex++}`;
+      qb.andWhere(`${alias}.${def.field} IN (:...${p})`, { [p]: values });
+    }
+
+    for (const [key, value] of Object.entries(filters.booleans)) {
+      const def = schema[key];
+      if (!def || def.type !== 'boolean') continue;
+
+      const p = `p${paramIndex++}`;
+      qb.andWhere(`${alias}.${def.field} = :${p}`, { [p]: value });
+    }
+  }
+
+  async findAllFilterValues(
+    componentType: string,
+  ): Promise<Record<string, FilterOptions>> {
+    const cType = componentType.toLowerCase();
+    const repository = this.repositories[cType];
+    if (!repository) {
+      throw new BadRequestException(`Invalid component type: ${componentType}`);
+    }
+    const schema = COMPONENT_FILTER_SCHEMAS[cType];
+
+    if (!schema) {
+      return {};
+    }
+
+    const alias = cType.replace('-', '_');
+    const result: Record<string, FilterOptions> = {};
+
+    await Promise.all(
+      Object.entries(schema).map(async ([key, def]) => {
+        const col = `${alias}.${def.field}`;
+        if (def.type === 'range') {
+          const rawResult = await repository
+            .createQueryBuilder(alias)
+            .select(`MIN(${col}), 'min'`)
+            .addSelect(`MAX(${col}), 'max'`)
+            .getRawOne<{ min: number | null; max: number | null }>();
+          const { min, max } = rawResult || { min: null, max: null };
+          result[key] = { type: 'range', min, max };
+        } else if (def.type === 'multi-string') {
+          const values = await repository
+            .createQueryBuilder(alias)
+            .select(`DISTINCT ${col}`, 'value')
+            .where(`${col} IS NOT NULL`)
+            .orderBy(`value`, 'ASC')
+            .getRawMany<{ value: string }>();
+          result[key] = {
+            type: 'multi-string',
+            values: values.map((v) => v.value),
+          };
+        } else if (def.type === 'boolean') {
+          result[key] = { type: 'boolean' };
+        }
+      }),
+    );
+    return result;
   }
 }

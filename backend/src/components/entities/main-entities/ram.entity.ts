@@ -24,7 +24,7 @@ export class Ram extends Component {
   })
   voltage: number | null;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true, name: 'memory_type' })
   memoryType: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'form_factor' })
