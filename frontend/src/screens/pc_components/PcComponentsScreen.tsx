@@ -9,6 +9,8 @@ import { PcComponentCard } from '../../components/PcComponentCard';
 import { PcComponentSkeletonCard } from '../../components/PcComponentSkeletonCard';
 import { TypeDropdown } from '../../components/PcComponentsDropdown';
 import { Pagination } from '../../components/Pagination';
+import { FilterSidebar } from '../../components/PcComponentsFilterSideBar';
+import { useComponentFilters } from '../../hooks/useComponentsFilters';
 
 const PAGE_SIZE = 16;
 
@@ -27,11 +29,7 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
       const boostClock = cpu.boostClock ? `${cpu.boostClock} GHz` : 'N/A';
       const coreCount = cpu.coreCount ? `${cpu.coreCount}` : 'N/A';
       const socket = cpu.socket ?? 'N/A';
-      return <div>
-              <p>Boost Clock: {boostClock}</p>
-              <p>Cores: {coreCount}</p>
-              <p>Socket: {socket}</p>
-            </div>
+      return <span>Boost Clock: {boostClock} <br/>Cores: {coreCount} <br/>Socket: {socket}</span>;
     },
   },
   {
@@ -48,11 +46,7 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
       const memory = gpu.memory ? `${gpu.memory} GB` : 'N/A';
       const coreBoostClock = gpu.coreBoostClock ? `${gpu.coreBoostClock} GHz` : 'N/A';
       const chipset = gpu.chipset ?? 'N/A';
-      return <div>
-              <p>Memory: {memory}</p>
-              <p>Boost Clock: {coreBoostClock}</p>
-              <p>Chipset: {chipset}</p>
-            </div>
+      return <span>Memory: {memory} <br/>Boost Clock: {coreBoostClock} <br/>Chipset: {chipset}</span>;
     },
   },
   {
@@ -65,14 +59,7 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     ],
     subtitle: (c) => {
       const mb = c as PcComponent & { socket?: string; formFactor?: string; chipset?: string };
-      const socket = mb.socket ?? 'N/A';
-      const formFactor = mb.formFactor ?? 'N/A';
-      const chipset = mb.chipset ?? 'N/A';
-      return <div>
-              <p>Socket: {socket}</p>
-              <p>Form Factor: {formFactor}</p>
-              <p>Chipset: {chipset}</p>
-            </div>
+      return <span>Socket: {mb.socket ?? 'N/A'} <br/>Form Factor: {mb.formFactor ?? 'N/A'} <br/>Chipset: {mb.chipset ?? 'N/A'}</span>;
     },
   },
   {
@@ -88,31 +75,18 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
       const ram = c as PcComponent & { speed?: number; capacity?: number; memoryType?: string };
       const speed = ram.speed ? `${ram.speed} MHz` : 'N/A';
       const capacity = ram.capacity ? `${ram.capacity} GB` : 'N/A';
-      const memoryType = ram.memoryType ?? 'N/A';
-      return <div>
-              <p>Speed: {speed}</p>
-              <p>Capacity: {capacity}</p>
-              <p>Type: {memoryType}</p>
-            </div>
+      return <span>Speed: {speed} <br/>Capacity: {capacity} <br/>Type: {ram.memoryType ?? 'N/A'}</span>;
     },
   },
   {
     label: 'Storage',
-    endpoint: 'storage',
+    endpoint: 'storage-drive',
     icon: <HardDrive size={16} />,
-    sortFields: [
-      { label: 'Capacity', field: 'capacity' },
-    ],
+    sortFields: [{ label: 'Capacity', field: 'capacity' }],
     subtitle: (c) => {
       const s = c as PcComponent & { capacity?: number; storageType?: string; storageInterface?: string };
       const capacity = s.capacity ? `${s.capacity} GB` : 'N/A';
-      const storageType = s.storageType ?? 'N/A';
-      const storageInterface = s.storageInterface ?? 'N/A';
-      return <div>
-              <p>Capacity: {capacity}</p>
-              <p>Type: {storageType}</p>
-              <p>Interface: {storageInterface}</p>
-            </div>
+      return <span>Capacity: {capacity} <br/>Type: {s.storageType ?? 'N/A'} <br/>Interface: {s.storageInterface ?? 'N/A'}</span>;
     },
   },
   {
@@ -124,9 +98,8 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
       { label: 'Noise Level', field: 'maxNoiseLevel' },
     ],
     subtitle: (c) => {
-      const cc = c as PcComponent & { waterCooled?: boolean; };
-      const waterCooled = cc.waterCooled ? 'Water Cooled' : 'Air Cooled';
-      return <div>Type: {waterCooled}</div>
+      const cc = c as PcComponent & { waterCooled?: boolean };
+      return <span>Type: {cc.waterCooled ? 'Water Cooled' : 'Air Cooled'}</span>;
     },
   },
   {
@@ -139,34 +112,25 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
     ],
     subtitle: (c) => {
       const cs = c as PcComponent & { formFactor?: string };
-      const formFactor = cs.formFactor ?? 'N/A';
-      return <div>Form Factor: {formFactor}</div>
+      return <span>Form Factor: {cs.formFactor ?? 'N/A'}</span>;
     },
   },
   {
     label: 'Power Supply',
     endpoint: 'power-supply',
     icon: <Zap size={16} />,
-    sortFields: [
-      { label: 'Wattage', field: 'wattage' },
-    ],
+    sortFields: [{ label: 'Wattage', field: 'wattage' }],
     subtitle: (c) => {
-      const ps = c as PcComponent & { wattage?: number; efficencyRating?: string; };
+      const ps = c as PcComponent & { wattage?: number; efficencyRating?: string };
       const wattage = ps.wattage ? `${ps.wattage} W` : 'N/A';
-      const efficencyRating = ps.efficencyRating ?? 'N/A';
-      return <div>
-              <p>Wattage: {wattage}</p>
-              <p>Efficiency Rating: {efficencyRating}</p>
-            </div>
+      return <span>Wattage: {wattage} <br/>Efficiency Rating: {ps.efficencyRating ?? 'N/A'}</span>;
     },
   },
   {
     label: 'Fan',
     endpoint: 'fan',
     icon: <Fan size={16} />,
-    subtitle: () => {
-      return <div></div>
-    },
+    subtitle: () => <span />,
   },
   {
     label: 'Monitor',
@@ -178,30 +142,23 @@ const COMPONENT_TYPES: PcComponentTypeConfig[] = [
       { label: 'Response Time', field: 'responseTime' },
     ],
     subtitle: (c) => {
-      const m = c as PcComponent & { verticalRes?: string; horizontalRes?: string, screenSize?: number; };
+      const m = c as PcComponent & { verticalRes?: string; horizontalRes?: string; screenSize?: number };
       const resolution = m.verticalRes && m.horizontalRes ? `${m.horizontalRes}x${m.verticalRes}` : 'N/A';
       const screenSize = m.screenSize ? `${m.screenSize} "` : 'N/A';
-      return <div>
-              <p>Resolution: {resolution}</p>
-              <p>Screen Size: {screenSize}</p>
-            </div>
+      return <span>Resolution: {resolution} <br/>Screen Size: {screenSize}</span>;
     },
   },
   {
     label: 'Keyboard',
     endpoint: 'keyboard',
     icon: <Keyboard size={16} />,
-    subtitle: () => {
-      return <div></div>
-    },
+    subtitle: () => <span />,
   },
   {
     label: 'Mouse',
     endpoint: 'mouse',
     icon: <Mouse size={16} />,
-    subtitle: () => {
-      return <div></div>
-    },
+    subtitle: () => <span />,
   },
 ];
 
@@ -210,7 +167,7 @@ function nextDirection(current: SortDirection): SortDirection {
   if (current === 'ASC') return 'DESC';
   return null;
 }
- 
+
 function SortIcon({ direction }: { direction: SortDirection }) {
   if (direction === 'ASC') return <ArrowUp size={13} />;
   if (direction === 'DESC') return <ArrowDown size={13} />;
@@ -231,27 +188,50 @@ export default function ComponentsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [activeSort, setActiveSort] = useState<ActiveSort>({ field: '', direction: 'ASC' });
 
+  const {
+    schema,
+    loadingSchema,
+    activeFilters,
+    setRangeFilter,
+    toggleMultiString,
+    setBooleanFilter,
+    clearFilters,
+    hasActiveFilters,
+    buildQueryString,
+  } = useComponentFilters(currentType.endpoint);
+
   useEffect(() => {
     setActiveSort({ field: '', direction: 'ASC' });
   }, [currentType.endpoint]);
- 
+
   const buildOrderParam = useCallback((sort: ActiveSort): string | undefined => {
     if (sort.direction === null) return undefined;
     return `${sort.field}-${sort.direction}`;
   }, []);
 
   useEffect(() => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      next.set('page', '1');
+      return next;
+    }, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeFilters]);
+
+  useEffect(() => {
     let cancelled = false;
- 
+
     const fetchComponents = async () => {
       setLoading(true);
       setError(null);
       try {
         const orderParam = buildOrderParam(activeSort);
+        const filterQS = buildQueryString();
         const url =
           API_ROUTES.COMPONENTS(currentType.endpoint) +
           `?page=${pageParam}&limit=${PAGE_SIZE}` +
-          (orderParam ? `&order=${orderParam}` : '');
+          (orderParam ? `&order=${orderParam}` : '') +
+          filterQS;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Error ${res.status}`);
         const data: PaginatedResult<PcComponent> = await res.json();
@@ -262,10 +242,10 @@ export default function ComponentsScreen() {
         if (!cancelled) setLoading(false);
       }
     };
- 
+
     fetchComponents();
     return () => { cancelled = true; };
-  }, [currentType.endpoint, pageParam, activeSort, buildOrderParam]);
+  }, [currentType.endpoint, pageParam, activeSort, buildOrderParam, buildQueryString]);
 
   const totalPages = result ? Math.ceil(result.total / PAGE_SIZE) : 1;
 
@@ -293,12 +273,8 @@ export default function ComponentsScreen() {
     });
     setSearchParams({ type: currentType.endpoint, page: '1' });
   };
- 
-  // TODO: add rating order when reviews are implemented.
-  const fixedSortButtons = [
-    { label: 'Alphabetical', field: 'name' },
-  ];
- 
+
+  const fixedSortButtons = [{ label: 'Alphabetical', field: 'name' }];
   const extraSortButtons = currentType.sortFields ?? [];
   const allSortButtons = [...fixedSortButtons, ...extraSortButtons];
 
@@ -312,62 +288,77 @@ export default function ComponentsScreen() {
           <TypeDropdown current={currentType} onChange={handleTypeChange} pcComponentTypes={COMPONENT_TYPES} />
         </div>
 
-        <div className={styles.sortBar}>
-          <span className={styles.sortLabel}>Order by:</span>
-          <div className={styles.sortButtons}>
-            {allSortButtons.map((btn) => {
-              const isActive = activeSort.field === btn.field && activeSort.direction !== null;
-              const direction = isActive ? activeSort.direction : null;
-              return (
-                <button
-                  key={btn.field}
-                  className={`${styles.sortBtn} ${isActive ? styles.sortBtnActive : ''}`}
-                  onClick={() => handleSortClick(btn.field)}
-                >
-                  <SortIcon direction={direction} />
-                  <span>{btn.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <div className={styles.body}>
+          <FilterSidebar
+            schema={schema}
+            loading={loadingSchema}
+            activeFilters={activeFilters}
+            onRangeChange={setRangeFilter}
+            onMultiStringToggle={toggleMultiString}
+            onBooleanSelect={setBooleanFilter}
+            onClear={clearFilters}
+            hasActiveFilters={hasActiveFilters}
+          />
 
-        {error ? (
-          <div className={styles.errorState}>
-            <p className={styles.errorText}>Could not load components: {error}</p>
-          </div>
-        ) : (
-          <>
-            <div className={styles.grid}>
-              {loading
-                ? Array.from({ length: PAGE_SIZE }).map((_, i) => <PcComponentSkeletonCard key={i} />)
-                : result?.data.map(component => (
-                    <PcComponentCard
-                      key={component.buildcoresId}
-                      component={component}
-                      subtitle={currentType.subtitle(component)}
-                      onClick={() => handleComponentClick(component)}
-                    />
-                  ))}
+          <div className={styles.content}>
+            <div className={styles.sortBar}>
+              <span className={styles.sortLabel}>Order by:</span>
+              <div className={styles.sortButtons}>
+                {allSortButtons.map(btn => {
+                  const isActive = activeSort.field === btn.field && activeSort.direction !== null;
+                  const direction = isActive ? activeSort.direction : null;
+                  return (
+                    <button
+                      key={btn.field}
+                      className={`${styles.sortBtn} ${isActive ? styles.sortBtnActive : ''}`}
+                      onClick={() => handleSortClick(btn.field)}
+                    >
+                      <SortIcon direction={direction} />
+                      <span>{btn.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            {!loading && result && result.total > 0 && (
-              <Pagination
-                page={pageParam}
-                totalPages={totalPages}
-                onPrev={() => handlePageChange(pageParam - 1)}
-                onNext={() => handlePageChange(pageParam + 1)}
-                onPageSelect={handlePageChange} 
-              />
-            )}
-
-            {!loading && result?.total === 0 && (
-              <div className={styles.emptyState}>
-                <p>No components found.</p>
+            {error ? (
+              <div className={styles.errorState}>
+                <p className={styles.errorText}>Could not load components: {error}</p>
               </div>
+            ) : (
+              <>
+                <div className={styles.grid}>
+                  {loading
+                    ? Array.from({ length: PAGE_SIZE }).map((_, i) => <PcComponentSkeletonCard key={i} />)
+                    : result?.data.map(component => (
+                        <PcComponentCard
+                          key={component.buildcoresId}
+                          component={component}
+                          subtitle={currentType.subtitle(component)}
+                          onClick={() => handleComponentClick(component)}
+                        />
+                      ))}
+                </div>
+
+                {!loading && result && result.total > 0 && (
+                  <Pagination
+                    page={pageParam}
+                    totalPages={totalPages}
+                    onPrev={() => handlePageChange(pageParam - 1)}
+                    onNext={() => handlePageChange(pageParam + 1)}
+                    onPageSelect={handlePageChange}
+                  />
+                )}
+
+                {!loading && result?.total === 0 && (
+                  <div className={styles.emptyState}>
+                    <p>No components found.</p>
+                  </div>
+                )}
+              </>
             )}
-          </>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   );
