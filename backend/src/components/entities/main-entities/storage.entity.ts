@@ -1,7 +1,7 @@
 import { Column, Entity } from 'typeorm';
 import { Component } from '../component.entity';
 
-@Entity('storages')
+@Entity('storage_drives')
 export class StorageDrive extends Component {
   @Column({ type: 'int', nullable: true })
   capacity: number | null;
@@ -10,7 +10,7 @@ export class StorageDrive extends Component {
     type: 'varchar',
     length: 100,
     nullable: true,
-    name: 'type',
+    name: 'storage_type',
   })
   storageType: string | null;
 
@@ -22,7 +22,12 @@ export class StorageDrive extends Component {
   })
   formFactor: string | null;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    name: 'storage_interface',
+  })
   storageInterface: string | null;
 
   @Column({ type: 'boolean', nullable: true })

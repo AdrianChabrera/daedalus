@@ -59,7 +59,7 @@ export class ComponentsService {
       mouse: this.mouseRepository,
       'power-supply': this.powerSupplyRepository,
       ram: this.ramRepository,
-      storage: this.storageRepository,
+      'storage-drive': this.storageRepository,
     };
   }
 

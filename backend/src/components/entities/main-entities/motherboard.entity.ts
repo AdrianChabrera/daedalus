@@ -97,4 +97,10 @@ export class Motherboard extends Component {
     cascade: true,
   })
   pcieSlots: PcieSlot[];
+
+  @Column({ type: 'int', nullable: true, name: 'm2_slot_count' })
+  m2SlotCount: number;
+
+  @Column({ type: 'int', nullable: true, name: 'pcie_slot_count' })
+  pcieSlotCount: number;
 }

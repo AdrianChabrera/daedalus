@@ -3,12 +3,20 @@ export function str(v: unknown): string | null {
 }
 
 export function num(v: unknown): number | null {
-  if (typeof v === 'number' && isFinite(v)) return v;
-  if (typeof v === 'string') {
+  let result: number | null = null;
+
+  if (typeof v === 'number' && isFinite(v)) {
+    result = v;
+  } else if (typeof v === 'string') {
     const n = parseFloat(v);
-    return isFinite(n) ? n : null;
+    result = isFinite(n) ? n : null;
   }
-  return null;
+
+  if (result === null) {
+    return null;
+  }
+
+  return result < 0 ? 0 : result;
 }
 
 export function bool(v: unknown): boolean | null {

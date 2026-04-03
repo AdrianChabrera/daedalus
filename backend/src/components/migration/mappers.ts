@@ -102,7 +102,12 @@ export function mapCpu(raw: Record<string, unknown>): Cpu {
   entity.includesCooler = bool(specs.includesCooler);
   entity.integratedGraphics = str(igpu.model);
 
-  entity.maxSupportedMemory = num(memory.maxSupport) || null;
+  const maxSupportedMemory = num(memory.maxSupport) || null;
+  entity.maxSupportedMemory = maxSupportedMemory
+    ? maxSupportedMemory > 10
+      ? maxSupportedMemory
+      : maxSupportedMemory * 1000
+    : null;
   entity.supportedMemoryTypes = arr(memory.types);
 
   return entity;
@@ -111,7 +116,8 @@ export function mapCpu(raw: Record<string, unknown>): Cpu {
 export function mapCpuCooler(raw: Record<string, unknown>): CpuCooler {
   const entity = mapBaseEntity(new CpuCooler(), raw);
 
-  entity.minFanRpm = num(raw.min_fan_rpm) || null;
+  const minFanRpm = num(raw.min_fan_rpm) || null;
+  entity.minFanRpm = minFanRpm && minFanRpm > 1 ? minFanRpm : null;
   entity.maxFanRpm = num(raw.max_fan_rpm) || null;
   entity.fanSize = num(raw.fan_size) || null;
   entity.fanQuantity = num(raw.fan_quantity);
@@ -134,19 +140,20 @@ export function mapFan(raw: Record<string, unknown>): Fan {
   entity.minNoiseLevel = num(raw.min_noise_level) || null;
   entity.maxNoiseLevel = num(raw.max_noise_level) || null;
   const minAirflow = num(raw.min_airflow);
-  entity.minAirflow =
-    minAirflow != null && minAirflow !== 0
-      ? minAirflow > 1000
-        ? minAirflow / 1000
-        : minAirflow
+  const filteredMinAirflow =
+    minAirflow != null && minAirflow >= 0 && minAirflow < 350
+      ? minAirflow
       : null;
+  entity.minAirflow = filteredMinAirflow;
   const maxAirflow = num(raw.max_airflow);
-  entity.maxAirflow =
-    maxAirflow != null && maxAirflow !== 0
-      ? maxAirflow > 1000
-        ? maxAirflow / 1000
-        : maxAirflow
-      : null;
+  if (filteredMinAirflow && !maxAirflow) {
+    entity.maxAirflow = filteredMinAirflow;
+  } else {
+    entity.maxAirflow =
+      maxAirflow != null && maxAirflow >= 5 && maxAirflow < 350
+        ? maxAirflow
+        : null;
+  }
   entity.size = num(raw.size) || null;
   entity.staticPressure = num(raw.static_pressure) || null;
   entity.led = str(raw.led);
@@ -203,7 +210,9 @@ export function mapMonitor(raw: Record<string, unknown>): Monitor {
   entity.horizontalRes = num(resolution.horizontalRes) || null;
   entity.verticalRes = num(resolution.verticalRes) || null;
   entity.refreshRate = num(raw.refresh_rate) || null;
-  entity.responseTime = num(raw.response_time) || null;
+  const responseTime = num(raw.response_time);
+  entity.responseTime =
+    responseTime != null && responseTime < 50 ? responseTime : null;
   entity.screenSize = num(raw.screen_size) || null;
   entity.panelType = str(raw.panel_type);
   entity.aspectRatio = str(raw.aspect_ratio);
@@ -263,6 +272,18 @@ export async function mapMotherboard(
       .filter(Boolean)
       .join(', ') || null;
 
+  pcieSlots.map((p) => {
+    const quantity = num(p.quantity) || 1;
+    p.quantity = quantity < 10 ? quantity : 1;
+  });
+
+  entity.m2SlotCount = m2Slots.length;
+  entity.pcieSlotCount = pcieSlots
+    .map((p) => {
+      return num(p.quantity) || 1;
+    })
+    .reduce((sum, q) => sum + q, 0);
+
   await pcieSlotRepository.delete({
     motherboard: { buildcoresId: entity.buildcoresId },
   });
@@ -307,8 +328,8 @@ export function mapPowerSupply(raw: Record<string, unknown>): PowerSupply {
   entity.pcie12Vhpwr = num(connectors.pcie_12vhpwr);
   entity.pcie6Plus2Pin = num(connectors.pcie_6_plus_2_pin);
   entity.sata = num(connectors.sata);
-  entity.wattage = num(raw.wattage) || 0;
-  entity.length = num(raw.length) || 0;
+  entity.wattage = num(raw.wattage) || null;
+  entity.length = num(raw.length) || null;
   entity.fanless = bool(raw.fanless);
   entity.formFactor = str(raw.form_factor);
   entity.efficencyRating = str(raw.efficiency_rating);

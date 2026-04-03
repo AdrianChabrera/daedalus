@@ -53,10 +53,10 @@ export class Gpu extends Component {
   @Column({ type: 'int', nullable: true, name: 'pcie_8_pin' })
   pcie8Pin: number | null;
 
-  @Column({ type: 'int', nullable: true, name: 'pcie_12VHPWR' })
+  @Column({ type: 'int', nullable: true, name: 'pcie_12vhpwr' })
   pcie12VHPWR: number | null;
 
-  @Column({ type: 'int', nullable: true, name: 'pcie_12V_2x6' })
+  @Column({ type: 'int', nullable: true, name: 'pcie_12v_2x6' })
   pcie12V2x6: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'hdmi_2_1' })
@@ -86,6 +86,11 @@ export class Gpu extends Component {
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'memory_type' })
   memoryType: string | null;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    name: 'gpu_interface',
+  })
   gpuInterface: string | null;
 }

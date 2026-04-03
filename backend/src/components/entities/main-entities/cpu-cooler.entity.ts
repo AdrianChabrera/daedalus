@@ -46,6 +46,7 @@ export class CpuCooler extends Component {
     precision: 5,
     scale: 2,
     nullable: true,
+    name: 'radiator_size',
   })
   radiatorSize: number | null;
 
