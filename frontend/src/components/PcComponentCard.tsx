@@ -10,16 +10,26 @@ export function PcComponentCard({
   subtitle: React.ReactNode;
   onClick: () => void;
 }) {
+
+  const availables = import.meta.glob('../assets/logos/*.svg', { eager: true });
+
+  const manufacturerName = component.manufacturer ? component.manufacturer.toLowerCase() : '';
+  const route = `../assets/logos/${manufacturerName}.svg`;
+
+  const logoExists = !!availables[route];
+
+  const logo = logoExists
+    ? new URL(route, import.meta.url).href
+    : undefined; 
+
   return (
     <button className={styles.card} onClick={onClick} type="button">
       <div className={styles.cardImage}>
-        <span className={styles.cardImagePlaceholder} aria-hidden>
-          <svg viewBox="0 0 80 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="0" y1="0" x2="80" y2="60" stroke="currentColor" strokeWidth="1" />
-            <line x1="80" y1="0" x2="0" y2="60" stroke="currentColor" strokeWidth="1" />
-            <rect x="0.5" y="0.5" width="79" height="59" stroke="currentColor" strokeWidth="1" />
-          </svg>
-        </span>
+        {logoExists ? (
+          <img className={styles.cardLogo} src={logo} alt={component.manufacturer ?? ''}/>
+        ) : (
+          <div> TODO: Design placeholder</div>
+        )}
       </div>
       <div className={styles.cardBody}>
         <p className={styles.cardName}>

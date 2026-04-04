@@ -90,7 +90,4 @@ export class Cpu extends Component {
     name: 'simultaneous_multithreading',
   })
   simultaneousMultithreading: boolean | null;
-
-  @Column({ type: 'jsonb', nullable: true, name: 'specs' })
-  specs: object | null;
 }
