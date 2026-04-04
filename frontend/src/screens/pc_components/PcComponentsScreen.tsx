@@ -11,6 +11,7 @@ import { TypeDropdown } from '../../components/PcComponentsDropdown';
 import { Pagination } from '../../components/Pagination';
 import { FilterSidebar } from '../../components/PcComponentsFilterSideBar';
 import { useComponentFilters } from '../../hooks/useComponentsFilters';
+import { SearchBar } from '../../components/Searchbar';
 
 const PAGE_SIZE = 16;
 
@@ -188,6 +189,9 @@ export default function ComponentsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [activeSort, setActiveSort] = useState<ActiveSort>({ field: '', direction: 'ASC' });
 
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
   const {
     schema,
     loadingSchema,
@@ -202,7 +206,23 @@ export default function ComponentsScreen() {
 
   useEffect(() => {
     setActiveSort({ field: '', direction: 'ASC' });
+    setSearchInput('');
+    setDebouncedSearch('');
   }, [currentType.endpoint]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchInput), 400);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  useEffect(() => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      next.set('page', '1');
+      return next;
+    }, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
 
   const buildOrderParam = useCallback((sort: ActiveSort): string | undefined => {
     if (sort.direction === null) return undefined;
@@ -231,7 +251,8 @@ export default function ComponentsScreen() {
           API_ROUTES.COMPONENTS(currentType.endpoint) +
           `?page=${pageParam}&limit=${PAGE_SIZE}` +
           (orderParam ? `&order=${orderParam}` : '') +
-          filterQS;
+          filterQS + 
+          (debouncedSearch ? `&search=${encodeURIComponent(debouncedSearch)}` : '');
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Error ${res.status}`);
         const data: PaginatedResult<PcComponent> = await res.json();
@@ -245,7 +266,7 @@ export default function ComponentsScreen() {
 
     fetchComponents();
     return () => { cancelled = true; };
-  }, [currentType.endpoint, pageParam, activeSort, buildOrderParam, buildQueryString]);
+  }, [currentType.endpoint, pageParam, activeSort, buildOrderParam, buildQueryString, debouncedSearch]);
 
   const totalPages = result ? Math.ceil(result.total / PAGE_SIZE) : 1;
 
@@ -286,6 +307,11 @@ export default function ComponentsScreen() {
       <div className={styles.inner}>
         <div className={styles.header}>
           <TypeDropdown current={currentType} onChange={handleTypeChange} pcComponentTypes={COMPONENT_TYPES} />
+          <SearchBar
+            value={searchInput}
+            onChange={setSearchInput}
+            placeholder={`Search ${currentType.label}s...`}
+          />
         </div>
 
         <div className={styles.body}>
