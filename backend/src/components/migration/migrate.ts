@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import * as fs from 'fs';
 import { DataSource, EntityTarget, ObjectLiteral, Repository } from 'typeorm';
 import { Cpu } from '../entities/main-entities/cpu.entity';
 import { Ram } from '../entities/main-entities/ram.entity';
@@ -181,7 +182,7 @@ async function getRepoTree(
 
   if (treeData.truncated) {
     console.warn(
-      'Árbol del repo truncado por la API, puede faltar algún archivo.',
+      'Repository tree truncated by the API, some files may be missing.',
     );
   }
 
@@ -217,10 +218,10 @@ async function migrateCategory(
   config: CategoryConfig<ObjectLiteral>,
   files: Array<{ name: string; path: string }>,
 ): Promise<{ processed: number; skipped: number; errors: number }> {
-  console.log(`\n[${config.repoFolder}] ${files.length} archivos encontrados.`);
+  console.log(`\n[${config.repoFolder}] ${files.length} files found.`);
 
   if (files.length === 0) {
-    console.error(`[${config.repoFolder}] No se encontraron archivos.`);
+    console.error(`[${config.repoFolder}] No files found.`);
     return { processed: 0, skipped: 0, errors: 0 };
   }
 
@@ -240,7 +241,7 @@ async function migrateCategory(
           const rawJson = await fetchJson(file.path);
 
           if (!rawJson.opendb_id || typeof rawJson.opendb_id !== 'string') {
-            console.warn(`  [skip] ${file.name}: sin opendb_id`);
+            console.warn(`  [skip] ${file.name}: without opendb_id`);
             skipped++;
             return;
           }
@@ -252,7 +253,7 @@ async function migrateCategory(
 
           if (processed % 10 === 0) {
             console.log(
-              `  [${config.repoFolder}] ${processed}/${files.length} procesados...`,
+              `  [${config.repoFolder}] ${processed}/${files.length} processed...`,
             );
           }
         } catch (err) {
@@ -268,7 +269,7 @@ async function migrateCategory(
   }
 
   console.log(
-    `[${config.repoFolder}] ${processed} procesados, ${skipped} omitidos, ${errors} errores.`,
+    `[${config.repoFolder}] ${processed} processed, ${skipped} skipped, ${errors} errors.`,
   );
   return { processed, skipped, errors };
 }
@@ -276,13 +277,13 @@ async function migrateCategory(
 async function runMigration(): Promise<void> {
   const dataSource = createDataSource();
   await dataSource.initialize();
-  console.log('Conexión a base de datos establecida.\n');
+  console.log('Conection to database established.\n');
 
   const octokit = createOctokit();
 
-  console.log('Obteniendo árbol completo del repositorio...');
+  console.log('Obtaining repository tree...');
   const allFiles = await getRepoTree(octokit);
-  console.log(`${allFiles.length} archivos JSON encontrados en total.\n`);
+  console.log(`${allFiles.length} JSON files found in total.\n`);
 
   let totalProcessed = 0,
     totalSkipped = 0,
@@ -302,17 +303,24 @@ async function runMigration(): Promise<void> {
     totalErrors += errors;
   }
 
+  const sql = fs.readFileSync(
+    path.join(__dirname, 'fts_migration.sql'),
+    'utf-8',
+  );
+  await dataSource.query(sql);
+  console.log('FTS migration applied.');
+
   await dataSource.destroy();
 
   console.log('\n══════════════════════════════════════════');
-  console.log('MIGRACIÓN COMPLETADA');
-  console.log(`  Procesados : ${totalProcessed}`);
-  console.log(`  Omitidos   : ${totalSkipped}`);
-  console.log(`  Errores    : ${totalErrors}`);
+  console.log('MIGRATION COMPLETED');
+  console.log(`  Processed  : ${totalProcessed}`);
+  console.log(`  Skipped    : ${totalSkipped}`);
+  console.log(`  Errors     : ${totalErrors}`);
   console.log('══════════════════════════════════════════');
 }
 
 runMigration().catch((err) => {
-  console.error('Error en migración:', (err as Error).message);
+  console.error('Error at migration:', (err as Error).message);
   process.exit(1);
 });

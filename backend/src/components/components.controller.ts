@@ -22,6 +22,7 @@ export class ComponentsController {
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '16',
     @Query('order') order: string = 'name-ASC',
+    @Query('search') search: string = '',
     @Query() queryParams: Record<string, string>,
   ) {
     const type = componentType.toLowerCase();
@@ -38,6 +39,7 @@ export class ComponentsController {
       limitNumber,
       filters,
       order,
+      search
     );
   }
 
@@ -52,7 +54,7 @@ export class ComponentsController {
     };
 
     for (const [param, rawValue] of Object.entries(queryParams)) {
-      const reserverdParams = new Set(['page', 'limit', 'order']);
+      const reserverdParams = new Set(['page', 'limit', 'order', 'search']);
       if (reserverdParams.has(param)) continue;
 
       const rangeMatch = param.match(/^(min|max)(.+)$/);

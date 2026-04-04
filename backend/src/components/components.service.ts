@@ -22,6 +22,8 @@ import {
 import { SelectQueryBuilder } from 'typeorm/browser';
 import { COMPONENT_FILTER_SCHEMAS } from './utils/filter-schemas';
 
+const SIMILARITY_THRESHOLD = 0.1;
+
 @Injectable()
 export class ComponentsService {
   private readonly repositories: Record<string, Repository<Component>>;
@@ -69,6 +71,7 @@ export class ComponentsService {
     limit: number = 16,
     filters: ParsedFilters = { ranges: {}, multiStrings: {}, booleans: {} },
     order: string = 'name-ASC',
+    search: string = '',
   ): Promise<PaginatedResult<Component>> {
     const repository = this.repositories[componentType.toLowerCase()];
 
@@ -90,11 +93,22 @@ export class ComponentsService {
         .skip(skip)
         .take(limit);
 
-      if (orderField) {
-        qb.orderBy(
-          `CASE WHEN ${alias}.${orderField} IS NULL THEN 1 ELSE 0 END`,
-          'ASC',
-        ).addOrderBy(`${alias}.${orderField}`, direction);
+      const trimmedSearch = search.trim();
+
+      if (trimmedSearch) {
+        qb.andWhere(`similarity(${alias}.name, :search) > :threshold`, {
+          search: trimmedSearch,
+          threshold: SIMILARITY_THRESHOLD,
+        })
+          .orderBy(`similarity(${alias}.name, :search)`, 'DESC')
+          .addOrderBy(`${alias}.name`, 'ASC');
+      } else {
+        if (orderField) {
+          qb.orderBy(
+            `CASE WHEN ${alias}.${orderField} IS NULL THEN 1 ELSE 0 END`,
+            'ASC',
+          ).addOrderBy(`${alias}.${orderField}`, direction);
+        }
       }
 
       this.applyFilters(qb, alias, cType, filters);
