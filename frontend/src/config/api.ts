@@ -7,4 +7,5 @@ export const API_ROUTES = {
     DELETE: `${BASE_URL}/auth/delete`,
     // Components
     COMPONENTS: (type: string) => `${BASE_URL}/components/${type}`,
+    COMPONENT: (type: string, id: string) => `${BASE_URL}/components/${type}/${id}`,
 };

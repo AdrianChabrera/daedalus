@@ -7,6 +7,7 @@ import HomeScreen from './screens/home/HomeScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import ComponentsScreen from './screens/pc_components/PcComponentsScreen';
+import ComponentDetailsScreen from './screens/pc_components/PcComponentDetailsScreen';
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
               }
             />
             <Route path="/components" element={<ComponentsScreen />} />
+            <Route path="/components/:type/:id" element={<ComponentDetailsScreen />} />
             <Route path="/" element={<HomeScreen />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>

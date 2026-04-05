@@ -11,12 +11,12 @@ export function PcComponentCard({
   onClick: () => void;
 }) {
 
-  const availables = import.meta.glob('../assets/logos/*.svg', { eager: true });
+  const availableLogos = import.meta.glob('../assets/logos/*.svg', { eager: true });
 
   const manufacturerName = component.manufacturer ? component.manufacturer.toLowerCase() : '';
   const route = `../assets/logos/${manufacturerName}.svg`;
 
-  const logoExists = !!availables[route];
+  const logoExists = !!availableLogos[route];
 
   const logo = logoExists
     ? new URL(route, import.meta.url).href
@@ -28,7 +28,7 @@ export function PcComponentCard({
         {logoExists ? (
           <img className={styles.cardLogo} src={logo} alt={component.manufacturer ?? ''}/>
         ) : (
-          <div> TODO: Design placeholder</div>
+          <div> TODO Design placeholder</div>
         )}
       </div>
       <div className={styles.cardBody}>
