@@ -97,6 +97,7 @@ export function mapCpu(raw: Record<string, unknown>): Cpu {
   entity.cachel3 = num(cache.l3);
 
   entity.tdp = num(specs.tdp) || null;
+  entity.ppt = num(specs.ppt) || null;
   entity.simultaneousMultithreading = bool(specs.simultaneousMultithreading);
   entity.eccSupport = bool(specs.eccSupport);
   entity.includesCooler = bool(specs.includesCooler);

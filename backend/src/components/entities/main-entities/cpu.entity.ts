@@ -51,6 +51,9 @@ export class Cpu extends Component {
   @Column({ type: 'int', nullable: true, name: 'tdp' })
   tdp: number | null;
 
+  @Column({ type: 'int', nullable: true, name: 'ppt'})
+  ppt: number | null;
+
   @Column({ type: 'varchar', length: 100, nullable: true })
   socket: string | null;
 

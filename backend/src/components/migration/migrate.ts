@@ -304,11 +304,11 @@ async function runMigration(): Promise<void> {
   }
 
   const sql = fs.readFileSync(
-    path.join(__dirname, 'fts_migration.sql'),
+    path.join(__dirname, 'trgm_migration.sql'),
     'utf-8',
   );
   await dataSource.query(sql);
-  console.log('FTS migration applied.');
+  console.log('TRGM migration applied.');
 
   await dataSource.destroy();
 
