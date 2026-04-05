@@ -12,7 +12,7 @@ import {
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthDto } from './dto/auth.dto';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import * as authInterfaces from './interfaces/auth.interfaces';
 
