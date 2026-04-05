@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Cpu } from './entities/main-entities/cpu.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
@@ -63,6 +67,28 @@ export class ComponentsService {
       ram: this.ramRepository,
       'storage-drive': this.storageRepository,
     };
+  }
+
+  async findComponentById(
+    componentType: string,
+    id: string,
+  ): Promise<Component | null> {
+    const cType = componentType.toLowerCase();
+    const repository = this.repositories[cType];
+
+    const relations = cType === 'motherboard' ? ['m2Slots', 'pcieSlots'] : [];
+
+    const component = await repository.findOne({
+      where: { buildcoresId: id },
+      relations,
+    });
+
+    if (!component) {
+      throw new NotFoundException(
+        `Component of type ${componentType} with ID: ${id} not found`,
+      );
+    }
+    return component;
   }
 
   async findAllComponents(

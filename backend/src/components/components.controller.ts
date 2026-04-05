@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
 import { ComponentsService } from './components.service';
@@ -14,6 +15,12 @@ import { ParsedFilters } from './interfaces/pc-components.interfaces';
 @Controller('components')
 export class ComponentsController {
   constructor(private componentsService: ComponentsService) {}
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/:componentType/filters')
+  getAllComponentsFilterValues(@Param('componentType') componentType: string) {
+    return this.componentsService.findAllFilterValues(componentType);
+  }
 
   @HttpCode(HttpStatus.OK)
   @Get('/:componentType')
@@ -39,8 +46,17 @@ export class ComponentsController {
       limitNumber,
       filters,
       order,
-      search
+      search,
     );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/:componentType/:id')
+  getComponentById(
+    @Param('componentType') componentType: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ) {
+    return this.componentsService.findComponentById(componentType, id);
   }
 
   private parseFilters(
@@ -106,11 +122,5 @@ export class ComponentsController {
     }
 
     return parsed;
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Get('/:componentType/filters')
-  getAllComponentsFilterValues(@Param('componentType') componentType: string) {
-    return this.componentsService.findAllFilterValues(componentType);
   }
 }
