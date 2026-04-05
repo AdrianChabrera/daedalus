@@ -205,7 +205,7 @@
   border-collapse: collapse;
   border: 1px solid var(--border);
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .attrRow:nth-child(odd) {
@@ -283,7 +283,6 @@
   letter-spacing: 0.4px;
   font-size: 11px;
   padding: 6px 10px;
-  text-align: left;
   border-bottom: 1px solid var(--border);
 }
 
