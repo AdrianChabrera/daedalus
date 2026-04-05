@@ -1,4 +1,4 @@
-import styles from '../styles/PcComponentsScreen.module.css';
+import styles from '../../styles/PcComponentsScreen.module.css';
 
 export function PcComponentSkeletonCard() {
   return (

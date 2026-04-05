@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
-import type { PcComponentTypeConfig } from "../types/PcComponents.types";
+import type { PcComponentTypeConfig } from "../../types/PcComponents.types";
 import { useEffect, useRef, useState } from "react";
-import styles from '../styles/PcComponentsScreen.module.css';
+import styles from '../../styles/PcComponentsScreen.module.css';
 
 export function TypeDropdown({
   current,

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, X } from 'lucide-react';
-import type { FilterSchema, ActiveFilters } from '../hooks/useComponentsFilters';
-import styles from '../styles/PcComponentsFilterSideBar.module.css';
+import type { FilterSchema, ActiveFilters } from '../../hooks/useComponentsFilters';
+import styles from '../../styles/PcComponentsFilterSideBar.module.css';
 
 function formatFilterLabel(key: string): string {
   return key

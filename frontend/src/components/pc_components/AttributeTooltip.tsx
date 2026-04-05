@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { HelpCircle } from 'lucide-react';
-import styles from '../styles/AttributeTooltip.module.css';
+import styles from '../../styles/AttributeTooltip.module.css';
 
 interface AttributeTooltipProps {
   description: string;

@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
-import styles from '../styles/Searchbar.module.css';
+import styles from '../../styles/Searchbar.module.css';
 
 export function SearchBar({
   value,

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_ROUTES } from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
-import DeleteAccountModal from '../../components/DeleteAccountModal';
+import DeleteAccountModal from '../../components/profile/DeleteAccountModal';
 
 export default function ProfileScreen() {
   const navigate = useNavigate();

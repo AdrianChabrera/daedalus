@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import Layout from './components/Layout';
+import Layout from './components/general/Layout';
 import LoginScreen from './screens/auth/LoginScreen';
 import RegisterScreen from './screens/auth/RegisterScreen';
 import HomeScreen from './screens/home/HomeScreen';  
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/general/ProtectedRoute';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import ComponentsScreen from './screens/pc_components/PcComponentsScreen';
 import ComponentDetailsScreen from './screens/pc_components/PcComponentDetailsScreen';

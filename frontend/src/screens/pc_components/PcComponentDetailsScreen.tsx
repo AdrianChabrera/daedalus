@@ -4,7 +4,7 @@ import { ArrowLeft, Heart, Plus, PenLine } from 'lucide-react';
 import { API_ROUTES } from '../../config/api';
 import type { PcComponent } from '../../types/PcComponents.types';
 import styles from '../../styles/PcComponentDetailsScreen.module.css';
-import { AttributeTooltip } from '../../components/AttributeTooltip';
+import { AttributeTooltip } from '../../components/pc_components/AttributeTooltip';
 import { BASE_ATTRS, COMPONENT_ATTRS } from '../../consts/PcComponentAttributeDetails';
 import { str } from '../../consts/PcComponentAttributeFormatters';
 import type { M2SlotData, PcieSlotData } from '../../types/PcComponentDetails.types';

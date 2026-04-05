@@ -1,5 +1,5 @@
-import type { PcComponent } from "../types/PcComponents.types";
-import styles from '../styles/PcComponentsScreen.module.css';
+import type { PcComponent } from "../../types/PcComponents.types";
+import styles from '../../styles/PcComponentsScreen.module.css';
 
 export function PcComponentCard({
   component,
@@ -11,10 +11,10 @@ export function PcComponentCard({
   onClick: () => void;
 }) {
 
-  const availableLogos = import.meta.glob('../assets/logos/*.svg', { eager: true });
+  const availableLogos = import.meta.glob('../../assets/logos/*.svg', { eager: true });
 
   const manufacturerName = component.manufacturer ? component.manufacturer.toLowerCase() : '';
-  const route = `../assets/logos/${manufacturerName}.svg`;
+  const route = `../../assets/logos/${manufacturerName}.svg`;
 
   const logoExists = !!availableLogos[route];
 

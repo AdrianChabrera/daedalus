@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import styles from '../styles/Navbar.module.css';
+import { useAuth } from '../../context/AuthContext';
+import styles from '../../styles/Navbar.module.css';
 import { LogOut, User } from 'lucide-react';
 
 export default function Navbar() {

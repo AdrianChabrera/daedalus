@@ -1,5 +1,5 @@
 import { ArrowUpDown, ArrowDown, ArrowUp } from 'lucide-react';
-import type { SortDirection } from '../types/PcComponents.types';
+import type { SortDirection } from '../../types/PcComponents.types';
 
 interface SortIconProps {
   direction: SortDirection;
