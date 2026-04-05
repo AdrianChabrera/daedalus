@@ -104,7 +104,7 @@ export class ComponentsController {
 
       if (def.type === 'multi-string') {
         parsed.multiStrings[param] = rawValue
-          .split(',')
+          .split('|')
           .map((v) => v.trim())
           .filter(Boolean);
         continue;

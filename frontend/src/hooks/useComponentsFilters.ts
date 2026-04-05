@@ -57,7 +57,7 @@ export function useComponentFilters(componentType: string) {
     }
 
     for (const [key, values] of Object.entries(activeFilters.multiStrings)) {
-      if (values.length > 0) parts.push(`${key}=${values.map(encodeURIComponent).join(',')}`);
+      if (values.length > 0) parts.push(`${key}=${values.map(encodeURIComponent).join('|')}`);
     }
 
     for (const [key, value] of Object.entries(activeFilters.booleans)) {
