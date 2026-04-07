@@ -38,5 +38,6 @@ import { M2Slot } from './entities/secondary-entities/m2-slot.entity';
       PcieSlot,
     ]),
   ],
+  exports: [ComponentsService],
 })
 export class ComponentsModule {}
