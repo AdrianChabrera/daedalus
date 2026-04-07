@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Cpu } from './entities/main-entities/cpu.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
 import { Component } from './entities/component.entity';
 import { Fan } from './entities/main-entities/fan.entity';
@@ -69,10 +69,10 @@ export class ComponentsService {
     };
   }
 
-  async findComponentById(
+  async findComponentById<T extends Component>(
     componentType: string,
     id: string,
-  ): Promise<Component | null> {
+  ): Promise<T> {
     const cType = componentType.toLowerCase();
     const repository = this.repositories[cType];
 
@@ -88,7 +88,31 @@ export class ComponentsService {
         `Component of type ${componentType} with ID: ${id} not found`,
       );
     }
-    return component;
+    return component as T;
+  }
+
+  async findComponentsByIds<T extends Component>(
+    componentType: string,
+    ids: string[],
+  ): Promise<T[]> {
+    if (ids.length === 0) return [];
+
+    const cType = componentType.toLowerCase();
+    const repository = this.repositories[cType];
+
+    const components = await repository.findBy({
+      buildcoresId: In(ids),
+    });
+
+    if (components.length !== ids.length) {
+      const foundIds = components.map((c) => c.buildcoresId);
+      const missing = ids.filter((id) => !foundIds.includes(id));
+      throw new NotFoundException(
+        `Components of type ${componentType} not found: ${missing.join(', ')}`,
+      );
+    }
+
+    return components as T[];
   }
 
   async findAllComponents(
