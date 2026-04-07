@@ -4,7 +4,7 @@ import { Component } from '../component.entity';
 @Entity('fans')
 export class Fan extends Component {
   @Column({ type: 'int', nullable: true })
-  quantity: number | null;
+  quantity!: number | null;
 
   @Column({
     type: 'decimal',
@@ -13,7 +13,7 @@ export class Fan extends Component {
     nullable: true,
     name: 'min_noise_level',
   })
-  minNoiseLevel: number | null;
+  minNoiseLevel!: number | null;
 
   @Column({
     type: 'decimal',
@@ -22,7 +22,7 @@ export class Fan extends Component {
     nullable: true,
     name: 'max_noise_level',
   })
-  maxNoiseLevel: number | null;
+  maxNoiseLevel!: number | null;
 
   @Column({
     type: 'decimal',
@@ -31,7 +31,7 @@ export class Fan extends Component {
     nullable: true,
     name: 'min_airflow',
   })
-  minAirflow: number | null;
+  minAirflow!: number | null;
 
   @Column({
     type: 'decimal',
@@ -40,7 +40,7 @@ export class Fan extends Component {
     nullable: true,
     name: 'max_airflow',
   })
-  maxAirflow: number | null;
+  maxAirflow!: number | null;
 
   @Column({
     type: 'decimal',
@@ -48,7 +48,7 @@ export class Fan extends Component {
     scale: 2,
     nullable: true,
   })
-  size: number | null;
+  size!: number | null;
 
   @Column({
     type: 'decimal',
@@ -57,16 +57,16 @@ export class Fan extends Component {
     nullable: true,
     name: 'static_pressure',
   })
-  staticPressure: number | null;
+  staticPressure!: number | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  led: string | null;
+  led!: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  connector: string | null;
+  connector!: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  controller: string | null;
+  controller!: string | null;
 
   @Column({
     type: 'varchar',
@@ -74,8 +74,8 @@ export class Fan extends Component {
     nullable: true,
     name: 'flow_direction',
   })
-  flowDirection: string | null;
+  flowDirection!: string | null;
 
   @Column({ type: 'boolean', nullable: true })
-  pwm: boolean | null;
+  pwm!: boolean | null;
 }

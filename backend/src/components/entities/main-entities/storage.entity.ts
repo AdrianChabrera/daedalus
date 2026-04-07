@@ -4,7 +4,7 @@ import { Component } from '../component.entity';
 @Entity('storage_drives')
 export class StorageDrive extends Component {
   @Column({ type: 'int', nullable: true })
-  capacity: number | null;
+  capacity!: number | null;
 
   @Column({
     type: 'varchar',
@@ -12,7 +12,7 @@ export class StorageDrive extends Component {
     nullable: true,
     name: 'storage_type',
   })
-  storageType: string | null;
+  storageType!: string | null;
 
   @Column({
     type: 'varchar',
@@ -20,7 +20,7 @@ export class StorageDrive extends Component {
     nullable: true,
     name: 'form_factor',
   })
-  formFactor: string | null;
+  formFactor!: string | null;
 
   @Column({
     type: 'varchar',
@@ -28,8 +28,8 @@ export class StorageDrive extends Component {
     nullable: true,
     name: 'storage_interface',
   })
-  storageInterface: string | null;
+  storageInterface!: string | null;
 
   @Column({ type: 'boolean', nullable: true })
-  nvme: boolean | null;
+  nvme!: boolean | null;
 }

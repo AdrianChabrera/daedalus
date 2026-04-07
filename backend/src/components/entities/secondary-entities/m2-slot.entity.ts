@@ -10,18 +10,18 @@ import { Motherboard } from '../main-entities/motherboard.entity';
 @Entity('m2_slots')
 export class M2Slot {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  size: string | null;
+  size!: string | null;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  key: string | null;
+  key!: string | null;
 
   @Column({ type: 'varchar', length: 50, nullable: true })
-  m2Interface: string | null;
+  m2Interface!: string | null;
 
   @ManyToOne(() => Motherboard, (m) => m.m2Slots)
   @JoinColumn({ name: 'motherboard_id' })
-  motherboard: Motherboard;
+  motherboard!: Motherboard;
 }

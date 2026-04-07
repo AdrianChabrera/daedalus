@@ -4,10 +4,10 @@ import { Component } from '../component.entity';
 @Entity('cpus')
 export class Cpu extends Component {
   @Column({ type: 'int', nullable: true, name: 'core_count' })
-  coreCount: number | null;
+  coreCount!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'thread_count' })
-  threadCount: number | null;
+  threadCount!: number | null;
 
   @Column({
     type: 'decimal',
@@ -16,7 +16,7 @@ export class Cpu extends Component {
     nullable: true,
     name: 'base_clock',
   })
-  baseClock: number | null;
+  baseClock!: number | null;
 
   @Column({
     type: 'decimal',
@@ -25,10 +25,10 @@ export class Cpu extends Component {
     nullable: true,
     name: 'boost_clock',
   })
-  boostClock: number | null;
+  boostClock!: number | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'cache_l1' })
-  cachel1: string | null;
+  cachel1!: string | null;
 
   @Column({
     type: 'decimal',
@@ -37,7 +37,7 @@ export class Cpu extends Component {
     nullable: true,
     name: 'cache_l2',
   })
-  cachel2: number | null;
+  cachel2!: number | null;
 
   @Column({
     type: 'decimal',
@@ -46,16 +46,16 @@ export class Cpu extends Component {
     nullable: true,
     name: 'cache_l3',
   })
-  cachel3: number | null;
+  cachel3!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'tdp' })
-  tdp: number | null;
+  tdp!: number | null;
 
-  @Column({ type: 'int', nullable: true, name: 'ppt'})
-  ppt: number | null;
+  @Column({ type: 'int', nullable: true, name: 'ppt' })
+  ppt!: number | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  socket: string | null;
+  socket!: string | null;
 
   @Column({
     type: 'varchar',
@@ -63,34 +63,34 @@ export class Cpu extends Component {
     nullable: true,
     name: 'integrated_graphics',
   })
-  integratedGraphics: string | null;
+  integratedGraphics!: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  microarchitecture: string | null;
+  microarchitecture!: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'core_family' })
-  coreFamily: string | null;
+  coreFamily!: string | null;
 
   @Column({ type: 'int', nullable: true, name: 'max_supported_memory' })
-  maxSupportedMemory: number | null;
+  maxSupportedMemory!: number | null;
 
   @Column({
     type: 'simple-array',
     nullable: true,
     name: 'supported_memory_types',
   })
-  supportedMemoryTypes: string[] | null;
+  supportedMemoryTypes!: string[] | null;
 
   @Column({ type: 'boolean', nullable: true, name: 'ecc_support' })
-  eccSupport: boolean | null;
+  eccSupport!: boolean | null;
 
   @Column({ type: 'boolean', nullable: true, name: 'includes_cooler' })
-  includesCooler: boolean | null;
+  includesCooler!: boolean | null;
 
   @Column({
     type: 'boolean',
     nullable: true,
     name: 'simultaneous_multithreading',
   })
-  simultaneousMultithreading: boolean | null;
+  simultaneousMultithreading!: boolean | null;
 }

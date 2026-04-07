@@ -4,13 +4,13 @@ import { Component } from '../component.entity';
 @Entity('monitors')
 export class Monitor extends Component {
   @Column({ type: 'int', nullable: true, name: 'horizontal_res' })
-  horizontalRes: number | null;
+  horizontalRes!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'vertical_res' })
-  verticalRes: number | null;
+  verticalRes!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'refresh_rate' })
-  refreshRate: number | null;
+  refreshRate!: number | null;
 
   @Column({
     type: 'decimal',
@@ -19,7 +19,7 @@ export class Monitor extends Component {
     nullable: true,
     name: 'response_time',
   })
-  responseTime: number | null;
+  responseTime!: number | null;
 
   @Column({
     type: 'decimal',
@@ -28,10 +28,10 @@ export class Monitor extends Component {
     nullable: true,
     name: 'screen_size',
   })
-  screenSize: number | null;
+  screenSize!: number | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'panel_type' })
-  panelType: string | null;
+  panelType!: string | null;
 
   @Column({
     type: 'varchar',
@@ -39,10 +39,10 @@ export class Monitor extends Component {
     nullable: true,
     name: 'aspect_ratio',
   })
-  aspectRatio: string | null;
+  aspectRatio!: string | null;
 
   @Column({ type: 'varchar', length: 1000, nullable: true })
-  connectors: string | null;
+  connectors!: string | null;
 
   @Column({
     type: 'varchar',
@@ -50,7 +50,7 @@ export class Monitor extends Component {
     nullable: true,
     name: 'max_brightness',
   })
-  maxBrightness: string | null;
+  maxBrightness!: string | null;
 
   @Column({
     type: 'varchar',
@@ -58,5 +58,5 @@ export class Monitor extends Component {
     nullable: true,
     name: 'adaptive_sync',
   })
-  adaptiveSync: string | null;
+  adaptiveSync!: string | null;
 }

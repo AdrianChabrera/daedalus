@@ -4,7 +4,7 @@ import { Component } from '../component.entity';
 @Entity('gpus')
 export class Gpu extends Component {
   @Column({ type: 'int', nullable: true })
-  memory: number | null;
+  memory!: number | null;
 
   @Column({
     type: 'decimal',
@@ -13,7 +13,7 @@ export class Gpu extends Component {
     nullable: true,
     name: 'core_base_clock',
   })
-  coreBaseClock: number | null;
+  coreBaseClock!: number | null;
 
   @Column({
     type: 'decimal',
@@ -22,7 +22,7 @@ export class Gpu extends Component {
     nullable: true,
     name: 'core_boost_clock',
   })
-  coreBoostClock: number | null;
+  coreBoostClock!: number | null;
 
   @Column({
     type: 'decimal',
@@ -31,10 +31,10 @@ export class Gpu extends Component {
     nullable: true,
     name: 'effective_memory_clock',
   })
-  effectiveMemoryClock: number | null;
+  effectiveMemoryClock!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'memory_bus' })
-  memoryBus: number | null;
+  memoryBus!: number | null;
 
   @Column({
     type: 'decimal',
@@ -42,49 +42,49 @@ export class Gpu extends Component {
     scale: 2,
     nullable: true,
   })
-  length: number | null;
+  length!: number | null;
 
   @Column({ type: 'int', nullable: true })
-  tdp: number | null;
+  tdp!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'pcie_6_pin' })
-  pcie6Pin: number | null;
+  pcie6Pin!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'pcie_8_pin' })
-  pcie8Pin: number | null;
+  pcie8Pin!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'pcie_12vhpwr' })
-  pcie12VHPWR: number | null;
+  pcie12VHPWR!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'pcie_12v_2x6' })
-  pcie12V2x6: number | null;
+  pcie12V2x6!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'hdmi_2_1' })
-  hdmi21: number | null;
+  hdmi21!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'hdmi_2_0' })
-  hdmi20: number | null;
+  hdmi20!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'displayport_2_1' })
-  displayPort21: number | null;
+  displayPort21!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'displayport_2_1a' })
-  displayPort21a: number | null;
+  displayPort21a!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'displayport_1_4a' })
-  displayPort14a: number | null;
+  displayPort14a!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'dvi_d' })
-  dvid: number | null;
+  dvid!: number | null;
 
   @Column({ type: 'int', nullable: true })
-  vga: number | null;
+  vga!: number | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  chipset: string | null;
+  chipset!: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'memory_type' })
-  memoryType: string | null;
+  memoryType!: string | null;
 
   @Column({
     type: 'varchar',
@@ -92,5 +92,5 @@ export class Gpu extends Component {
     nullable: true,
     name: 'gpu_interface',
   })
-  gpuInterface: string | null;
+  gpuInterface!: string | null;
 }

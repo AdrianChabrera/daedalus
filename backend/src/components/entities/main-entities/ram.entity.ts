@@ -4,16 +4,16 @@ import { Component } from '../component.entity';
 @Entity('rams')
 export class Ram extends Component {
   @Column({ type: 'int', nullable: true })
-  quantity: number | null;
+  quantity!: number | null;
 
   @Column({ type: 'int', nullable: true })
-  capacity: number | null;
+  capacity!: number | null;
 
   @Column({ type: 'int', nullable: true })
-  speed: number | null;
+  speed!: number | null;
 
   @Column({ type: 'int', nullable: true, name: 'cas_latency' })
-  casLatency: number | null;
+  casLatency!: number | null;
 
   @Column({
     type: 'decimal',
@@ -22,23 +22,23 @@ export class Ram extends Component {
     nullable: true,
     name: 'voltage',
   })
-  voltage: number | null;
+  voltage!: number | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'memory_type' })
-  memoryType: string | null;
+  memoryType!: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'form_factor' })
-  formFactor: string | null;
+  formFactor!: string | null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  timings: string | null;
+  timings!: string | null;
 
   @Column({ type: 'boolean', nullable: true, name: 'heat_spreader' })
-  heatSpreader: boolean | null;
+  heatSpreader!: boolean | null;
 
   @Column({ type: 'boolean', nullable: true })
-  rgb: boolean | null;
+  rgb!: boolean | null;
 
   @Column({ type: 'boolean', nullable: true })
-  ecc: boolean | null;
+  ecc!: boolean | null;
 }
