@@ -2,7 +2,8 @@ import { useState } from "react";
 import type { ComponentPickerProps, PickerResult } from "../../types/CreateBuildTypes";
 import { API_ROUTES } from "../../config/api";
 import styles from '../../styles/CreateBuildScreen.module.css';
-import { ChevronRight, X } from "lucide-react";
+import { ArrowUpRight, ChevronRight, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function CreateBuildPcComponentPicker({ slot, onSelect, onClose }: ComponentPickerProps) {
   const [search, setSearch] = useState('');
@@ -51,7 +52,13 @@ export function CreateBuildPcComponentPicker({ slot, onSelect, onClose }: Compon
           />
           <button className={styles.pickerSearchBtn} onClick={doSearch}>Search</button>
         </div>
-
+        <div className={styles.pickerCatalogLink}>
+          <span>or</span>
+          <Link to={`/components?type=${slot.endpoint}&page=1`}>
+            Browse full catalog
+            <ArrowUpRight size={12} />
+          </Link>
+        </div>
         <div className={styles.pickerResults}>
           {loading && (
             <div className={styles.pickerLoading}>

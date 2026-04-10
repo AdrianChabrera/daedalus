@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import styles from '../../styles/Navbar.module.css';
-import { Component, Computer, LogOut, User } from 'lucide-react';
+import { Component, Computer, LogOut, MonitorCog, User } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -24,11 +24,11 @@ export default function Navbar() {
       </Link>
 
       <Link
-        to="/builds"
-        className={`${styles.navBtn} ${isActive('/builds') ? styles.navBtnActive : ''}`}
+        to="/builds/new"
+        className={`${styles.navBtn} ${isActive('/builds/new') ? styles.navBtnActive : ''}`}
       >
-        <Computer />
-        Builds
+        <MonitorCog />
+        Build Creator
       </Link>
 
       <Link
@@ -37,6 +37,14 @@ export default function Navbar() {
       >
         <Component />
         Components
+      </Link>
+
+      <Link
+        to="/builds"
+        className={`${styles.navBtn} ${isActive('/builds') ? styles.navBtnActive : ''}`}
+      >
+        <Computer />
+        Public Builds
       </Link>
 
       <div className={styles.spacer} />

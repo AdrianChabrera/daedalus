@@ -56,15 +56,6 @@ return (
             </div>
           </div>
 
-          {warnings.length > 0 && (
-            <div className={styles.warningBox}>
-              <AlertTriangle size={16} className={styles.warningIcon} />
-              <div className={styles.warningMessages}>
-                {warnings.map((w, i) => <p key={i}>{w}</p>)}
-              </div>
-            </div>
-          )}
-
           <div className={styles.metaPanel}>
             <div className={styles.metaField}>
               <label className={styles.metaLabel} htmlFor="build-title">Title</label>
@@ -90,6 +81,15 @@ return (
               />
             </div>
           </div>
+
+                    {warnings.length > 0 && (
+            <div className={styles.warningBox}>
+              <AlertTriangle size={16} className={styles.warningIcon} />
+              <div className={styles.warningMessages}>
+                {warnings.map((w, i) => <p key={i}>{w}</p>)}
+              </div>
+            </div>
+          )}
 
           <div className={styles.actions}>
             <button className={styles.actionBtnSecondary} disabled aria-label="Export to PDF — not yet implemented">

@@ -14,6 +14,7 @@
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -510,7 +511,6 @@ slotAddBtn:active {
   display: flex;
   gap: 10px;
   padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
 }
 
 .pickerInput {
@@ -631,6 +631,34 @@ slotAddBtn:active {
 .pickerItem:hover .pickerItemArrow {
   color: var(--accent2);
   transform: translateX(2px);
+}
+
+.pickerCatalogLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.pickerCatalogLink a {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--accent2);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.pickerCatalogLink a:hover {
+  color: var(--white);
 }
 
 .specTags {
