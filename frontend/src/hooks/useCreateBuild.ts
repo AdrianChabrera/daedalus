@@ -1,8 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { API_ROUTES } from '../config/api';
 import type { BuildState, MultiSlot, SelectedComponent, SingleSlot, SlotConfig } from '../types/CreateBuildTypes';
+
+const STORAGE_KEY = 'daedalus_draft_build';
 
 const INITIAL_BUILD: BuildState = {
   cpuId: null, gpuId: null, motherboardId: null, caseId: null,
@@ -10,15 +12,35 @@ const INITIAL_BUILD: BuildState = {
   ramIds: [], storageDriveIds: [], fanIds: [], monitorIds: [],
 };
 
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function clearDraft() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
 export function useCreateBuild() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [build, setBuild] = useState<BuildState>(INITIAL_BUILD);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const draft = loadDraft();
+
+  const [build, setBuild] = useState<BuildState>(draft?.build ?? INITIAL_BUILD);
+  const [name, setName] = useState<string>(draft?.name ?? '');
+  const [description, setDescription] = useState<string>(draft?.description ?? '');
   const [warnings, setWarnings] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ build, name, description }));
+  }, [build, name, description]);
 
   const handleSelect = useCallback((slot: SlotConfig, comp: SelectedComponent) => {
     setBuild(prev => {
@@ -93,6 +115,7 @@ export function useCreateBuild() {
         return;
       }
 
+      clearDraft();
       navigate('/builds');
     } catch {
       setWarnings(['Network error. Please try again.']);
