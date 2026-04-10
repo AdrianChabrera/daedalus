@@ -3,7 +3,7 @@
   align-items: center;
   gap: 8px;
   padding: 0 28px;
-  height: var(--nav-h);
+  height: var(--nav-height);
   background: #0a0a0e;
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -56,10 +56,9 @@
   transition: border-color 0.15s, color 0.15s;
 }
 .navBtn svg {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   color: var(--accent);
-  fill: var(--accent);
   flex-shrink: 0;
 }
 .navBtn:hover,

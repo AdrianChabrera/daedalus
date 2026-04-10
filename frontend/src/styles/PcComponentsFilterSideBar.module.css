@@ -10,7 +10,7 @@
   overflow: hidden;
   align-self: flex-start;
   position: sticky;
-  top: 16px;
+  top: calc(var(--nav-height) + 16px);
 }
 
 .sidebarHeader {
@@ -53,7 +53,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  max-height: calc(100vh - 140px);
+  max-height: calc(100vh - var(--nav-height) - 140px);
   scrollbar-width: thin;
   scrollbar-color: var(--border2) transparent;
 }

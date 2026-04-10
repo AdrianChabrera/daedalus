@@ -8,4 +8,6 @@ export const API_ROUTES = {
     // Components
     COMPONENTS: (type: string) => `${BASE_URL}/components/${type}`,
     COMPONENT: (type: string, id: string) => `${BASE_URL}/components/${type}/${id}`,
+    // Builds
+    CREATE_BUILD: `${BASE_URL}/builds`
 };

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import styles from '../../styles/Navbar.module.css';
-import { LogOut, User } from 'lucide-react';
+import { Component, Computer, LogOut, User } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -27,9 +27,7 @@ export default function Navbar() {
         to="/builds"
         className={`${styles.navBtn} ${isActive('/builds') ? styles.navBtnActive : ''}`}
       >
-        <svg viewBox="0 0 16 16" fill="currentColor">
-          <path d="M2 4h12v1.5H2zm0 3h12v1.5H2zm0 3h8v1.5H2z"/>
-        </svg>
+        <Computer />
         Builds
       </Link>
 
@@ -37,9 +35,7 @@ export default function Navbar() {
         to="/components"
         className={`${styles.navBtn} ${isActive('/components') ? styles.navBtnActive : ''}`}
       >
-        <svg viewBox="0 0 16 16" fill="currentColor">
-          <path d="M8 1L1 5v6l7 4 7-4V5L8 1z"/>
-        </svg>
+        <Component />
         Components
       </Link>
 

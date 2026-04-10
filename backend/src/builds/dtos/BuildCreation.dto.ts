@@ -39,6 +39,7 @@ export class BuildCreationDto {
   gpuId?: string;
 
   @IsUUID('4')
+  @IsOptional()
   keyboardId?: string;
 
   @IsArray()
