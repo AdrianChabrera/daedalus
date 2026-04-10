@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Build } from './entities/build';
@@ -20,6 +26,7 @@ import { BuildResponseDto } from './dtos/BuildResponse.dto';
 import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
+import { BuildComponentAssignmentDto } from './dtos/BuildComponentAssignment.dto';
 
 @Injectable()
 export class BuildsService {
@@ -29,6 +36,28 @@ export class BuildsService {
     private readonly componentsService: ComponentsService,
     private readonly usersService: UsersService,
   ) {}
+
+  private readonly componentTypeMap: Record<string, string> = {
+    case: 'case',
+    cpuCooler: 'cpuCooler',
+    cpu: 'cpu',
+    fan: 'fans',
+    gpu: 'gpu',
+    keyboard: 'keyboard',
+    monitor: 'monitors',
+    motherboard: 'motherboard',
+    mouse: 'mouse',
+    powerSupply: 'powerSupply',
+    ram: 'rams',
+    storageDrive: 'storageDrives',
+  };
+
+  private readonly multiComponents = new Set([
+    'fans',
+    'monitors',
+    'rams',
+    'storageDrives',
+  ]);
 
   async createBuild(
     buildDto: BuildCreationDto,
@@ -120,8 +149,6 @@ export class BuildsService {
     build.name = buildDto.name;
     build.description = buildDto.description;
 
-    console.log(currentUser);
-
     const user = await this.usersService.findUserById(currentUser.userId);
     build.user = user as User;
 
@@ -151,5 +178,61 @@ export class BuildsService {
     response.username = currentUser.username;
 
     return response;
+  }
+
+  async findBuildById(id: number): Promise<Build> {
+    const build = await this.buildRepository.findOne({
+      where: { id: id },
+    });
+
+    if (!build) {
+      throw new NotFoundException(`Build with ID: ${id} not found`);
+    }
+    return build;
+  }
+
+  async findAllUnpublishedBuildsFromUser(
+    currentUser: SignInData,
+  ): Promise<Build[]> {
+    const builds = await this.buildRepository.find({
+      where: { user: { id: currentUser.userId }, published: false },
+    });
+    return builds;
+  }
+
+  async assignComponent(
+    componentAssignment: BuildComponentAssignmentDto,
+    currentUser: SignInData,
+  ) {
+    const component = await this.componentsService.findComponentById(
+      componentAssignment.componentType,
+      componentAssignment.componentId,
+    );
+
+    const build = await this.findBuildById(componentAssignment.buildId);
+
+    if (build.user.id !== currentUser.userId) {
+      throw new UnauthorizedException(
+        "You can't add a component to a build that's not yours",
+      );
+    }
+
+    if (build.published) {
+      throw new ConflictException("A published build can't be modified");
+    }
+
+    const buildKey = this.componentTypeMap[componentAssignment.componentType];
+
+    if (!buildKey) {
+      throw new BadRequestException(
+        `Unknown component type: ${componentAssignment.componentType}`,
+      );
+    }
+
+    if (this.multiComponents.has(buildKey)) {
+      build[buildKey] = [...((build[buildKey] as object[]) ?? []), component];
+    } else {
+      build[buildKey] = component;
+    }
   }
 }
