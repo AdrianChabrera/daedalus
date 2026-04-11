@@ -38,7 +38,7 @@ export class BuildsController {
     @Body() assignmentDto: BuildComponentAssignmentDto,
     @CurrentUser() currentUser: SignInData,
   ): Promise<void> {
-    return await this.assignComponent(assignmentDto, currentUser);
+    return await this.buildsService.assignComponent(assignmentDto, currentUser);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -47,6 +47,8 @@ export class BuildsController {
   async findAllUnpublishedBuildsFromCurrentUser(
     @CurrentUser() currentUser: SignInData,
   ): Promise<Build[]> {
-    return await this.findAllUnpublishedBuildsFromCurrentUser(currentUser);
+    return await this.buildsService.findAllUnpublishedBuildsFromUser(
+      currentUser,
+    );
   }
 }

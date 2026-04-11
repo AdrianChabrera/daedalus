@@ -183,6 +183,7 @@ export class BuildsService {
   async findBuildById(id: number): Promise<Build> {
     const build = await this.buildRepository.findOne({
       where: { id: id },
+      relations: ['user'],
     });
 
     if (!build) {
@@ -234,5 +235,7 @@ export class BuildsService {
     } else {
       build[buildKey] = component;
     }
+
+    await this.buildRepository.save(build);
   }
 }
