@@ -1,5 +1,5 @@
 import { Cpu, Fan, Gpu, HardDrive, Keyboard, Layers, MemoryStick, Monitor, Mouse, PcCase, Thermometer, Zap } from "lucide-react";
-import type { SlotConfig } from "../types/CreateBuildTypes";
+import type { BuildState, SlotConfig } from "../types/CreateBuildTypes";
 
 export const CREATE_BUILD_SLOTS: SlotConfig[] = [
   { key: 'cpuId',          label: 'CPU',          endpoint: 'cpu',           icon: <Cpu size={22} />,        multi: false, specs: ['coreCount', 'boostClock', 'socket'] },
@@ -15,3 +15,22 @@ export const CREATE_BUILD_SLOTS: SlotConfig[] = [
   { key: 'keyboardId',     label: 'Keyboard',      endpoint: 'keyboard',      icon: <Keyboard size={22} />,   multi: false, specs: [] },
   { key: 'mouseId',        label: 'Mouse',         endpoint: 'mouse',         icon: <Mouse size={22} />,      multi: false, specs: [] },
 ];
+
+export const STORAGE_KEY = 'daedalus_draft_build';
+
+export const MULTI_COMPONENT_TYPES = new Set(['ram', 'fan', 'storage-drive', 'monitor']);
+
+export const TYPE_TO_BUILD_KEY: Record<string, keyof BuildState> = {
+  cpu: 'cpuId',
+  gpu: 'gpuId',
+  motherboard: 'motherboardId',
+  case: 'caseId',
+  'power-supply': 'powerSupplyId',
+  'cpu-cooler': 'cpuCoolerId',
+  keyboard: 'keyboardId',
+  mouse: 'mouseId',
+  ram: 'ramIds',
+  'storage-drive': 'storageDriveIds',
+  fan: 'fanIds',
+  monitor: 'monitorIds',
+};

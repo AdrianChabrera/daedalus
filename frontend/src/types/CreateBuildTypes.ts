@@ -5,18 +5,18 @@ export interface SelectedComponent {
 }
 
 export interface BuildState {
-  cpuId: SelectedComponent | null;
-  gpuId: SelectedComponent | null;
-  motherboardId: SelectedComponent | null;
-  caseId: SelectedComponent | null;
-  powerSupplyId: SelectedComponent | null;
-  cpuCoolerId: SelectedComponent | null;
-  keyboardId: SelectedComponent | null;
-  mouseId: SelectedComponent | null;
-  ramIds: SelectedComponent[];
-  storageDriveIds: SelectedComponent[];
-  fanIds: SelectedComponent[];
-  monitorIds: SelectedComponent[];
+  cpuId: string | null;
+  gpuId: string | null;
+  motherboardId: string | null;
+  caseId: string | null;
+  powerSupplyId: string | null;
+  cpuCoolerId: string | null;
+  keyboardId: string | null;
+  mouseId: string | null;
+  ramIds: string[];
+  storageDriveIds: string[];
+  fanIds: string[];
+  monitorIds: string[];
 }
 
 export interface SlotConfig {
@@ -49,9 +49,12 @@ export interface SlotRowProps {
   onRemoveMulti: (id: string) => void;
 }
 
+export interface UserBuild {
+  id: number;
+  name: string;
+}
+
 export type SingleSlot = keyof Omit<BuildState, 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds'>;
 export type MultiSlot = 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds';
 export type SlotKey = SingleSlot | MultiSlot;
-
-
-
+export type AddToBuildStatus = 'idle' | 'in-build' | 'confirm-replace' | 'loading' | 'error';

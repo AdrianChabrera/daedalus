@@ -10,9 +10,12 @@ function StarPlaceholder() {
   );
 }
 
-function SpecTags({ specs }: { specs: Record<string, unknown> }) {
+function SpecTags({ specs }: { specs?: Record<string, unknown> }) {
+  if (!specs) return null; 
+
   const entries = Object.entries(specs).filter(([, v]) => v != null);
   if (!entries.length) return null;
+  
   return (
     <span className={styles.specTags}>
       {entries.map(([k, v]) => (

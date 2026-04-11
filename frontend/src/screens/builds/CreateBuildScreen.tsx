@@ -9,7 +9,7 @@ import { useCreateBuild } from '../../hooks/useCreateBuild';
 
 export default function CreateBuildScreen() {
   const {
-      build, name, setName, description, setDescription,
+      build, populated, name, setName, description, setDescription,
       warnings, saving, handleSelect, removeSingle, removeMulti, handleSave,
     } = useCreateBuild();
 
@@ -27,8 +27,13 @@ return (
         <div className={styles.columnLeft}>
           <div className={styles.panel}>
             {CREATE_BUILD_SLOTS.map(slot => {
-              const single = slot.multi ? null : (build[slot.key as SingleSlot] as SelectedComponent | null);
-              const multi = slot.multi ? (build[slot.key as MultiSlot] as SelectedComponent[]) : [];
+              const singleId = slot.multi ? null : (build[slot.key as SingleSlot] as string | null);
+              const single = singleId && populated[singleId] ? populated[singleId] : null;
+
+              const multiIds = slot.multi ? (build[slot.key as MultiSlot] as string[]) : [];
+              const multi = multiIds
+                  .map(id => populated[id])
+                  .filter((comp): comp is SelectedComponent => comp !== undefined);
 
               return (
                 <CreteBuildPcComponentsSlotRow
