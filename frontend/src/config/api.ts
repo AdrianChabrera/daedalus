@@ -9,5 +9,7 @@ export const API_ROUTES = {
     COMPONENTS: (type: string) => `${BASE_URL}/components/${type}`,
     COMPONENT: (type: string, id: string) => `${BASE_URL}/components/${type}/${id}`,
     // Builds
-    CREATE_BUILD: `${BASE_URL}/builds`
+    CREATE_BUILD: `${BASE_URL}/builds`,
+    ASSIGN_COMPONENT: `${BASE_URL}/builds/assign_component`,
+    UNPUBLISHED_BUILDS: `${BASE_URL}/builds/unpublished`,
 };

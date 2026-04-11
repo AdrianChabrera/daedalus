@@ -1,0 +1,248 @@
+.root {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.addToBuildBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin-right: 4px;
+  color: var(--white);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.addToBuildBtn:hover:not(:disabled) {
+  background: var(--accent2);
+}
+
+.addToBuildBtn.inBuild {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  cursor: default;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  line-height: 1;
+}
+
+.confirmWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.confirmWarning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px;
+  color: var(--warning, #f59e0b);
+}
+
+.confirmActions {
+  display: flex;
+  gap: 4px;
+}
+
+.confirmBtn {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  margin-right: 6px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--white);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.confirmBtn:hover {
+  background: var(--accent2);
+}
+
+.cancelBtn {
+  flex-shrink: 0; 
+  padding: 10px 20px;
+  margin-right: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cancelBtn:hover {
+  background: var(--surface2);
+}
+
+.dropdownWrapper {
+  position: relative;
+  display: flex;
+}
+
+.dropdownToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.dropdownToggle:hover {
+  background: var(--surface2);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.dropdownToggleOpen {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 50;
+  min-width: 220px;
+  max-width: 320px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: dropdownIn 0.12s ease;
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dropdownTitle {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 14px 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+.dropdownLoading,
+.dropdownEmpty {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 14px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.buildList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.buildItem {
+  padding: 2px 6px;
+}
+
+.buildBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  transition: background 0.12s;
+  gap: 8px;
+}
+
+.buildBtn:hover:not(:disabled) {
+  background: var(--accent-dim);
+}
+
+.buildBtn:disabled {
+  cursor: default;
+}
+
+.buildBtn.buildBtnDone {
+  color: var(--accent);
+}
+
+.buildBtn.buildBtnError {
+  color: var(--error, #ef4444);
+}
+
+.buildName {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buildBtnStatus {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.errorText {
+  font-size: 11px;
+}
+
+.spinnerIcon {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

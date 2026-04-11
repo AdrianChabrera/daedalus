@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Plus, PenLine } from 'lucide-react';
+import { ArrowLeft, Heart, PenLine } from 'lucide-react';
 import { API_ROUTES } from '../../config/api';
 import type { PcComponent } from '../../types/PcComponents.types';
 import styles from '../../styles/PcComponentDetailsScreen.module.css';
@@ -8,6 +8,7 @@ import { AttributeTooltip } from '../../components/pc_components/AttributeToolti
 import { BASE_ATTRS, COMPONENT_ATTRS } from '../../consts/PcComponentAttributeDetails';
 import { str } from '../../consts/PcComponentAttributeFormatters';
 import type { M2SlotData, PcieSlotData } from '../../types/PcComponentDetails.types';
+import { AddToBuildButton } from '../../components/pc_components/AddToBuildButton';
 
 function ImagePlaceholder() {
   return <div>TODO Add placeholder</div>;
@@ -110,14 +111,13 @@ export default function ComponentDetailScreen() {
                     <Heart size={18} />
                   </button>
 
-                  <button
-                    className={styles.addToBuildBtn}
-                    disabled
-                    aria-label="Add to build — not yet implemented"
-                  >
-                    <Plus size={16} />
-                    Add to build
-                  </button>
+                 {type && id && component.name && (
+                    <AddToBuildButton
+                      componentType={type}
+                      componentId={id}
+                      componentName={component.name}
+                    />
+                  )}
                 </div>
               </div>
             </div>

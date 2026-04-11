@@ -19,3 +19,10 @@ export interface PcieSlotData {
   quantity: number | null;
   lanes: number | null;
 }
+
+export interface UnpublishedBuild {
+  id: number;
+  name: string;
+  description?: string;
+  createdAt: string;
+}
