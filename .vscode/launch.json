@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Backend NestJS",
+      "cwd": "${workspaceFolder}/backend", 
+      "args": ["run", "start:debug", "--", "--inspect-brk"],
+      "autoAttachChildProcesses": true,
+      "runtimeExecutable": "npm",
+      "protocol": "inspector",
+      "restart": true
+    }
+  ]
+}
