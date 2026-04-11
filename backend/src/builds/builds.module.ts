@@ -19,6 +19,10 @@ import { PcieSlot } from '../components/entities/secondary-entities/pcie-slot.en
 import { Build } from './entities/build';
 import { UsersModule } from '../users/users.module';
 import { ComponentsModule } from '../components/components.module';
+import { BuildFan } from './entities/build-fans.entity';
+import { BuildRam } from './entities/build-rams.entity';
+import { BuildMonitor } from './entities/build-monitors.entity';
+import { BuildStorageDrive } from './entities/build-storage-drives.entity';
 
 @Module({
   controllers: [BuildsController],
@@ -40,6 +44,10 @@ import { ComponentsModule } from '../components/components.module';
       M2Slot,
       PcieSlot,
       Build,
+      BuildFan,
+      BuildRam,
+      BuildMonitor,
+      BuildStorageDrive,
     ]),
     UsersModule,
     ComponentsModule,

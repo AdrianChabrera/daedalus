@@ -27,6 +27,10 @@ import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
 import { BuildComponentAssignmentDto } from './dtos/BuildComponentAssignment.dto';
+import { BuildRam } from './entities/build-rams.entity';
+import { BuildStorageDrive } from './entities/build-storage-drives.entity';
+import { BuildFan } from './entities/build-fans.entity';
+import { BuildMonitor } from './entities/build-monitors.entity';
 
 @Injectable()
 export class BuildsService {
@@ -115,22 +119,30 @@ export class BuildsService {
     ]);
 
     const [fans, rams, monitors, storageDrives] = await Promise.all([
-      this.componentsService.findComponentsByIds<Fan>(
-        'fan',
-        buildDto.fanIds ?? [],
-      ),
-      this.componentsService.findComponentsByIds<Ram>(
-        'ram',
-        buildDto.ramIds ?? [],
-      ),
-      this.componentsService.findComponentsByIds<Monitor>(
-        'monitor',
-        buildDto.monitorIds ?? [],
-      ),
-      this.componentsService.findComponentsByIds<StorageDrive>(
-        'storage-drive',
-        buildDto.storageDriveIds ?? [],
-      ),
+      buildDto.fanIds
+        ? this.componentsService.findComponentsByIds<Fan>(
+            'fan',
+            buildDto.fanIds?.map((f) => f.componentId) ?? [],
+          )
+        : [],
+      buildDto.ramIds
+        ? this.componentsService.findComponentsByIds<Ram>(
+            'ram',
+            buildDto.ramIds?.map((r) => r.componentId) ?? [],
+          )
+        : [],
+      buildDto.monitorIds
+        ? this.componentsService.findComponentsByIds<Monitor>(
+            'monitor',
+            buildDto.monitorIds?.map((m) => m.componentId) ?? [],
+          )
+        : [],
+      buildDto.storageDriveIds
+        ? this.componentsService.findComponentsByIds<StorageDrive>(
+            'storage-drive',
+            buildDto.storageDriveIds?.map((s) => s.componentId) ?? [],
+          )
+        : [],
     ]);
 
     if (pcCase) build.case = pcCase;
@@ -142,10 +154,39 @@ export class BuildsService {
     if (keyboard) build.keyboard = keyboard;
     if (mouse) build.mouse = mouse;
 
-    build.fans = fans;
-    build.monitors = monitors;
-    build.rams = rams;
-    build.storageDrives = storageDrives;
+    build.fans = fans.map((fan: Fan) => {
+      const buildFan = new BuildFan();
+      buildFan.fan = fan;
+      buildFan.quantity =
+        buildDto.fanIds?.find((f) => f.componentId === fan.buildcoresId)
+          ?.quantity ?? 1;
+      return buildFan;
+    });
+    build.monitors = monitors.map((monitor: Monitor) => {
+      const buildMonitor = new BuildMonitor();
+      buildMonitor.monitor = monitor;
+      buildMonitor.quantity =
+        buildDto.monitorIds?.find((m) => m.componentId === monitor.buildcoresId)
+          ?.quantity ?? 1;
+      return buildMonitor;
+    });
+    build.rams = rams.map((ram: Ram) => {
+      const buildRam = new BuildRam();
+      buildRam.ram = ram;
+      buildRam.quantity =
+        buildDto.ramIds?.find((r) => r.componentId === ram.buildcoresId)
+          ?.quantity ?? 1;
+      return buildRam;
+    });
+    build.storageDrives = storageDrives.map((storageDrive: StorageDrive) => {
+      const buildStorageDrive = new BuildStorageDrive();
+      buildStorageDrive.storageDrive = storageDrive;
+      buildStorageDrive.quantity =
+        buildDto.storageDriveIds?.find(
+          (s) => s.componentId === storageDrive.buildcoresId,
+        )?.quantity ?? 1;
+      return buildStorageDrive;
+    });
     build.name = buildDto.name;
     build.description = buildDto.description;
 
@@ -165,13 +206,19 @@ export class BuildsService {
     response.gpuName = gpu?.name ? gpu.name : undefined;
     response.keyboardName = keyboard?.name ? keyboard.name : undefined;
     response.mouseName = mouse?.name ? mouse.name : undefined;
-    response.fanNames = fans ? fans.map((f) => f.name ?? 'Unknown Fan') : [];
-    response.ramNames = rams ? rams.map((r) => r.name ?? 'Unknown Ram') : [];
+    response.fanNames = fans
+      ? fans.map((f: Fan) => f.name ?? 'Unknown Fan')
+      : [];
+    response.ramNames = rams
+      ? rams.map((r: Ram) => r.name ?? 'Unknown Ram')
+      : [];
     response.monitorNames = monitors
-      ? monitors.map((m) => m.name ?? 'Unknown Monitor')
+      ? monitors.map((m: Monitor) => m.name ?? 'Unknown Monitor')
       : [];
     response.storageDriveNames = storageDrives
-      ? storageDrives.map((s) => s.name ?? 'Unknown Storage Drive')
+      ? storageDrives.map(
+          (s: StorageDrive) => s.name ?? 'Unknown Storage Drive',
+        )
       : [];
     response.name = buildDto.name;
     response.description = buildDto.description;
@@ -231,7 +278,37 @@ export class BuildsService {
     }
 
     if (this.multiComponents.has(buildKey)) {
-      build[buildKey] = [...((build[buildKey] as object[]) ?? []), component];
+      const quantity = componentAssignment.quantity ?? 1;
+      const joinEntityMap: Record<string, () => object> = {
+        rams: () => {
+          const e = new BuildRam();
+          e.ram = component as Ram;
+          e.quantity = quantity;
+          return e;
+        },
+        fans: () => {
+          const e = new BuildFan();
+          e.fan = component as Fan;
+          e.quantity = quantity;
+          return e;
+        },
+        monitors: () => {
+          const e = new BuildMonitor();
+          e.monitor = component as Monitor;
+          e.quantity = quantity;
+          return e;
+        },
+        storageDrives: () => {
+          const e = new BuildStorageDrive();
+          e.storageDrive = component as StorageDrive;
+          e.quantity = quantity;
+          return e;
+        },
+      };
+      const createJoinEntity = joinEntityMap[buildKey];
+      if (!createJoinEntity)
+        throw new BadRequestException(`Unhandled multi-component: ${buildKey}`);
+      (build[buildKey] as object[]).push(createJoinEntity());
     } else {
       build[buildKey] = component;
     }

@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class BuildComponentAssignmentDto {
   @IsUUID('4')
@@ -12,4 +18,8 @@ export class BuildComponentAssignmentDto {
   @IsString()
   @IsNotEmpty()
   componentType!: string;
+
+  @IsNumber()
+  @IsOptional()
+  quantity?: number;
 }

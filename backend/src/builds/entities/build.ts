@@ -1,26 +1,25 @@
 import { Case } from '../../components/entities/main-entities/case.entity';
 import { CpuCooler } from '../../components/entities/main-entities/cpu-cooler.entity';
 import { Cpu } from '../../components/entities/main-entities/cpu.entity';
-import { Fan } from '../../components/entities/main-entities/fan.entity';
 import { Gpu } from '../../components/entities/main-entities/gpu.entity';
 import { Keyboard } from '../../components/entities/main-entities/keyboard.entity';
-import { Monitor } from '../../components/entities/main-entities/monitor.entity';
 import { Motherboard } from '../../components/entities/main-entities/motherboard.entity';
 import { Mouse } from '../../components/entities/main-entities/mouse.entity';
 import { PowerSupply } from '../../components/entities/main-entities/power-supply.entity';
-import { Ram } from '../../components/entities/main-entities/ram.entity';
-import { StorageDrive } from '../../components/entities/main-entities/storage.entity';
 import { User } from '../../users/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { BuildRam } from './build-rams.entity';
+import { BuildStorageDrive } from './build-storage-drives.entity';
+import { BuildMonitor } from './build-monitors.entity';
+import { BuildFan } from './build-fans.entity';
 
 @Entity('builds')
 export class Build {
@@ -51,19 +50,8 @@ export class Build {
   @JoinColumn({ name: 'cpu_id' })
   cpu?: Cpu;
 
-  @ManyToMany(() => Fan)
-  @JoinTable({
-    name: 'build_fans',
-    joinColumn: {
-      name: 'build_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'fan_id',
-      referencedColumnName: 'buildcoresId',
-    },
-  })
-  fans?: Fan[];
+  @OneToMany(() => BuildFan, (f) => f.build, { cascade: true })
+  fans!: BuildFan[];
 
   @ManyToOne(() => Gpu, { nullable: true })
   @JoinColumn({ name: 'gpu_id' })
@@ -73,19 +61,8 @@ export class Build {
   @JoinColumn({ name: 'keyboard_id' })
   keyboard?: Keyboard;
 
-  @ManyToMany(() => Monitor)
-  @JoinTable({
-    name: 'build_monitors',
-    joinColumn: {
-      name: 'build_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'monitor_id',
-      referencedColumnName: 'buildcoresId',
-    },
-  })
-  monitors?: Monitor[];
+  @OneToMany(() => BuildMonitor, (m) => m.build, { cascade: true })
+  monitors!: BuildMonitor[];
 
   @ManyToOne(() => Motherboard, { nullable: true })
   @JoinColumn({ name: 'motherboard_id' })
@@ -99,33 +76,11 @@ export class Build {
   @JoinColumn({ name: 'power_supply_id' })
   powerSupply?: PowerSupply;
 
-  @ManyToMany(() => Ram)
-  @JoinTable({
-    name: 'build_rams',
-    joinColumn: {
-      name: 'build_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'ram_id',
-      referencedColumnName: 'buildcoresId',
-    },
-  })
-  rams?: Ram[];
+  @OneToMany(() => BuildRam, (r) => r.build, { cascade: true })
+  rams!: BuildRam[];
 
-  @ManyToMany(() => StorageDrive)
-  @JoinTable({
-    name: 'build_storage_drives',
-    joinColumn: {
-      name: 'build_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'storage_drive_id',
-      referencedColumnName: 'buildcoresId',
-    },
-  })
-  storageDrives?: StorageDrive[];
+  @OneToMany(() => BuildStorageDrive, (s) => s.build, { cascade: true })
+  storageDrives!: BuildStorageDrive[];
 
   @ManyToOne(() => User, (u) => u.builds)
   user!: User;

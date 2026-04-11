@@ -6,6 +6,7 @@ import {
   IsArray,
   IsOptional,
 } from 'class-validator';
+import { ComponentWithQuantityDto } from './ComponentWithQuantity.dto';
 
 export class BuildCreationDto {
   @IsString()
@@ -31,8 +32,8 @@ export class BuildCreationDto {
   cpuId?: string;
 
   @IsArray()
-  @IsUUID('4', { each: true })
-  fanIds?: string[];
+  @IsNotEmpty()
+  fanIds?: ComponentWithQuantityDto[];
 
   @IsUUID('4')
   @IsOptional()
@@ -43,8 +44,8 @@ export class BuildCreationDto {
   keyboardId?: string;
 
   @IsArray()
-  @IsUUID('4', { each: true })
-  monitorIds?: string[];
+  @IsNotEmpty()
+  monitorIds?: ComponentWithQuantityDto[];
 
   @IsUUID('4')
   @IsOptional()
@@ -59,10 +60,10 @@ export class BuildCreationDto {
   powerSupplyId?: string;
 
   @IsArray()
-  @IsUUID('4', { each: true })
-  ramIds?: string[];
+  @IsNotEmpty()
+  ramIds?: ComponentWithQuantityDto[];
 
   @IsArray()
-  @IsUUID('4', { each: true })
-  storageDriveIds?: string[];
+  @IsNotEmpty()
+  storageDriveIds?: ComponentWithQuantityDto[];
 }
