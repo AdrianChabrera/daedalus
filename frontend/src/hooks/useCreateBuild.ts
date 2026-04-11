@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { API_ROUTES } from '../config/api';
 import { CREATE_BUILD_SLOTS, STORAGE_KEY } from '../consts/CreateBuildConsts';
-import type { BuildState, MultiSlot, SelectedComponent, SingleSlot, SlotConfig } from '../types/CreateBuildTypes';
+import type { BuildState, MultiComponentEntry, MultiSlot, SelectedComponent, SingleSlot, SlotConfig } from '../types/CreateBuildTypes';
 
 const INITIAL_BUILD: BuildState = {
   cpuId: null, gpuId: null, motherboardId: null, caseId: null,
@@ -48,9 +48,9 @@ export function useCreateBuild() {
       const promises: Promise<void>[] = [];
 
       CREATE_BUILD_SLOTS.forEach(slot => {
-        const ids = slot.multi 
-          ? (build[slot.key as MultiSlot] as string[]) 
-          : [build[slot.key as SingleSlot] as string | null];
+        const ids: string[] = slot.multi
+          ? [...new Set((build[slot.key as MultiSlot] as MultiComponentEntry[]).map(e => e.componentId))]
+          : [build[slot.key as SingleSlot] as string | null].filter(Boolean) as string[];
 
         ids.forEach(id => {
           if (id && !populated[id]) {
@@ -63,9 +63,9 @@ export function useCreateBuild() {
                 .then(data => {
                   const { id: dataId, buildcoresId, name } = data;
                   const finalId = dataId || buildcoresId || id;
-                  
+
                   const sourceData = data.specs ? data.specs : data;
-                  
+
                   const filteredSpecs: Record<string, unknown> = {};
                   slot.specs.forEach(specKey => {
                     if (sourceData[specKey] !== undefined && sourceData[specKey] !== null) {
@@ -76,7 +76,7 @@ export function useCreateBuild() {
                   const formattedComponent: SelectedComponent = {
                     id: finalId,
                     name: name || 'Unknown Component',
-                    specs: filteredSpecs
+                    specs: filteredSpecs,
                   };
 
                   setPopulated(prev => ({ ...prev, [finalId]: formattedComponent }));
@@ -93,7 +93,8 @@ export function useCreateBuild() {
     };
 
     fetchMissingComponents();
-  }, [build, populated]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [build]);
 
   const handleSelect = useCallback((slot: SlotConfig, comp: SelectedComponent) => {
     setPopulated(prev => ({ ...prev, [comp.id]: comp }));
@@ -101,9 +102,15 @@ export function useCreateBuild() {
     setBuild(prev => {
       if (slot.multi) {
         const multiKey = slot.key as MultiSlot;
-        const existing = prev[multiKey] as string[];
-        if (existing.includes(comp.id)) return prev;
-        return { ...prev, [multiKey]: [...existing, comp.id] };
+        const existing = prev[multiKey] as MultiComponentEntry[];
+        const idx = existing.findIndex(e => e.componentId === comp.id);
+        if (idx !== -1) {
+          const updated = existing.map((e, i) =>
+            i === idx ? { ...e, quantity: e.quantity + 1 } : e
+          );
+          return { ...prev, [multiKey]: updated };
+        }
+        return { ...prev, [multiKey]: [...existing, { componentId: comp.id, quantity: 1 }] };
       }
       return { ...prev, [slot.key]: comp.id };
     });
@@ -116,7 +123,17 @@ export function useCreateBuild() {
   const removeMulti = useCallback((key: MultiSlot, id: string) => {
     setBuild(prev => ({
       ...prev,
-      [key]: (prev[key] as string[]).filter(existingId => existingId !== id),
+      [key]: (prev[key] as MultiComponentEntry[]).filter(e => e.componentId !== id),
+    }));
+  }, []);
+
+  const changeQuantity = useCallback((key: MultiSlot, id: string, quantity: number) => {
+    if (quantity < 1) return;
+    setBuild(prev => ({
+      ...prev,
+      [key]: (prev[key] as MultiComponentEntry[]).map(e =>
+        e.componentId === id ? { ...e, quantity } : e
+      ),
     }));
   }, []);
 
@@ -136,7 +153,18 @@ export function useCreateBuild() {
     const body = {
       name: name.trim(),
       description: description.trim() || undefined,
-      ...build, 
+      caseId: build.caseId,
+      cpuCoolerId: build.cpuCoolerId,
+      cpuId: build.cpuId,
+      gpuId: build.gpuId,
+      keyboardId: build.keyboardId,
+      motherboardId: build.motherboardId,
+      mouseId: build.mouseId,
+      powerSupplyId: build.powerSupplyId,
+      fanIds: build.fanIds,
+      monitorIds: build.monitorIds,
+      ramIds: build.ramIds,
+      storageDriveIds: build.storageDriveIds,
     };
 
     try {
@@ -144,7 +172,7 @@ export function useCreateBuild() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.accessToken}`,
+          Authorization: `Bearer ${user.accessToken}`,
         },
         body: JSON.stringify(body),
       });
@@ -178,6 +206,7 @@ export function useCreateBuild() {
     handleSelect,
     removeSingle,
     removeMulti,
+    changeQuantity,
     handleSave,
   };
 }

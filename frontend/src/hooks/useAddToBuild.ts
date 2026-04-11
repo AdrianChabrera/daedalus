@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { API_ROUTES } from '../config/api';
-import type { AddToBuildStatus, BuildState, UserBuild } from '../types/CreateBuildTypes';
+import type { AddToBuildStatus, BuildState, MultiComponentEntry, UserBuild } from '../types/CreateBuildTypes';
 import { MULTI_COMPONENT_TYPES, STORAGE_KEY, TYPE_TO_BUILD_KEY } from '../consts/CreateBuildConsts';
 
 function loadDraftBuild(): BuildState | null {
@@ -31,7 +31,8 @@ function getMultiCountFromDraft(componentType: string, componentId: string): num
   if (!key) return 0;
   const slot = build[key];
   if (!Array.isArray(slot)) return 0;
-  return slot.filter((id: string) => id === componentId).length;
+  const entry = (slot as MultiComponentEntry[]).find(e => e.componentId === componentId);
+  return entry?.quantity ?? 0;
 }
 
 function isSingleInDraft(componentType: string, componentId: string): boolean {
@@ -64,7 +65,6 @@ export function useAddToBuild(componentType: string, componentId: string) {
   const [userBuilds, setUserBuilds] = useState<UserBuild[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loadingBuilds, setLoadingBuilds] = useState(false);
-
   const [buildStatuses, setBuildStatuses] = useState<Record<number, 'idle' | 'loading' | 'done' | 'error'>>({});
 
   const refreshLocalState = useCallback(() => {
@@ -88,38 +88,77 @@ export function useAddToBuild(componentType: string, componentId: string) {
   }, [refreshLocalState]);
 
   const addToLocalBuild = useCallback(() => {
-      const build = loadDraftBuild() ?? {
-        cpuId: null, gpuId: null, motherboardId: null, caseId: null,
-        powerSupplyId: null, cpuCoolerId: null, keyboardId: null, mouseId: null,
-        ramIds: [], storageDriveIds: [], fanIds: [], monitorIds: [],
-      } as BuildState;
+    const build = loadDraftBuild() ?? {
+      cpuId: null, gpuId: null, motherboardId: null, caseId: null,
+      powerSupplyId: null, cpuCoolerId: null, keyboardId: null, mouseId: null,
+      ramIds: [], storageDriveIds: [], fanIds: [], monitorIds: [],
+    } as BuildState;
 
-      const key = TYPE_TO_BUILD_KEY[componentType] as keyof BuildState;
-      if (!key) return;
+    const key = TYPE_TO_BUILD_KEY[componentType] as keyof BuildState;
+    if (!key) return;
 
-      if (isMulti) {
-        const existing = (build[key] as string[]) ?? [];
-        (build[key] as string[]) = [...existing, componentId];
+    if (isMulti) {
+      const existing = (build[key] as MultiComponentEntry[]) ?? [];
+      const idx = existing.findIndex(e => e.componentId === componentId);
+      if (idx !== -1) {
+        (build[key] as MultiComponentEntry[]) = existing.map((e, i) =>
+          i === idx ? { ...e, quantity: e.quantity + 1 } : e
+        );
       } else {
-        (build[key] as string | null) = componentId;
+        (build[key] as MultiComponentEntry[]) = [...existing, { componentId, quantity: 1 }];
       }
+    } else {
+      (build[key] as string | null) = componentId;
+    }
 
-      saveToDraftBuild(build);
-      refreshLocalState();
-    }, [componentType, componentId, isMulti, refreshLocalState]);
+    saveToDraftBuild(build);
+    refreshLocalState();
+  }, [componentType, componentId, isMulti, refreshLocalState]);
+
+  const removeFromLocalBuild = useCallback(() => {
+    const build = loadDraftBuild();
+    if (!build) return;
+
+    const key = TYPE_TO_BUILD_KEY[componentType] as keyof BuildState;
+    if (!key) return;
+
+    if (isMulti) {
+      const existing = (build[key] as MultiComponentEntry[]) ?? [];
+      const idx = existing.findIndex(e => e.componentId === componentId);
+      if (idx === -1) return;
+      const current = existing[idx].quantity;
+      if (current <= 1) {
+        (build[key] as MultiComponentEntry[]) = existing.filter(e => e.componentId !== componentId);
+      } else {
+        (build[key] as MultiComponentEntry[]) = existing.map((e, i) =>
+          i === idx ? { ...e, quantity: e.quantity - 1 } : e
+        );
+      }
+    } else {
+      (build[key] as string | null) = null;
+    }
+
+    saveToDraftBuild(build);
+    refreshLocalState();
+  }, [componentType, componentId, isMulti, refreshLocalState]);
 
   const handleLocalAdd = useCallback(() => {
     if (isMulti) {
       addToLocalBuild();
     } else {
-      if (localStatus === 'in-build') return;
-      if (localOccupied) {
+      if (localStatus === 'in-build') {
+        removeFromLocalBuild();
+      } else if (localOccupied) {
         setLocalStatus('confirm-replace');
       } else {
         addToLocalBuild();
       }
     }
-  }, [isMulti, localStatus, localOccupied, addToLocalBuild]);
+  }, [isMulti, localStatus, localOccupied, addToLocalBuild, removeFromLocalBuild]);
+
+  const handleLocalRemove = useCallback(() => {
+    removeFromLocalBuild();
+  }, [removeFromLocalBuild]);
 
   const handleConfirmReplace = useCallback(() => {
     addToLocalBuild();
@@ -155,23 +194,11 @@ export function useAddToBuild(componentType: string, componentId: string) {
     setBuildStatuses(prev => ({ ...prev, [buildId]: 'loading' }));
     try {
       const backendTypeMap: Record<string, string> = {
-        cpu: 'cpu',
-        gpu: 'gpu',
-        motherboard: 'motherboard',
-        case: 'case',
-        'power-supply': 'powerSupply',
-        'cpu-cooler': 'cpuCooler',
-        keyboard: 'keyboard',
-        mouse: 'mouse',
-        ram: 'ram',
-        'storage-drive': 'storageDrive',
-        fan: 'fan',
-        monitor: 'monitor',
+        cpu: 'cpu', gpu: 'gpu', motherboard: 'motherboard', case: 'case',
+        'power-supply': 'powerSupply', 'cpu-cooler': 'cpuCooler',
+        keyboard: 'keyboard', mouse: 'mouse', ram: 'ram',
+        'storage-drive': 'storageDrive', fan: 'fan', monitor: 'monitor',
       };
-
-      console.log(componentId)
-      console.log(buildId)
-      console.log(componentType)
 
       const res = await fetch(API_ROUTES.ASSIGN_COMPONENT, {
         method: 'PATCH',
@@ -183,6 +210,7 @@ export function useAddToBuild(componentType: string, componentId: string) {
           componentId,
           buildId,
           componentType: backendTypeMap[componentType] ?? componentType,
+          ...(isMulti && { quantity: Math.max(1, getMultiCountFromDraft(componentType, componentId)) }),
         }),
       });
       if (!res.ok) throw new Error();
@@ -190,7 +218,7 @@ export function useAddToBuild(componentType: string, componentId: string) {
     } catch {
       setBuildStatuses(prev => ({ ...prev, [buildId]: 'error' }));
     }
-  }, [componentId, componentType, user]);
+  }, [componentId, componentType, isMulti, user]);
 
   return {
     isMulti,
@@ -199,6 +227,7 @@ export function useAddToBuild(componentType: string, componentId: string) {
     localCount,
     localOccupied,
     handleLocalAdd,
+    handleLocalRemove,
     handleConfirmReplace,
     handleCancelReplace,
     userBuilds,

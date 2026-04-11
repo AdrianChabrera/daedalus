@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { Plus, Check, ChevronDown, AlertTriangle, Loader2 } from 'lucide-react';
+import { Plus, Minus, Check, ChevronDown, AlertTriangle, Loader2, X } from 'lucide-react';
 import { useAddToBuild } from '../../hooks/useAddToBuild';
 import styles from '../../styles/AddToBuildButton.module.css';
 
@@ -16,6 +16,7 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
     localStatus,
     localCount,
     handleLocalAdd,
+    handleLocalRemove,
     handleConfirmReplace,
     handleCancelReplace,
     userBuilds,
@@ -42,7 +43,6 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
 
   if (localStatus === 'confirm-replace') {
     return (
-      
       <div className={styles.confirmWrapper}>
         <div className={styles.confirmActions}>
           <button className={styles.confirmBtn} onClick={handleConfirmReplace}>
@@ -64,27 +64,53 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
 
   return (
     <div className={styles.root}>
-      <button
-        className={`${styles.addToBuildBtn} ${isInLocalBuild ? styles.inBuild : ''}`}
-        onClick={handleLocalAdd}
-        disabled={isInLocalBuild && !isMulti}
-        aria-label={isInLocalBuild ? 'Already in your build' : 'Add to build'}
-      >
-        {isInLocalBuild ? (
-          <>
-            <Check size={16} />
-            In build
-          </>
-        ) : (
-          <>
+      {isMulti ? (
+        <div className={styles.multiControl}>
+          {localCount > 0 && (
+            <button
+              className={styles.multiStepBtn}
+              onClick={handleLocalRemove}
+              aria-label="Remove one from build"
+            >
+              {localCount === 1 ? <X size={14} /> : <Minus size={14} />}
+            </button>
+          )}
+
+          <button
+            className={`${styles.addToBuildBtn} ${localCount > 0 ? styles.inBuild : ''}`}
+            onClick={handleLocalAdd}
+            aria-label={localCount > 0 ? 'Add another to build' : 'Add to build'}
+          >
             <Plus size={16} />
-            Add to build
-            {isMulti && localCount > 0 && (
-              <span className={styles.badge}>{localCount}</span>
+            {localCount > 0 ? (
+              <>
+                In build
+                <span className={styles.badge}>{localCount}</span>
+              </>
+            ) : (
+              'Add to build'
             )}
-          </>
-        )}
-      </button>
+          </button>
+        </div>
+      ) : (
+        <button
+          className={`${styles.addToBuildBtn} ${isInLocalBuild ? styles.inBuild : ''}`}
+          onClick={handleLocalAdd}
+          aria-label={isInLocalBuild ? 'Remove from build' : 'Add to build'}
+        >
+          {isInLocalBuild ? (
+            <>
+              <Check size={16} />
+              In build
+            </>
+          ) : (
+            <>
+              <Plus size={16} />
+              Add to build
+            </>
+          )}
+        </button>
+      )}
 
       {isAuthenticated && (
         <div className={styles.dropdownWrapper} ref={dropdownRef}>

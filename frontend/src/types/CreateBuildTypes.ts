@@ -4,6 +4,11 @@ export interface SelectedComponent {
   specs: Record<string, unknown>;
 }
 
+export interface MultiComponentEntry {
+  componentId: string;
+  quantity: number;
+}
+
 export interface BuildState {
   cpuId: string | null;
   gpuId: string | null;
@@ -13,10 +18,10 @@ export interface BuildState {
   cpuCoolerId: string | null;
   keyboardId: string | null;
   mouseId: string | null;
-  ramIds: string[];
-  storageDriveIds: string[];
-  fanIds: string[];
-  monitorIds: string[];
+  ramIds: MultiComponentEntry[];
+  storageDriveIds: MultiComponentEntry[];
+  fanIds: MultiComponentEntry[];
+  monitorIds: MultiComponentEntry[];
 }
 
 export interface SlotConfig {
@@ -44,9 +49,11 @@ export interface SlotRowProps {
   slot: SlotConfig;
   single: SelectedComponent | null;
   multi: SelectedComponent[];
+  multiEntries: MultiComponentEntry[];
   onAssign: () => void;
   onRemoveSingle: () => void;
   onRemoveMulti: (id: string) => void;
+  onQuantityChange: (id: string, quantity: number) => void;
 }
 
 export interface UserBuild {
