@@ -56,11 +56,45 @@ export interface SlotRowProps {
   onQuantityChange: (id: string, quantity: number) => void;
 }
 
+export interface BuildComponent {
+  buildcoresId: string;
+  name: string;
+}
+ 
+export interface BuildMultiEntry {
+  id: number;
+  ram?: BuildComponent;
+  storageDrive?: BuildComponent;
+  fan?: BuildComponent;
+  monitor?: BuildComponent;
+  quantity: number;
+}
+ 
 export interface UserBuild {
   id: number;
   name: string;
+  cpu?: BuildComponent;
+  gpu?: BuildComponent;
+  motherboard?: BuildComponent;
+  case?: BuildComponent;
+  powerSupply?: BuildComponent;
+  cpuCooler?: BuildComponent;
+  keyboard?: BuildComponent;
+  mouse?: BuildComponent;
+  rams?: BuildMultiEntry[];
+  storageDrives?: BuildMultiEntry[];
+  fans?: BuildMultiEntry[];
+  monitors?: BuildMultiEntry[];
 }
 
+export interface UserBuildWithCount extends UserBuild {
+  serverCount: number;
+  localDelta: number;
+  slotOccupiedBy?: BuildComponent;
+  confirmingReplace?: boolean;
+}
+
+export type BuildOpStatus = 'idle' | 'loading' | 'error';
 export type SingleSlot = keyof Omit<BuildState, 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds'>;
 export type MultiSlot = 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds';
 export type SlotKey = SingleSlot | MultiSlot;

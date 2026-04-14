@@ -11,5 +11,6 @@ export const API_ROUTES = {
     // Builds
     CREATE_BUILD: `${BASE_URL}/builds`,
     ASSIGN_COMPONENT: `${BASE_URL}/builds/assign_component`,
-    UNPUBLISHED_BUILDS: `${BASE_URL}/builds/unpublished`,
+    REMOVE_COMPONENT: `${BASE_URL}/builds/remove_component`,
+    UNPUBLISHED_BUILDS: (cType: string, cId: string) => `${BASE_URL}/builds/unpublished/${cType}/${cId}`,
 };

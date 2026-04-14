@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { Plus, Minus, Check, ChevronDown, AlertTriangle, Loader2, X } from 'lucide-react';
+import { Plus, Check, ChevronDown, AlertTriangle, Loader2, Minus } from 'lucide-react';
 import { useAddToBuild } from '../../hooks/useAddToBuild';
 import styles from '../../styles/AddToBuildButton.module.css';
 
@@ -22,9 +22,12 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
     userBuilds,
     dropdownOpen,
     loadingBuilds,
-    buildStatuses,
+    buildOpStatus,
     openBuildsDropdown,
-    assignToUserBuild,
+    addToExistingBuild,
+    removeFromExistingBuild,
+    requestReplaceForBuild,
+    cancelReplaceForBuild,
     closeDropdown,
   } = useAddToBuild(componentType, componentId);
 
@@ -64,39 +67,30 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
 
   return (
     <div className={styles.root}>
-      {isMulti ? (
-        <div className={styles.multiControl}>
-          {localCount > 0 && (
-            <button
-              className={styles.multiStepBtn}
-              onClick={handleLocalRemove}
-              aria-label="Remove one from build"
-            >
-              {localCount === 1 ? <X size={14} /> : <Minus size={14} />}
-            </button>
-          )}
-
+      {isMulti && localCount > 0 ? (
+        <div className={styles.stepper}>
           <button
-            className={`${styles.addToBuildBtn} ${localCount > 0 ? styles.inBuild : ''}`}
-            onClick={handleLocalAdd}
-            aria-label={localCount > 0 ? 'Add another to build' : 'Add to build'}
+            className={styles.stepperBtn}
+            onClick={handleLocalRemove}
+            aria-label="Remove one from build"
           >
-            <Plus size={16} />
-            {localCount > 0 ? (
-              <>
-                In build
-                <span className={styles.badge}>{localCount}</span>
-              </>
-            ) : (
-              'Add to build'
-            )}
+            <Minus size={14} />
+          </button>
+          <span className={styles.stepperCount}>{localCount}</span>
+          <button
+            className={styles.stepperBtn}
+            onClick={handleLocalAdd}
+            aria-label="Add one more to build"
+          >
+            <Plus size={14} />
           </button>
         </div>
       ) : (
         <button
           className={`${styles.addToBuildBtn} ${isInLocalBuild ? styles.inBuild : ''}`}
           onClick={handleLocalAdd}
-          aria-label={isInLocalBuild ? 'Remove from build' : 'Add to build'}
+          disabled={isInLocalBuild && !isMulti}
+          aria-label={isInLocalBuild ? 'Already in your build' : 'Add to build'}
         >
           {isInLocalBuild ? (
             <>
@@ -137,22 +131,109 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
               ) : (
                 <ul className={styles.buildList}>
                   {userBuilds.map(build => {
-                    const status = buildStatuses[build.id];
+                    const count = build.serverCount + build.localDelta;
+                    const opStatus = buildOpStatus[build.id] ?? 'idle';
+                    const isLoading = opStatus === 'loading';
+                    const isError = opStatus === 'error';
+                    const isInThisBuild = count > 0;
+
+                    if (!isMulti && build.confirmingReplace) {
+                      return (
+                        <li key={build.id} className={styles.buildItem}>
+                          <div className={styles.buildRow}>
+                            <span className={styles.buildName}>{build.name}</span>
+                            <div className={styles.confirmWarning}>
+                              <span>
+                                Slot already occupied. Replace?
+                              </span>
+                            </div>
+                          </div>
+                          <div className={styles.dropdownConfirmActions}>
+                            <button
+                              className={styles.dropdownConfirmBtn}
+                              onClick={() => addToExistingBuild(build.id)}
+                              disabled={isLoading}
+                            >
+                              Replace
+                            </button>
+                            <button
+                              className={styles.dropdownCancelBtn}
+                              onClick={() => cancelReplaceForBuild(build.id)}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </li>
+                      );
+                    }
                     return (
                       <li key={build.id} className={styles.buildItem}>
-                        <button
-                          className={`${styles.buildBtn} ${status === 'done' ? styles.buildBtnDone : ''} ${status === 'error' ? styles.buildBtnError : ''}`}
-                          onClick={() => assignToUserBuild(build.id)}
-                          disabled={status === 'loading' || status === 'done'}
-                        >
+                        <div className={`${styles.buildRow} ${isError ? styles.buildRowError : ''}`}>
                           <span className={styles.buildName}>{build.name}</span>
-                          <span className={styles.buildBtnStatus}>
-                            {status === 'loading' && <Loader2 size={12} className={styles.spinnerIcon} />}
-                            {status === 'done' && <Check size={12} />}
-                            {status === 'error' && <span className={styles.errorText}>Error</span>}
-                            {!status && <Plus size={12} />}
-                          </span>
-                        </button>
+
+                          <div className={styles.buildStepper}>
+                            {isLoading ? (
+                              <Loader2 size={13} className={styles.spinnerIcon} />
+                            ) : isError ? (
+                              <span className={styles.errorText}>Error</span>
+                            ) : isMulti ? (
+                              count > 0 ? (
+                                <>
+                                  <button
+                                    className={styles.buildStepBtn}
+                                    onClick={() => removeFromExistingBuild(build.id)}
+                                    aria-label={`Remove one from ${build.name}`}
+                                    disabled={isLoading}
+                                  >
+                                    <Minus size={11} />
+                                  </button>
+                                  <span className={styles.buildCount}>{count}</span>
+                                  <button
+                                    className={styles.buildStepBtn}
+                                    onClick={() => addToExistingBuild(build.id)}
+                                    aria-label={`Add one more to ${build.name}`}
+                                    disabled={isLoading}
+                                  >
+                                    <Plus size={11} />
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  className={styles.buildAddBtn}
+                                  onClick={() => addToExistingBuild(build.id)}
+                                  aria-label={`Add to ${build.name}`}
+                                  disabled={isLoading}
+                                >
+                                  <Plus size={12} />
+                                </button>
+                              )
+                            ) : (
+                              isInThisBuild ? (
+                                <button
+                                  className={`${styles.buildAddBtn} ${styles.inBuildBtn}`}
+                                  onClick={() => removeFromExistingBuild(build.id)}
+                                  aria-label={`Remove from ${build.name}`}
+                                  disabled={isLoading}
+                                >
+                                  <Check size={12} />
+                                </button>
+                              ) : (
+                                <button
+                                  className={styles.buildAddBtn}
+                                  onClick={() =>
+                                    build.slotOccupiedBy
+                                      ? requestReplaceForBuild(build.id)
+                                      : addToExistingBuild(build.id)
+                                  }
+                                  aria-label={`Add to ${build.name}`}
+                                  disabled={isLoading}
+                                >
+                                  <Plus size={12} />
+                                </button>
+                              )
+                            )}
+                          </div>
+                        </div>
                       </li>
                     );
                   })}

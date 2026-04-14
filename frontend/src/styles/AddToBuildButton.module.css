@@ -4,33 +4,6 @@
   gap: 4px;
 }
 
-.multiControl {
-  display: flex;
-  align-items: stretch;
-  gap: 4px;
-  margin-right: 4px;
-}
-
-.multiStepBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--muted);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.multiStepBtn:hover {
-  background: var(--surface2);
-  color: var(--error);
-  border-color: var(--error);
-}
-
 .addToBuildBtn {
   display: flex;
   align-items: center;
@@ -39,6 +12,7 @@
   border: none;
   border-radius: 8px;
   padding: 10px 20px;
+  margin-right: 4px;
   color: var(--white);
   font-family: 'Rajdhani', sans-serif;
   font-size: 15px;
@@ -52,41 +26,54 @@
   background: var(--accent2);
 }
 
-.addToBuildBtn.inBuild:not(.multiControl .addToBuildBtn) {
+.addToBuildBtn.inBuild {
   background: var(--surface);
   border: 1px solid var(--accent);
   color: var(--accent);
+  cursor: default;
 }
 
-.addToBuildBtn.inBuild:not(.multiControl .addToBuildBtn):hover {
-  background: rgba(224, 80, 112, 0.08);
-  border-color: var(--error);
-  color: var(--error);
-}
-
-.multiControl .addToBuildBtn.inBuild {
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
   background: var(--surface);
   border: 1px solid var(--accent);
-  color: var(--accent2);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-right: 4px;
 }
 
-.multiControl .addToBuildBtn.inBuild:hover {
-  background: var(--accent-dim);
-}
-
-.badge {
-  display: inline-flex;
+.stepperBtn {
+  display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent);
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 700;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  line-height: 1;
+  width: 36px;
+  height: 100%;
+  background: none;
+  border: none;
+  color: var(--accent2);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  padding: 10px 0;
+}
+
+.stepperBtn:hover {
+  background: var(--accent-dim);
   color: var(--white);
+}
+
+.stepperCount {
+  min-width: 32px;
+  text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent2);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  padding: 0 8px;
+  line-height: 1;
 }
 
 .confirmWrapper {
@@ -181,8 +168,8 @@
   top: calc(100% + 6px);
   right: 0;
   z-index: 50;
-  min-width: 220px;
-  max-width: 320px;
+  min-width: 260px;
+  max-width: 340px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -226,65 +213,172 @@
 }
 
 .buildItem {
-  padding: 2px 6px;
+  padding: 3px 8px;
 }
 
-.buildBtn {
+.buildRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 8px 10px;
-  background: none;
-  border: none;
+  gap: 10px;
+  padding: 7px 8px;
   border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Exo 2', sans-serif;
-  font-size: 13px;
-  color: var(--text);
   transition: background 0.12s;
-  gap: 8px;
 }
 
-.buildBtn:hover:not(:disabled) {
+.buildRow:hover {
   background: var(--accent-dim);
 }
 
-.buildBtn:disabled {
-  cursor: default;
-}
-
-.buildBtn.buildBtnDone {
-  color: var(--accent);
-}
-
-.buildBtn.buildBtnError {
-  color: var(--error, #ef4444);
+.buildRowError {
+  background: rgba(224, 80, 112, 0.08);
 }
 
 .buildName {
   flex: 1;
-  text-align: left;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
 }
 
-.buildBtnStatus {
+.buildStepper {
   display: flex;
   align-items: center;
+  gap: 2px;
   flex-shrink: 0;
-  color: inherit;
+}
+
+.buildStepBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+  padding: 0;
+}
+
+.buildStepBtn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent2);
+  background: var(--accent-dim);
+}
+
+.buildStepBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.buildCount {
+  min-width: 22px;
+  text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent2);
+  padding: 0 3px;
+}
+
+.buildAddBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--accent2);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  padding: 0;
+}
+
+.buildAddBtn:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.buildAddBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .errorText {
+  font-family: 'Exo 2', sans-serif;
   font-size: 11px;
+  color: var(--error);
 }
 
 .spinnerIcon {
   animation: spin 0.7s linear infinite;
+  color: var(--muted);
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+.inBuildBtn {
+  background: var(--surface);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.inBuildBtn:hover:not(:disabled) {
+  background: rgba(224, 80, 112, 0.15);
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.dropdownConfirmActions {
+  display: flex;
+  gap: 4px;
+  padding: 4px 8px 6px;
+  margin-top: 4px;
+}
+
+.dropdownConfirmBtn {
+  flex: 1;
+  padding: 5px 0;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: var(--white);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dropdownConfirmBtn:hover:not(:disabled) {
+  background: var(--accent2);
+}
+
+.dropdownCancelBtn {
+  flex: 1;
+  padding: 5px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dropdownCancelBtn:hover {
+  background: var(--surface2);
 }
