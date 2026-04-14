@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Patch,
   Post,
   UseGuards,
@@ -15,7 +16,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { SignInData } from '../auth/interfaces/auth.interfaces';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { BuildComponentAssignmentDto } from './dtos/BuildComponentAssignment.dto';
-import { Build } from './entities/build';
+import { BuildWithComponentCountDto } from './dtos/BuildWithComponentCountDto';
 
 @Controller('builds')
 export class BuildsController {
@@ -41,14 +42,28 @@ export class BuildsController {
     return await this.buildsService.assignComponent(assignmentDto, currentUser);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch('/remove_component')
+  @UseGuards(AuthGuard)
+  async removeComponent(
+    @Body() assignmentDto: BuildComponentAssignmentDto,
+    @CurrentUser() currentUser: SignInData,
+  ): Promise<void> {
+    return await this.buildsService.removeComponent(assignmentDto, currentUser);
+  }
+
   @HttpCode(HttpStatus.OK)
-  @Get('/unpublished')
+  @Get('/unpublished/:cType/:cId')
   @UseGuards(AuthGuard)
   async findAllUnpublishedBuildsFromCurrentUser(
     @CurrentUser() currentUser: SignInData,
-  ): Promise<Build[]> {
+    @Param('cId') componentId: string,
+    @Param('cType') componentType: string,
+  ): Promise<BuildWithComponentCountDto[]> {
     return await this.buildsService.findAllUnpublishedBuildsFromUser(
       currentUser,
+      componentId,
+      componentType,
     );
   }
 }

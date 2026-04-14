@@ -31,6 +31,8 @@ import { BuildRam } from './entities/build-rams.entity';
 import { BuildStorageDrive } from './entities/build-storage-drives.entity';
 import { BuildFan } from './entities/build-fans.entity';
 import { BuildMonitor } from './entities/build-monitors.entity';
+import { BuildWithComponentCountDto } from './dtos/BuildWithComponentCountDto';
+import { Component } from 'src/components/entities/component.entity';
 
 @Injectable()
 export class BuildsService {
@@ -39,6 +41,14 @@ export class BuildsService {
     private buildRepository: Repository<Build>,
     private readonly componentsService: ComponentsService,
     private readonly usersService: UsersService,
+    @InjectRepository(BuildRam)
+    private buildRamRepository: Repository<BuildRam>,
+    @InjectRepository(BuildFan)
+    private buildFanRepository: Repository<BuildFan>,
+    @InjectRepository(BuildMonitor)
+    private buildMonitorRepository: Repository<BuildMonitor>,
+    @InjectRepository(BuildStorageDrive)
+    private buildStorageDriveRepository: Repository<BuildStorageDrive>,
   ) {}
 
   private readonly componentTypeMap: Record<string, string> = {
@@ -230,7 +240,7 @@ export class BuildsService {
   async findBuildById(id: number): Promise<Build> {
     const build = await this.buildRepository.findOne({
       where: { id: id },
-      relations: ['user'],
+      relations: ['user', 'rams', 'fans', 'monitors', 'storageDrives'],
     });
 
     if (!build) {
@@ -241,11 +251,67 @@ export class BuildsService {
 
   async findAllUnpublishedBuildsFromUser(
     currentUser: SignInData,
-  ): Promise<Build[]> {
+    componentId: string,
+    componentType: string,
+  ): Promise<BuildWithComponentCountDto[]> {
+    const relationNames = this.buildRepository.metadata.relations.map(
+      (relation) => relation.propertyName,
+    );
     const builds = await this.buildRepository.find({
       where: { user: { id: currentUser.userId }, published: false },
+      relations: relationNames,
     });
-    return builds;
+    const buildsWithComponentsCount = builds.map((b) => {
+      const dto = new BuildWithComponentCountDto();
+      dto.build = b;
+      dto.quantity = this.findComponentCountInBuild(
+        b,
+        componentId,
+        componentType,
+      );
+      return dto;
+    });
+    return buildsWithComponentsCount;
+  }
+
+  findComponentCountInBuild(
+    build: Build,
+    componentId: string,
+    componentType: string,
+  ): number {
+    const buildKey = this.componentTypeMap[componentType];
+
+    if (!buildKey) {
+      throw new BadRequestException(`Unknown component type: ${componentType}`);
+    }
+
+    if (this.multiComponents.has(buildKey)) {
+      const nestedKeyMap: Record<
+        string,
+        keyof (BuildRam & BuildFan & BuildMonitor & BuildStorageDrive)
+      > = {
+        rams: 'ram',
+        fans: 'fan',
+        monitors: 'monitor',
+        storageDrives: 'storageDrive',
+      };
+
+      const nestedKey = nestedKeyMap[buildKey];
+      const entries = build[buildKey] as (
+        | BuildRam
+        | BuildFan
+        | BuildMonitor
+        | BuildStorageDrive
+      )[];
+      const match = entries?.find(
+        (entry) => (entry[nestedKey] as Component).buildcoresId === componentId,
+      );
+
+      return match?.quantity ?? 0;
+    }
+
+    const single = build[buildKey] as Component | undefined;
+    return single?.buildcoresId === componentId ? 1 : 0;
   }
 
   async assignComponent(
@@ -278,41 +344,143 @@ export class BuildsService {
     }
 
     if (this.multiComponents.has(buildKey)) {
-      const quantity = componentAssignment.quantity ?? 1;
-      const joinEntityMap: Record<string, () => object> = {
-        rams: () => {
-          const e = new BuildRam();
-          e.ram = component as Ram;
-          e.quantity = quantity;
-          return e;
-        },
-        fans: () => {
-          const e = new BuildFan();
-          e.fan = component as Fan;
-          e.quantity = quantity;
-          return e;
-        },
-        monitors: () => {
-          const e = new BuildMonitor();
-          e.monitor = component as Monitor;
-          e.quantity = quantity;
-          return e;
-        },
-        storageDrives: () => {
-          const e = new BuildStorageDrive();
-          e.storageDrive = component as StorageDrive;
-          e.quantity = quantity;
-          return e;
-        },
+      const nestedKeyMap: Record<string, string> = {
+        rams: 'ram',
+        fans: 'fan',
+        monitors: 'monitor',
+        storageDrives: 'storageDrive',
       };
-      const createJoinEntity = joinEntityMap[buildKey];
-      if (!createJoinEntity)
-        throw new BadRequestException(`Unhandled multi-component: ${buildKey}`);
-      (build[buildKey] as object[]).push(createJoinEntity());
+
+      const nestedKey = nestedKeyMap[buildKey];
+      const entries = build[buildKey] as (
+        | BuildRam
+        | BuildFan
+        | BuildMonitor
+        | BuildStorageDrive
+      )[];
+
+      const existing = entries?.find(
+        (entry) =>
+          (entry[nestedKey] as Component).buildcoresId ===
+          componentAssignment.componentId,
+      );
+
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        const joinEntityMap: Record<
+          string,
+          () => BuildRam | BuildFan | BuildMonitor | BuildStorageDrive
+        > = {
+          rams: () => {
+            const e = new BuildRam();
+            e.ram = component as Ram;
+            e.quantity = 1;
+            return e;
+          },
+          fans: () => {
+            const e = new BuildFan();
+            e.fan = component as Fan;
+            e.quantity = 1;
+            return e;
+          },
+          monitors: () => {
+            const e = new BuildMonitor();
+            e.monitor = component as Monitor;
+            e.quantity = 1;
+            return e;
+          },
+          storageDrives: () => {
+            const e = new BuildStorageDrive();
+            e.storageDrive = component as StorageDrive;
+            e.quantity = 1;
+            return e;
+          },
+        };
+
+        const createJoinEntity = joinEntityMap[buildKey];
+        if (!createJoinEntity)
+          throw new BadRequestException(
+            `Unhandled multi-component: ${buildKey}`,
+          );
+        entries.push(createJoinEntity());
+      }
     } else {
       build[buildKey] = component;
     }
 
     await this.buildRepository.save(build);
+  }
+
+  async removeComponent(
+    componentAssignment: BuildComponentAssignmentDto,
+    currentUser: SignInData,
+  ) {
+    const build = await this.findBuildById(componentAssignment.buildId);
+
+    if (build.user.id !== currentUser.userId) {
+      throw new UnauthorizedException(
+        "You can't modify a build that's not yours",
+      );
+    }
+
+    if (build.published) {
+      throw new ConflictException("A published build can't be modified");
+    }
+
+    const buildKey = this.componentTypeMap[componentAssignment.componentType];
+
+    if (!buildKey) {
+      throw new BadRequestException(
+        `Unknown component type: ${componentAssignment.componentType}`,
+      );
+    }
+
+    if (this.multiComponents.has(buildKey)) {
+      const nestedKeyMap: Record<string, string> = {
+        rams: 'ram',
+        fans: 'fan',
+        monitors: 'monitor',
+        storageDrives: 'storageDrive',
+      };
+
+      const nestedKey = nestedKeyMap[buildKey];
+      const entries = build[buildKey] as (
+        | BuildRam
+        | BuildFan
+        | BuildMonitor
+        | BuildStorageDrive
+      )[];
+
+      const existing = entries?.find(
+        (entry) =>
+          (entry[nestedKey] as Component).buildcoresId ===
+          componentAssignment.componentId,
+      );
+
+      if (!existing) {
+        throw new NotFoundException('Component not found in build');
+      }
+
+      const repositoryMap: Record<
+        string,
+        Repository<BuildRam | BuildFan | BuildMonitor | BuildStorageDrive>
+      > = {
+        rams: this.buildRamRepository,
+        fans: this.buildFanRepository,
+        monitors: this.buildMonitorRepository,
+        storageDrives: this.buildStorageDriveRepository,
+      };
+
+      if (existing.quantity > 1) {
+        existing.quantity -= 1;
+        await this.buildRepository.save(build);
+      } else {
+        await repositoryMap[buildKey].remove(existing);
+      }
+    } else {
+      build[buildKey] = null;
+      await this.buildRepository.save(build);
+    }
   }
 }
