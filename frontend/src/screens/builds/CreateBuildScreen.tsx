@@ -6,12 +6,16 @@ import { CreateBuildPcComponentPicker } from '../../components/builds/CreateBuil
 import { CREATE_BUILD_SLOTS } from '../../consts/CreateBuildConsts';
 import { CreteBuildPcComponentsSlotRow } from '../../components/builds/CreateBuildPcComponentsSlotRow';
 import { useCreateBuild } from '../../hooks/useCreateBuild';
+import { useCompatibility } from '../../hooks/useCompatibility';
+import { CompatibilityPanel } from '../../components/builds/CompatibilityPanel';
 
 export default function CreateBuildScreen() {
   const {
     build, populated, name, setName, description, setDescription,
     warnings, saving, handleSelect, removeSingle, removeMulti, changeQuantity, handleSave,
   } = useCreateBuild();
+
+  const { issues, loading: compatLoading, error: compatError } = useCompatibility(build);
 
   const [pickerSlot, setPickerSlot] = useState<SlotConfig | null>(null);
 
@@ -54,14 +58,11 @@ export default function CreateBuildScreen() {
 
           <div className={styles.columnRight}>
 
-            <div className={styles.compatPanel}>
-              <div className={styles.compatHeader}>
-                <span className={styles.compatHeaderTitle}>Compatibility</span>
-              </div>
-              <div className={styles.compatBody}>
-                <p className={styles.compatEmpty}>No issues detected.</p>
-              </div>
-            </div>
+            <CompatibilityPanel
+              issues={issues}
+              loading={compatLoading}
+              error={compatError}
+            />
 
             <div className={styles.metaPanel}>
               <div className={styles.metaField}>

@@ -1,5 +1,5 @@
-import { Cpu, Fan, Gpu, HardDrive, Keyboard, Layers, MemoryStick, Monitor, Mouse, PcCase, Thermometer, Zap } from "lucide-react";
-import type { BuildState, SlotConfig } from "../types/CreateBuildTypes";
+import { AlertCircle, AlertTriangle, Cpu, Fan, Gpu, HardDrive, HelpCircle, Keyboard, Layers, MemoryStick, Monitor, Mouse, PcCase, Thermometer, Zap } from "lucide-react";
+import type { BuildState, CompatibilityIssue, SlotConfig } from "../types/CreateBuildTypes";
 
 export const CREATE_BUILD_SLOTS: SlotConfig[] = [
   { key: 'cpuId',          label: 'CPU',          endpoint: 'cpu',           icon: <Cpu size={22} />,        multi: false, specs: ['coreCount', 'boostClock', 'socket'] },
@@ -34,3 +34,29 @@ export const TYPE_TO_BUILD_KEY: Record<string, keyof BuildState> = {
   fan: 'fanIds',
   monitor: 'monitorIds',
 };
+
+export const SEVERITY_META = {
+  error: {
+    icon: AlertCircle,
+    label: 'Error',
+    rowClass: 'rowError',
+    iconClass: 'iconError',
+    badgeClass: 'badgeError',
+  },
+  warning: {
+    icon: AlertTriangle,
+    label: 'Warning',
+    rowClass: 'rowWarning',
+    iconClass: 'iconWarning',
+    badgeClass: 'badgeWarning',
+  },
+  unverifiable: {
+    icon: HelpCircle,
+    label: 'Unverifiable',
+    rowClass: 'rowUnverifiable',
+    iconClass: 'iconUnverifiable',
+    badgeClass: 'badgeUnverifiable',
+  },
+} as const;
+
+export const SEVERITY_ORDER: CompatibilityIssue['severity'][] = ['error', 'warning', 'unverifiable'];

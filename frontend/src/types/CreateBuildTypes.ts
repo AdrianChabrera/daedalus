@@ -94,6 +94,19 @@ export interface UserBuildWithCount extends UserBuild {
   confirmingReplace?: boolean;
 }
 
+export interface CompatibilityIssue {
+  rule: string;
+  severity: 'error' | 'warning' | 'unverifiable';
+  message: string;
+  components: string[];
+}
+
+export interface Props {
+  issues: CompatibilityIssue[];
+  loading: boolean;
+  error: string | null;
+}
+
 export type BuildOpStatus = 'idle' | 'loading' | 'error';
 export type SingleSlot = keyof Omit<BuildState, 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds'>;
 export type MultiSlot = 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds';
