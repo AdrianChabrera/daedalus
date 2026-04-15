@@ -33,6 +33,8 @@ import { BuildFan } from './entities/build-fans.entity';
 import { BuildMonitor } from './entities/build-monitors.entity';
 import { BuildWithComponentCountDto } from './dtos/BuildWithComponentCountDto';
 import { Component } from 'src/components/entities/component.entity';
+import { CheckCompatibilityDto } from 'src/compatibility/dtos/CheckCompatibility.dto';
+import { ComponentWithQuantityDto } from './dtos/ComponentWithQuantity.dto';
 
 @Injectable()
 export class BuildsService {
@@ -155,48 +157,30 @@ export class BuildsService {
         : [],
     ]);
 
-    if (pcCase) build.case = pcCase;
-    if (cpuCooler) build.cpuCooler = cpuCooler;
-    if (cpu) build.cpu = cpu;
-    if (motherboard) build.motherboard = motherboard;
-    if (powerSupply) build.powerSupply = powerSupply;
-    if (gpu) build.gpu = gpu;
-    if (keyboard) build.keyboard = keyboard;
-    if (mouse) build.mouse = mouse;
+    this.assignComponentsToBuild(
+      build,
+      {
+        pcCase,
+        cpuCooler,
+        cpu,
+        motherboard,
+        powerSupply,
+        gpu,
+        keyboard,
+        mouse,
+        fans,
+        rams,
+        monitors,
+        storageDrives,
+      },
+      {
+        fanIds: buildDto.fanIds,
+        ramIds: buildDto.ramIds,
+        monitorIds: buildDto.monitorIds,
+        storageDriveIds: buildDto.storageDriveIds,
+      },
+    );
 
-    build.fans = fans.map((fan: Fan) => {
-      const buildFan = new BuildFan();
-      buildFan.fan = fan;
-      buildFan.quantity =
-        buildDto.fanIds?.find((f) => f.componentId === fan.buildcoresId)
-          ?.quantity ?? 1;
-      return buildFan;
-    });
-    build.monitors = monitors.map((monitor: Monitor) => {
-      const buildMonitor = new BuildMonitor();
-      buildMonitor.monitor = monitor;
-      buildMonitor.quantity =
-        buildDto.monitorIds?.find((m) => m.componentId === monitor.buildcoresId)
-          ?.quantity ?? 1;
-      return buildMonitor;
-    });
-    build.rams = rams.map((ram: Ram) => {
-      const buildRam = new BuildRam();
-      buildRam.ram = ram;
-      buildRam.quantity =
-        buildDto.ramIds?.find((r) => r.componentId === ram.buildcoresId)
-          ?.quantity ?? 1;
-      return buildRam;
-    });
-    build.storageDrives = storageDrives.map((storageDrive: StorageDrive) => {
-      const buildStorageDrive = new BuildStorageDrive();
-      buildStorageDrive.storageDrive = storageDrive;
-      buildStorageDrive.quantity =
-        buildDto.storageDriveIds?.find(
-          (s) => s.componentId === storageDrive.buildcoresId,
-        )?.quantity ?? 1;
-      return buildStorageDrive;
-    });
     build.name = buildDto.name;
     build.description = buildDto.description;
 
@@ -240,7 +224,20 @@ export class BuildsService {
   async findBuildById(id: number): Promise<Build> {
     const build = await this.buildRepository.findOne({
       where: { id: id },
-      relations: ['user', 'rams', 'fans', 'monitors', 'storageDrives'],
+      relations: [
+        'cpu',
+        'motherboard',
+        'cpuCooler',
+        'gpu',
+        'case',
+        'powerSupply',
+        'rams',
+        'rams.ram',
+        'storageDrives',
+        'storageDrives.storageDrive',
+        'fans',
+        'fans.fan',
+      ],
     });
 
     if (!build) {
@@ -482,5 +479,195 @@ export class BuildsService {
       build[buildKey] = null;
       await this.buildRepository.save(build);
     }
+  }
+
+  async assembleFromIds(dto: CheckCompatibilityDto): Promise<Build> {
+    const [
+      pcCase,
+      cpuCooler,
+      cpu,
+      motherboard,
+      powerSupply,
+      gpu,
+      keyboard,
+      mouse,
+    ] = await Promise.all([
+      dto.caseId
+        ? this.componentsService.findComponentById<Case>('case', dto.caseId)
+        : null,
+      dto.cpuCoolerId
+        ? this.componentsService.findComponentById<CpuCooler>(
+            'cpu-cooler',
+            dto.cpuCoolerId,
+          )
+        : null,
+      dto.cpuId
+        ? this.componentsService.findComponentById<Cpu>('cpu', dto.cpuId)
+        : null,
+      dto.motherboardId
+        ? this.componentsService.findComponentById<Motherboard>(
+            'motherboard',
+            dto.motherboardId,
+          )
+        : null,
+      dto.powerSupplyId
+        ? this.componentsService.findComponentById<PowerSupply>(
+            'power-supply',
+            dto.powerSupplyId,
+          )
+        : null,
+      dto.gpuId
+        ? this.componentsService.findComponentById<Gpu>('gpu', dto.gpuId)
+        : null,
+      dto.keyboardId
+        ? this.componentsService.findComponentById<Keyboard>(
+            'keyboard',
+            dto.keyboardId,
+          )
+        : null,
+      dto.mouseId
+        ? this.componentsService.findComponentById<Mouse>('mouse', dto.mouseId)
+        : null,
+    ]);
+
+    const [fans, rams, monitors, storageDrives] = await Promise.all([
+      dto.fanIds?.length
+        ? this.componentsService.findComponentsByIds<Fan>(
+            'fan',
+            dto.fanIds.map((f) => f.componentId),
+          )
+        : [],
+      dto.ramIds?.length
+        ? this.componentsService.findComponentsByIds<Ram>(
+            'ram',
+            dto.ramIds.map((r) => r.componentId),
+          )
+        : [],
+      dto.monitorIds?.length
+        ? this.componentsService.findComponentsByIds<Monitor>(
+            'monitor',
+            dto.monitorIds.map((m) => m.componentId),
+          )
+        : [],
+      dto.storageDriveIds?.length
+        ? this.componentsService.findComponentsByIds<StorageDrive>(
+            'storage-drive',
+            dto.storageDriveIds.map(
+              (s: ComponentWithQuantityDto) => s.componentId,
+            ),
+          )
+        : [],
+    ]);
+
+    const build = new Build();
+
+    this.assignComponentsToBuild(
+      build,
+      {
+        pcCase,
+        cpuCooler,
+        cpu,
+        motherboard,
+        powerSupply,
+        gpu,
+        keyboard,
+        mouse,
+        fans,
+        rams,
+        monitors,
+        storageDrives,
+      },
+      {
+        fanIds: dto.fanIds,
+        ramIds: dto.ramIds,
+        monitorIds: dto.monitorIds,
+        storageDriveIds: dto.storageDriveIds,
+      },
+    );
+
+    return build;
+  }
+
+  private assignComponentsToBuild(
+    build: Build,
+    components: {
+      pcCase: Case | null;
+      cpuCooler: CpuCooler | null;
+      cpu: Cpu | null;
+      motherboard: Motherboard | null;
+      powerSupply: PowerSupply | null;
+      gpu: Gpu | null;
+      keyboard: Keyboard | null;
+      mouse: Mouse | null;
+      fans: Fan[];
+      rams: Ram[];
+      monitors: Monitor[];
+      storageDrives: StorageDrive[];
+    },
+    idSources: {
+      fanIds?: ComponentWithQuantityDto[];
+      ramIds?: ComponentWithQuantityDto[];
+      monitorIds?: ComponentWithQuantityDto[];
+      storageDriveIds?: ComponentWithQuantityDto[];
+    },
+  ): void {
+    const {
+      pcCase,
+      cpuCooler,
+      cpu,
+      motherboard,
+      powerSupply,
+      gpu,
+      keyboard,
+      mouse,
+      fans,
+      rams,
+      monitors,
+      storageDrives,
+    } = components;
+
+    if (pcCase) build.case = pcCase;
+    if (cpuCooler) build.cpuCooler = cpuCooler;
+    if (cpu) build.cpu = cpu;
+    if (motherboard) build.motherboard = motherboard;
+    if (powerSupply) build.powerSupply = powerSupply;
+    if (gpu) build.gpu = gpu;
+    if (keyboard) build.keyboard = keyboard;
+    if (mouse) build.mouse = mouse;
+
+    build.fans = fans.map((fan: Fan) => {
+      const buildFan = new BuildFan();
+      buildFan.fan = fan;
+      buildFan.quantity =
+        idSources.fanIds?.find((f) => f.componentId === fan.buildcoresId)
+          ?.quantity ?? 1;
+      return buildFan;
+    });
+    build.rams = rams.map((ram: Ram) => {
+      const buildRam = new BuildRam();
+      buildRam.ram = ram;
+      buildRam.quantity =
+        idSources.ramIds?.find((r) => r.componentId === ram.buildcoresId)
+          ?.quantity ?? 1;
+      return buildRam;
+    });
+    build.monitors = monitors.map((monitor: Monitor) => {
+      const buildMonitor = new BuildMonitor();
+      buildMonitor.monitor = monitor;
+      buildMonitor.quantity =
+        idSources.monitorIds?.find(
+          (m) => m.componentId === monitor.buildcoresId,
+        )?.quantity ?? 1;
+      return buildMonitor;
+    });
+    build.storageDrives = storageDrives.map((storageDrive: StorageDrive) => {
+      const buildStorageDrive = new BuildStorageDrive();
+      buildStorageDrive.storageDrive = storageDrive;
+      buildStorageDrive.quantity =
+        idSources.storageDriveIds?.find(
+          (s) => s.componentId === storageDrive.buildcoresId,
+        )?.quantity ?? 1;
+      return buildStorageDrive;
+    });
   }
 }

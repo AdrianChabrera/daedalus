@@ -52,5 +52,6 @@ import { BuildStorageDrive } from './entities/build-storage-drives.entity';
     UsersModule,
     ComponentsModule,
   ],
+  exports: [BuildsService],
 })
 export class BuildsModule {}

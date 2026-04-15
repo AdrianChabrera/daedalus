@@ -7,6 +7,7 @@ import { ComponentsModule } from './components/components.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { BuildsModule } from './builds/builds.module';
+import { CompatibilityModule } from './compatibility/compatibility.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { BuildsModule } from './builds/builds.module';
     AuthModule,
     UsersModule,
     BuildsModule,
+    CompatibilityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
