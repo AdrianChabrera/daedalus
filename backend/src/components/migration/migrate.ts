@@ -47,7 +47,6 @@ interface CategoryConfig<T extends ObjectLiteral> {
 }
 
 const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
-  /*
   {
     repoFolder: 'CPU',
     entity: Cpu,
@@ -84,21 +83,18 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     mapper: mapPowerSupply,
     conflictPath: 'buildcoresId',
   },
-  */
   {
     repoFolder: 'PCCase',
     entity: PcCase,
     mapper: mapCase,
     conflictPath: 'buildcoresId',
   },
-  /*
   {
     repoFolder: 'CaseFan',
     entity: Fan,
     mapper: mapFan,
     conflictPath: 'buildcoresId',
   },
-
   {
     repoFolder: 'Motherboard',
     entity: Motherboard,
@@ -123,7 +119,6 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     mapper: mapKeyboard,
     conflictPath: 'buildcoresId',
   },
-  */
 ];
 
 const REPO_OWNER = 'buildcores';

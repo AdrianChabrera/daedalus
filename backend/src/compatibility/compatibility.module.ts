@@ -28,12 +28,22 @@ import { R01CpuMotherboardSocketRule } from './rules/r01-cpu-motherboard-socket.
 import { R02CpuCpuCoolerSocketRule } from './rules/r02-cpu-cpu-cooler-socket.rule';
 import { R03CpuRamTypeRule } from './rules/r03-cpu-ram-type.rule';
 import { R04CpuMustHaveCoolerRule } from './rules/r04-cpu-must-have-cooler.rule';
+import { R06GpuFitsInCaseRule } from './rules/r06-gpu-fits-in-case.rule';
+import { R08SystemMustHaveGpuRule } from './rules/r08-system-must-have-gpu.rule';
+import { R14RamMotherboardMemoryTypeRule } from './rules/r14-ram-motherboard-memory-type.rule';
+import { W01MultipleRamModelsWarning } from './warnings/w01-multiple-ram-models.warning';
+import { R15RamQuantityLimitRule } from './rules/r15-ram-quantity-limit.rule';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
   new R02CpuCpuCoolerSocketRule(),
   new R03CpuRamTypeRule(),
   new R04CpuMustHaveCoolerRule(),
+  new R06GpuFitsInCaseRule(),
+  new R08SystemMustHaveGpuRule(),
+  new R14RamMotherboardMemoryTypeRule(),
+  new R15RamQuantityLimitRule(),
+  new W01MultipleRamModelsWarning(),
 ];
 
 @Module({
