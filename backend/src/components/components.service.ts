@@ -15,7 +15,7 @@ import { Motherboard } from './entities/main-entities/motherboard.entity';
 import { Mouse } from './entities/main-entities/mouse.entity';
 import { PowerSupply } from './entities/main-entities/power-supply.entity';
 import { Ram } from './entities/main-entities/ram.entity';
-import { Case } from './entities/main-entities/case.entity';
+import { PcCase } from './entities/main-entities/pc-case.entity';
 import { CpuCooler } from './entities/main-entities/cpu-cooler.entity';
 import { StorageDrive } from './entities/main-entities/storage.entity';
 import {
@@ -33,7 +33,8 @@ export class ComponentsService {
   private readonly repositories: Record<string, Repository<Component>>;
 
   constructor(
-    @InjectRepository(Case) private readonly caseRepository: Repository<Case>,
+    @InjectRepository(PcCase)
+    private readonly caseRepository: Repository<PcCase>,
     @InjectRepository(CpuCooler)
     private readonly cpuCoolerRepository: Repository<CpuCooler>,
     @InjectRepository(Cpu) private readonly cpuRepository: Repository<Cpu>,
@@ -54,7 +55,7 @@ export class ComponentsService {
     private readonly storageRepository: Repository<StorageDrive>,
   ) {
     this.repositories = {
-      case: this.caseRepository,
+      'pc-case': this.caseRepository,
       'cpu-cooler': this.cpuCoolerRepository,
       cpu: this.cpuRepository,
       fan: this.fanRepository,

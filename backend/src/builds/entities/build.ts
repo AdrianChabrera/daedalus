@@ -1,4 +1,4 @@
-import { Case } from '../../components/entities/main-entities/case.entity';
+import { PcCase } from '../../components/entities/main-entities/pc-case.entity';
 import { CpuCooler } from '../../components/entities/main-entities/cpu-cooler.entity';
 import { Cpu } from '../../components/entities/main-entities/cpu.entity';
 import { Gpu } from '../../components/entities/main-entities/gpu.entity';
@@ -38,9 +38,9 @@ export class Build {
   @CreateDateColumn()
   createdAt!: Date;
 
-  @ManyToOne(() => Case, { nullable: true })
-  @JoinColumn({ name: 'case_id' })
-  case?: Case;
+  @ManyToOne(() => PcCase, { nullable: true })
+  @JoinColumn({ name: 'pc_case_id' })
+  pcCase?: PcCase;
 
   @ManyToOne(() => CpuCooler, { nullable: true })
   @JoinColumn({ name: 'cpu_cooler_id' })

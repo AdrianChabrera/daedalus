@@ -6,7 +6,7 @@ import { CREATE_BUILD_SLOTS, STORAGE_KEY } from '../consts/CreateBuildConsts';
 import type { BuildState, MultiComponentEntry, MultiSlot, SelectedComponent, SingleSlot, SlotConfig } from '../types/CreateBuildTypes';
 
 const INITIAL_BUILD: BuildState = {
-  cpuId: null, gpuId: null, motherboardId: null, caseId: null,
+  cpuId: null, gpuId: null, motherboardId: null, pcCaseId: null,
   powerSupplyId: null, cpuCoolerId: null, keyboardId: null, mouseId: null,
   ramIds: [], storageDriveIds: [], fanIds: [], monitorIds: [],
 };
@@ -153,7 +153,7 @@ export function useCreateBuild() {
     const body = {
       name: name.trim(),
       description: description.trim() || undefined,
-      caseId: build.caseId,
+      pcCaseId: build.pcCaseId,
       cpuCoolerId: build.cpuCoolerId,
       cpuId: build.cpuId,
       gpuId: build.gpuId,

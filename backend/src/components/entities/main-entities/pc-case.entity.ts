@@ -1,8 +1,8 @@
 import { Column, Entity } from 'typeorm';
 import { Component } from '../component.entity';
 
-@Entity('cases')
-export class Case extends Component {
+@Entity('pc_cases')
+export class PcCase extends Component {
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   width!: number | null;
 

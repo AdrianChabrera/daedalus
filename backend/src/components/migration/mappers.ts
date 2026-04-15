@@ -1,6 +1,6 @@
 import { str, num, bool, obj, arr } from 'src/components/utils/utils';
 import { Cpu } from '../entities/main-entities/cpu.entity';
-import { Case } from '../entities/main-entities/case.entity';
+import { PcCase } from '../entities/main-entities/pc-case.entity';
 import { CpuCooler } from '../entities/main-entities/cpu-cooler.entity';
 import { Gpu } from '../entities/main-entities/gpu.entity';
 import { PowerSupply } from '../entities/main-entities/power-supply.entity';
@@ -32,10 +32,10 @@ function mapBaseEntity<T extends Component>(
   return entity;
 }
 
-export function mapCase(raw: Record<string, unknown>): Case {
+export function mapCase(raw: Record<string, unknown>): PcCase {
   const dimensions = obj(raw.dimensions_mm);
 
-  const entity = mapBaseEntity(new Case(), raw);
+  const entity = mapBaseEntity(new PcCase(), raw);
 
   entity.width = num(dimensions.width) || null;
   entity.height = num(dimensions.height) || null;

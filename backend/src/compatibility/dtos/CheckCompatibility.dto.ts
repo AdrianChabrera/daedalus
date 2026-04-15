@@ -7,7 +7,7 @@ export class CheckCompatibilityDto {
 
   @IsUUID('4')
   @IsOptional()
-  caseId?: string;
+  pcCaseId?: string;
 
   @IsUUID('4')
   @IsOptional()

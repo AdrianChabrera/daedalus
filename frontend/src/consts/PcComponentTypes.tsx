@@ -91,7 +91,7 @@ export const COMPONENT_TYPES: PcComponentTypeConfig[] = [
   },
   {
     label: 'Case',
-    endpoint: 'case',
+    endpoint: 'pc-case',
     icon: <PcCase size={16} />,
     sortFields: [
       { label: 'Volume', field: 'volume' },

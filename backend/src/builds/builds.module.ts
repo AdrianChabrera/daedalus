@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BuildsService } from './builds.service';
 import { BuildsController } from './builds.controller';
-import { Case } from '../components/entities/main-entities/case.entity';
+import { PcCase } from '../components/entities/main-entities/pc-case.entity';
 import { CpuCooler } from '../components/entities/main-entities/cpu-cooler.entity';
 import { Cpu } from '../components/entities/main-entities/cpu.entity';
 import { Fan } from '../components/entities/main-entities/fan.entity';
@@ -29,7 +29,7 @@ import { BuildStorageDrive } from './entities/build-storage-drives.entity';
   providers: [BuildsService],
   imports: [
     TypeOrmModule.forFeature([
-      Case,
+      PcCase,
       CpuCooler,
       Cpu,
       Fan,

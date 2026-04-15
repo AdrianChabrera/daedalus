@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CompatibilityController } from './compatibility.controller';
 import { CompatibilityService } from './compatibility.service';
-import { Case } from 'src/components/entities/main-entities/case.entity';
+import { PcCase } from 'src/components/entities/main-entities/pc-case.entity';
 import { CpuCooler } from 'src/components/entities/main-entities/cpu-cooler.entity';
 import { Cpu } from 'src/components/entities/main-entities/cpu.entity';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
@@ -49,7 +49,7 @@ const rules = [
   ],
   imports: [
     TypeOrmModule.forFeature([
-      Case,
+      PcCase,
       CpuCooler,
       Cpu,
       Fan,

@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import { Build } from './entities/build';
 import { BuildCreationDto } from './dtos/BuildCreation.dto';
 import { ComponentsService } from '../components/components.service';
-import { Case } from '../components/entities/main-entities/case.entity';
+import { PcCase } from '../components/entities/main-entities/pc-case.entity';
 import { CpuCooler } from '../components/entities/main-entities/cpu-cooler.entity';
 import { Cpu } from '../components/entities/main-entities/cpu.entity';
 import { Gpu } from '../components/entities/main-entities/gpu.entity';
@@ -54,7 +54,7 @@ export class BuildsService {
   ) {}
 
   private readonly componentTypeMap: Record<string, string> = {
-    case: 'case',
+    pcCase: 'pcCase',
     cpuCooler: 'cpuCooler',
     cpu: 'cpu',
     fan: 'fans',
@@ -83,10 +83,10 @@ export class BuildsService {
 
     const [pcCase, cpuCooler, cpu, motherboard, powerSupply] =
       await Promise.all([
-        buildDto.caseId
-          ? this.componentsService.findComponentById<Case>(
-              'case',
-              buildDto.caseId,
+        buildDto.pcCaseId
+          ? this.componentsService.findComponentById<PcCase>(
+              'pc-case',
+              buildDto.pcCaseId,
             )
           : null,
         buildDto.cpuCoolerId
@@ -192,7 +192,7 @@ export class BuildsService {
     await this.buildRepository.save(build);
 
     const response = new BuildResponseDto();
-    response.caseName = pcCase?.name ? pcCase.name : undefined;
+    response.pcCaseName = pcCase?.name ? pcCase.name : undefined;
     response.cpuCoolerName = cpuCooler?.name ? cpuCooler.name : undefined;
     response.cpuName = cpu?.name ? cpu.name : undefined;
     response.motherboardName = motherboard?.name ? motherboard.name : undefined;
@@ -229,7 +229,7 @@ export class BuildsService {
         'motherboard',
         'cpuCooler',
         'gpu',
-        'case',
+        'pcCase',
         'powerSupply',
         'rams',
         'rams.ram',
@@ -492,8 +492,11 @@ export class BuildsService {
       keyboard,
       mouse,
     ] = await Promise.all([
-      dto.caseId
-        ? this.componentsService.findComponentById<Case>('case', dto.caseId)
+      dto.pcCaseId
+        ? this.componentsService.findComponentById<PcCase>(
+            'pc-case',
+            dto.pcCaseId,
+          )
         : null,
       dto.cpuCoolerId
         ? this.componentsService.findComponentById<CpuCooler>(
@@ -591,7 +594,7 @@ export class BuildsService {
   private assignComponentsToBuild(
     build: Build,
     components: {
-      pcCase: Case | null;
+      pcCase: PcCase | null;
       cpuCooler: CpuCooler | null;
       cpu: Cpu | null;
       motherboard: Motherboard | null;
@@ -626,7 +629,7 @@ export class BuildsService {
       storageDrives,
     } = components;
 
-    if (pcCase) build.case = pcCase;
+    if (pcCase) build.pcCase = pcCase;
     if (cpuCooler) build.cpuCooler = cpuCooler;
     if (cpu) build.cpu = cpu;
     if (motherboard) build.motherboard = motherboard;

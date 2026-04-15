@@ -5,7 +5,7 @@ import { API_ROUTES } from '../config/api';
 
 function buildHasAnyComponent(build: BuildState): boolean {
   const singles: (keyof BuildState)[] = [
-    'cpuId', 'gpuId', 'motherboardId', 'caseId',
+    'cpuId', 'gpuId', 'motherboardId', 'pcCaseId',
     'powerSupplyId', 'cpuCoolerId', 'keyboardId', 'mouseId',
   ];
   if (singles.some(k => build[k] !== null)) return true;
@@ -16,7 +16,7 @@ function buildHasAnyComponent(build: BuildState): boolean {
 
 function buildToDto(build: BuildState) {
   return {
-    caseId:        build.caseId        ?? undefined,
+    pcCaseId:        build.pcCaseId        ?? undefined,
     cpuCoolerId:   build.cpuCoolerId   ?? undefined,
     cpuId:         build.cpuId         ?? undefined,
     gpuId:         build.gpuId         ?? undefined,
@@ -77,7 +77,7 @@ export function useCompatibility(build: BuildState, debounceMs = 600) {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    build.cpuId, build.gpuId, build.motherboardId, build.caseId,
+    build.cpuId, build.gpuId, build.motherboardId, build.pcCaseId,
     build.powerSupplyId, build.cpuCoolerId, build.keyboardId, build.mouseId,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(build.ramIds),

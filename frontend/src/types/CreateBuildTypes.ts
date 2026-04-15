@@ -13,7 +13,7 @@ export interface BuildState {
   cpuId: string | null;
   gpuId: string | null;
   motherboardId: string | null;
-  caseId: string | null;
+  pcCaseId: string | null;
   powerSupplyId: string | null;
   cpuCoolerId: string | null;
   keyboardId: string | null;
@@ -76,7 +76,7 @@ export interface UserBuild {
   cpu?: BuildComponent;
   gpu?: BuildComponent;
   motherboard?: BuildComponent;
-  case?: BuildComponent;
+  pcCase?: BuildComponent;
   powerSupply?: BuildComponent;
   cpuCooler?: BuildComponent;
   keyboard?: BuildComponent;

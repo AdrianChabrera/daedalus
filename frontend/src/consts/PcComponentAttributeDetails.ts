@@ -217,7 +217,7 @@ export const COMPONENT_ATTRS: Record<string, AttrDef[]> = {
       description: 'List of CPU sockets this cooler is compatible with.' },
   ],
 
-  case: [
+  'pc-case': [
     ...BASE_ATTRS,
     { key: 'formFactor', label: 'Form Factor', format: str,
       description: 'Case size category.' },

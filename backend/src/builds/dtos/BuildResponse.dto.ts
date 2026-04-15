@@ -18,7 +18,7 @@ export class BuildResponseDto {
   description?: string;
 
   @IsOptional()
-  caseName?: string;
+  pcCaseName?: string;
 
   @IsOptional()
   cpuCoolerName?: string;

@@ -9,7 +9,7 @@ import { Octokit } from '@octokit/rest';
 import { Gpu } from '../entities/main-entities/gpu.entity';
 import { CpuCooler } from '../entities/main-entities/cpu-cooler.entity';
 import { PowerSupply } from '../entities/main-entities/power-supply.entity';
-import { Case } from '../entities/main-entities/case.entity';
+import { PcCase } from '../entities/main-entities/pc-case.entity';
 import {
   mapCase,
   mapCpu,
@@ -47,6 +47,7 @@ interface CategoryConfig<T extends ObjectLiteral> {
 }
 
 const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
+  /*
   {
     repoFolder: 'CPU',
     entity: Cpu,
@@ -83,12 +84,14 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     mapper: mapPowerSupply,
     conflictPath: 'buildcoresId',
   },
+  */
   {
     repoFolder: 'PCCase',
-    entity: Case,
+    entity: PcCase,
     mapper: mapCase,
     conflictPath: 'buildcoresId',
   },
+  /*
   {
     repoFolder: 'CaseFan',
     entity: Fan,
@@ -120,6 +123,7 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     mapper: mapKeyboard,
     conflictPath: 'buildcoresId',
   },
+  */
 ];
 
 const REPO_OWNER = 'buildcores';
@@ -143,7 +147,7 @@ function createDataSource(): DataSource {
       Gpu,
       CpuCooler,
       PowerSupply,
-      Case,
+      PcCase,
       Fan,
       Motherboard,
       Monitor,

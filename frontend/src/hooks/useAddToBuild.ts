@@ -58,7 +58,7 @@ const backendTypeMap: Record<string, string> = {
   cpu: 'cpu',
   gpu: 'gpu',
   motherboard: 'motherboard',
-  case: 'case',
+  'pc-case': 'pcCase',
   'power-supply': 'powerSupply',
   'cpu-cooler': 'cpuCooler',
   keyboard: 'keyboard',
@@ -73,7 +73,7 @@ const singleSlotBuildKey: Record<string, keyof UserBuild> = {
   cpu: 'cpu',
   gpu: 'gpu',
   motherboard: 'motherboard',
-  case: 'case',
+  'pc-case': 'pcCase',
   'power-supply': 'powerSupply',
   'cpu-cooler': 'cpuCooler',
   keyboard: 'keyboard',
@@ -116,7 +116,7 @@ export function useAddToBuild(componentType: string, componentId: string) {
 
   const addToLocalBuild = useCallback(() => {
     const build = loadDraftBuild() ?? {
-      cpuId: null, gpuId: null, motherboardId: null, caseId: null,
+      cpuId: null, gpuId: null, motherboardId: null, pcCaseId: null,
       powerSupplyId: null, cpuCoolerId: null, keyboardId: null, mouseId: null,
       ramIds: [], storageDriveIds: [], fanIds: [], monitorIds: [],
     } as BuildState;

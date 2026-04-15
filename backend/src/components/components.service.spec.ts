@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { SelectQueryBuilder } from 'typeorm';
 
 import { ComponentsService } from './components.service';
-import { Case } from './entities/main-entities/case.entity';
+import { PcCase } from './entities/main-entities/pc-case.entity';
 import { CpuCooler } from './entities/main-entities/cpu-cooler.entity';
 import { Cpu } from './entities/main-entities/cpu.entity';
 import { Fan } from './entities/main-entities/fan.entity';
@@ -55,7 +55,7 @@ function makeRepoMock(qbOverrides?: Partial<SelectQueryBuilder<any>>) {
 }
 
 const ALL_ENTITIES = [
-  Case,
+  PcCase,
   CpuCooler,
   Cpu,
   Fan,
@@ -494,7 +494,7 @@ describe('ComponentsService', () => {
       const { service } = await buildModule();
 
       const supportedTypes = [
-        'case',
+        'pc-case',
         'cpu-cooler',
         'cpu',
         'fan',
@@ -518,7 +518,7 @@ describe('ComponentsService', () => {
     it('tiene repositorio para los 12 tipos de componente', async () => {
       const { service } = await buildModule();
       const types = [
-        'case',
+        'pc-case',
         'cpu-cooler',
         'cpu',
         'fan',

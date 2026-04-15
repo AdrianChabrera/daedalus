@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ComponentsController } from './components.controller';
 import { ComponentsService } from './components.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Case } from './entities/main-entities/case.entity';
+import { PcCase } from './entities/main-entities/pc-case.entity';
 import { Cpu } from './entities/main-entities/cpu.entity';
 import { Fan } from './entities/main-entities/fan.entity';
 import { CpuCooler } from './entities/main-entities/cpu-cooler.entity';
@@ -22,7 +22,7 @@ import { M2Slot } from './entities/secondary-entities/m2-slot.entity';
   providers: [ComponentsService],
   imports: [
     TypeOrmModule.forFeature([
-      Case,
+      PcCase,
       CpuCooler,
       Cpu,
       Fan,

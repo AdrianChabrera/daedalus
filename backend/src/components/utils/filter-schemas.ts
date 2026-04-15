@@ -4,7 +4,7 @@ export const COMPONENT_FILTER_SCHEMAS: Record<
   string,
   Record<string, FilterDefinition>
 > = {
-  case: {
+  'pc-case': {
     width: { field: 'width', type: 'range' },
     height: { field: 'height', type: 'range' },
     depth: { field: 'depth', type: 'range' },
