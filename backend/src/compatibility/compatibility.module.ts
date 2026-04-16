@@ -35,6 +35,8 @@ import { W01MultipleRamModelsWarning } from './warnings/w01-multiple-ram-models.
 import { R15RamQuantityLimitRule } from './rules/r15-ram-quantity-limit.rule';
 import { R16RamMotherboardMaxMemoryRule } from './rules/r16-ram-motherboard-max-memory.rule';
 import { W02RamCpuMotherboardEccRule } from './warnings/w02-ram-cpu-motherboard-ecc.rule';
+import { R19CpuCoolerFitsInCaseRule } from './rules/r19-cpu-cooler-fits-in-case-rule';
+import { R18MotherboardCaseFormFactorRule } from './rules/r18-motherboard-case-form-factor.rule';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
@@ -46,6 +48,8 @@ const rules = [
   new R14RamMotherboardMemoryTypeRule(),
   new R15RamQuantityLimitRule(),
   new R16RamMotherboardMaxMemoryRule(),
+  new R18MotherboardCaseFormFactorRule(),
+  new R19CpuCoolerFitsInCaseRule(),
   new W01MultipleRamModelsWarning(),
   new W02RamCpuMotherboardEccRule(),
 ];

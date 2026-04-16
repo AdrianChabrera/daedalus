@@ -21,7 +21,7 @@ export class R06GpuFitsInCaseRule implements CompatibilityRule {
       };
     }
 
-    if (gpu.length > pcCase.maxVideoCardLength) {
+    if (+gpu.length > +pcCase.maxVideoCardLength) {
       return {
         rule: 'R06_GPU_FITS_IN_CASE',
         severity: 'error',
