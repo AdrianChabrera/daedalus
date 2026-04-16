@@ -33,6 +33,8 @@ import { R08SystemMustHaveGpuRule } from './rules/r08-system-must-have-gpu.rule'
 import { R14RamMotherboardMemoryTypeRule } from './rules/r14-ram-motherboard-memory-type.rule';
 import { W01MultipleRamModelsWarning } from './warnings/w01-multiple-ram-models.warning';
 import { R15RamQuantityLimitRule } from './rules/r15-ram-quantity-limit.rule';
+import { R16RamMotherboardMaxMemoryRule } from './rules/r16-ram-motherboard-max-memory.rule';
+import { W02RamCpuMotherboardEccRule } from './warnings/w02-ram-cpu-motherboard-ecc.rule';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
@@ -43,7 +45,9 @@ const rules = [
   new R08SystemMustHaveGpuRule(),
   new R14RamMotherboardMemoryTypeRule(),
   new R15RamQuantityLimitRule(),
+  new R16RamMotherboardMaxMemoryRule(),
   new W01MultipleRamModelsWarning(),
+  new W02RamCpuMotherboardEccRule(),
 ];
 
 @Module({
