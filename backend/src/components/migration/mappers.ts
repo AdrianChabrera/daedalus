@@ -33,13 +33,23 @@ function mapBaseEntity<T extends Component>(
 }
 
 export function mapCase(raw: Record<string, unknown>): PcCase {
-  const dimensions = obj(raw.dimensions_mm);
-
   const entity = mapBaseEntity(new PcCase(), raw);
 
-  entity.width = num(dimensions.width) || null;
-  entity.height = num(dimensions.height) || null;
-  entity.depth = num(dimensions.depth) || null;
+  if (raw.dimensions_mm) {
+    const dimensions = obj(raw.dimensions_mm);
+    entity.width = num(dimensions.width) || null;
+    entity.height = num(dimensions.height) || null;
+    entity.depth = num(dimensions.depth) || null;
+  } else {
+    const extractedDimensions = str(raw.dimensions)
+      ?.split('x')
+      .map((dim) => num(dim.trim()));
+    if (extractedDimensions && extractedDimensions.length === 3) {
+      entity.width = extractedDimensions[1] || null;
+      entity.height = extractedDimensions[2] || null;
+      entity.depth = extractedDimensions[0] || null;
+    }
+  }
   entity.maxVideoCardLength = num(raw.max_video_card_length) || null;
   entity.maxCpuCoolerHeight = num(raw.max_cpu_cooler_height) || null;
   entity.internal35bays = num(raw.internal_3_5_bays);
@@ -49,7 +59,18 @@ export function mapCase(raw: Record<string, unknown>): PcCase {
   entity.volume = num(raw.volume) || null;
   entity.weight = num(raw.weight) || null;
   entity.formFactor = str(raw.form_factor);
-  entity.powerSupply = str(raw.power_supply);
+  const includedPowerSupply = str(raw.power_supply);
+  const lowerCasedPowerSupply = includedPowerSupply?.toLowerCase();
+  if (
+    lowerCasedPowerSupply === 'none' ||
+    lowerCasedPowerSupply === 'not included' ||
+    lowerCasedPowerSupply === 'no' ||
+    lowerCasedPowerSupply === 'atx (not included)'
+  ) {
+    entity.powerSupply = 'None';
+  } else {
+    entity.powerSupply = includedPowerSupply;
+  }
   entity.sidePanel = str(raw.side_panel);
   entity.supportedMotherboardFormFactors =
     arr(raw.supported_motherboard_form_factors) ?? [];

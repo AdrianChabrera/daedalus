@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CompatibilityRule } from '../interfaces/compatibility-rule.interface';
 import { CompatibilityIssueDto } from '../dtos/CompatibilityIssue.dto';
 import { Build } from 'src/builds/entities/build';
-import { FEEL_FREE_TO_CONTRIBUTE } from '../consts/compatibilityMessages.dto';
+import { FEEL_FREE_TO_CONTRIBUTE } from '../consts/compatibilityMessages';
 
 @Injectable()
 export class R02CpuCpuCoolerSocketRule implements CompatibilityRule {
@@ -25,7 +25,7 @@ export class R02CpuCpuCoolerSocketRule implements CompatibilityRule {
       return {
         rule: 'R02_CPU_CPU_COOLER_SOCKET',
         severity: 'error',
-        message: `CPU socket (${cpu.socket}) must be supported by CPU cooler socket (${cpuCooler.supportedSockets.join(', ')})`,
+        message: `CPU socket (${cpu.socket}) must be supported by CPU cooler (${cpuCooler.supportedSockets.join(', ')})`,
         components: [cpu.name ?? 'CPU', cpuCooler.name ?? 'CPU Cooler'],
       };
     }

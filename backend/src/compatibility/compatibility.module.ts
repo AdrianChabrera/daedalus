@@ -37,6 +37,10 @@ import { R16RamMotherboardMaxMemoryRule } from './rules/r16-ram-motherboard-max-
 import { W02RamCpuMotherboardEccRule } from './warnings/w02-ram-cpu-motherboard-ecc.rule';
 import { R19CpuCoolerFitsInCaseRule } from './rules/r19-cpu-cooler-fits-in-case-rule';
 import { R18MotherboardCaseFormFactorRule } from './rules/r18-motherboard-case-form-factor.rule';
+import { R20RadiatorFitsInCaseRule } from './rules/r20-radiator-fits-in-case.rule';
+import { W03IncludedPowerSupplyWarning } from './warnings/w03-included-power-supply.warning';
+import { R21PSUEnoughEneryForAllSystemRule } from './rules/r21-psu-enough-energy-for-all-system.rule';
+import { R17RamMotherboardFormFactorRule } from './rules/r17-ram-motherboard-form-factor.rule';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
@@ -48,10 +52,14 @@ const rules = [
   new R14RamMotherboardMemoryTypeRule(),
   new R15RamQuantityLimitRule(),
   new R16RamMotherboardMaxMemoryRule(),
+  new R17RamMotherboardFormFactorRule(),
   new R18MotherboardCaseFormFactorRule(),
   new R19CpuCoolerFitsInCaseRule(),
+  new R20RadiatorFitsInCaseRule(),
+  new R21PSUEnoughEneryForAllSystemRule(),
   new W01MultipleRamModelsWarning(),
   new W02RamCpuMotherboardEccRule(),
+  new W03IncludedPowerSupplyWarning(),
 ];
 
 @Module({
