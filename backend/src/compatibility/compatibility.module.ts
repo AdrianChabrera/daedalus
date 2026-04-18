@@ -46,6 +46,7 @@ import { R09R10M2SlotAssignmentRule } from './rules/rules/r09-r10-m2-drive-needs
 import { W04M2SlotGenRule } from './rules/warnings/w04-m2-slot-gen.rule';
 import { R23MotherbardU2PortsRule } from './rules/rules/r23-motherboard-u2-ports.rule';
 import { R22MotherboardSataPortsRule } from './rules/rules/r22-motherboard-sata-ports.rule';
+import { U01UnverifiableStorageInterfaces } from './rules/unverifiable/u01-unverifiable-storage-interfaces.unverifiable';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
@@ -70,6 +71,7 @@ const rules = [
   new W02RamCpuMotherboardEccRule(),
   new W03IncludedPowerSupplyWarning(),
   new W04M2SlotGenRule(),
+  new U01UnverifiableStorageInterfaces(),
 ];
 
 @Module({
