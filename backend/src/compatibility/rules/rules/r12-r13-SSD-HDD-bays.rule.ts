@@ -25,9 +25,13 @@ export class R12R13DrivesBaysRule implements CompatibilityRule {
           FEEL_FREE_TO_CONTRIBUTE,
         components: [
           pcCase.name ?? 'PC Case',
-          storageDrives
-            .map((bs) => bs.storageDrive.name ?? 'Storage Drive')
-            .join(', '),
+          [
+            ...new Set(
+              storageDrives.map(
+                (bs) => bs.storageDrive.name ?? 'Storage Drive',
+              ),
+            ),
+          ].join(', '),
         ],
       };
     }
@@ -53,9 +57,13 @@ export class R12R13DrivesBaysRule implements CompatibilityRule {
         message: `Not enough 3.5" bays in the case for the selected storage drives. Selected case has (${pcCase.internal35bays}) 3.5" bays, but (${sd35}) 3.5" storage drives were selected.`,
         components: [
           pcCase.name ?? 'PC Case',
-          storageDrives
-            .map((bs) => bs.storageDrive.name ?? 'Storage Drive')
-            .join(', '),
+          [
+            ...new Set(
+              storageDrives.map(
+                (bs) => bs.storageDrive.name ?? 'Storage Drive',
+              ),
+            ),
+          ].join(', '),
         ],
       };
     }
@@ -69,9 +77,13 @@ export class R12R13DrivesBaysRule implements CompatibilityRule {
         message: `Not enough bays for 2.5" drives. After fitting (${sd35}) HDDs in 3.5" bays, only (${bays25And35 + sd25}) bays remain for 2.5" drives, but (${sd25}) were selected.`,
         components: [
           pcCase.name ?? 'PC Case',
-          storageDrives
-            .map((bs) => bs.storageDrive.name ?? 'Storage Drive')
-            .join(', '),
+          [
+            ...new Set(
+              storageDrives.map(
+                (bs) => bs.storageDrive.name ?? 'Storage Drive',
+              ),
+            ),
+          ].join(', '),
         ],
       };
     }

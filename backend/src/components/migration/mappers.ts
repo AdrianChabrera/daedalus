@@ -313,6 +313,7 @@ export async function mapMotherboard(
     pcieSlots.map((p) =>
       pcieSlotRepository.save({
         ...p,
+        lanes: num(p.lanes) || null,
         motherboard: entity,
       }),
     ),
@@ -324,8 +325,8 @@ export async function mapMotherboard(
   await Promise.all(
     m2Slots.map((m) =>
       m2SlotRepository.save({
-        m2Interface: str(m.interface),
         ...m,
+        m2Interface: str(m.interface),
         motherboard: entity,
       }),
     ),
