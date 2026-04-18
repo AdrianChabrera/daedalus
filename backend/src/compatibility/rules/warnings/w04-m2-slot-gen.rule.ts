@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CompatibilityRule } from '../interfaces/compatibility-rule.interface';
-import { CompatibilityIssueDto } from '../dtos/CompatibilityIssue.dto';
+import { CompatibilityRule } from '../../interfaces/compatibility-rule.interface';
+import { CompatibilityIssueDto } from '../../dtos/CompatibilityIssue.dto';
 import { Build } from 'src/builds/entities/build';
 import { M2Slot } from 'src/components/entities/secondary-entities/m2-slot.entity';
 import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
@@ -13,7 +13,7 @@ import {
   parseM2Interface,
   parseM2Sizes,
   parseSlotKey,
-} from '../utils/m2SlotsUtils';
+} from '../../utils/m2SlotsUtils';
 
 function bestCompatibleSlotGen(
   drive: StorageDrive,

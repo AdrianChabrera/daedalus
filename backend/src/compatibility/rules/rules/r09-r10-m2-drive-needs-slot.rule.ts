@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CompatibilityRule } from '../interfaces/compatibility-rule.interface';
-import { CompatibilityIssueDto } from '../dtos/CompatibilityIssue.dto';
+import { CompatibilityRule } from '../../interfaces/compatibility-rule.interface';
+import { CompatibilityIssueDto } from '../../dtos/CompatibilityIssue.dto';
 import { Build } from 'src/builds/entities/build';
-import { FEEL_FREE_TO_CONTRIBUTE } from '../consts/compatibilityMessages';
+import { FEEL_FREE_TO_CONTRIBUTE } from '../../consts/compatibilityMessages';
 import {
   isM2Drive,
   isWifiSlot,
@@ -11,7 +11,7 @@ import {
   parseSlotKey,
   parseDriveInterface,
   M2Key,
-} from '../utils/m2SlotsUtils';
+} from '../../utils/m2SlotsUtils';
 import { M2Slot } from 'src/components/entities/secondary-entities/m2-slot.entity';
 import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
 

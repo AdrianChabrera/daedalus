@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CompatibilityRule } from '../interfaces/compatibility-rule.interface';
-import { CompatibilityIssueDto } from '../dtos/CompatibilityIssue.dto';
+import { CompatibilityRule } from '../../interfaces/compatibility-rule.interface';
+import { CompatibilityIssueDto } from '../../dtos/CompatibilityIssue.dto';
 import { Build } from 'src/builds/entities/build';
 
 @Injectable()
