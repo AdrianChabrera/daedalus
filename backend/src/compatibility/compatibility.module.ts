@@ -41,6 +41,7 @@ import { R20RadiatorFitsInCaseRule } from './rules/r20-radiator-fits-in-case.rul
 import { W03IncludedPowerSupplyWarning } from './warnings/w03-included-power-supply.warning';
 import { R21PSUEnoughEneryForAllSystemRule } from './rules/r21-psu-enough-energy-for-all-system.rule';
 import { R17RamMotherboardFormFactorRule } from './rules/r17-ram-motherboard-form-factor.rule';
+import { R12R13DrivesBaysRule } from './rules/r12-r13-SSD-HDD-bays.rule';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
@@ -49,6 +50,7 @@ const rules = [
   new R04CpuMustHaveCoolerRule(),
   new R06GpuFitsInCaseRule(),
   new R08SystemMustHaveGpuRule(),
+  new R12R13DrivesBaysRule(),
   new R14RamMotherboardMemoryTypeRule(),
   new R15RamQuantityLimitRule(),
   new R16RamMotherboardMaxMemoryRule(),
