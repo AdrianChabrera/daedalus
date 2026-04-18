@@ -43,7 +43,9 @@ import { R21PSUEnoughEneryForAllSystemRule } from './rules/r21-psu-enough-energy
 import { R17RamMotherboardFormFactorRule } from './rules/r17-ram-motherboard-form-factor.rule';
 import { R12R13DrivesBaysRule } from './rules/r12-r13-SSD-HDD-bays.rule';
 import { R09R10M2SlotAssignmentRule } from './rules/r09-r10-m2-drive-needs-slot.rule';
-import { W04M2PcieGenDowngradeRule } from './warnings/w04-m2-slot-gen.rule';
+import { W04M2SlotGenRule } from './warnings/w04-m2-slot-gen.rule';
+import { R23MotherbardU2PortsRule } from './rules/r23-motherboard-u2-ports.rule';
+import { R22MotherboardSataPortsRule } from './rules/r22-motherboard-sata-ports.rule';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
@@ -62,10 +64,12 @@ const rules = [
   new R19CpuCoolerFitsInCaseRule(),
   new R20RadiatorFitsInCaseRule(),
   new R21PSUEnoughEneryForAllSystemRule(),
+  new R22MotherboardSataPortsRule(),
+  new R23MotherbardU2PortsRule(),
   new W01MultipleRamModelsWarning(),
   new W02RamCpuMotherboardEccRule(),
   new W03IncludedPowerSupplyWarning(),
-  new W04M2PcieGenDowngradeRule(),
+  new W04M2SlotGenRule(),
 ];
 
 @Module({

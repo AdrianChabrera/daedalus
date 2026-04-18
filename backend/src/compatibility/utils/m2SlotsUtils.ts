@@ -1,3 +1,6 @@
+import { M2Slot } from 'src/components/entities/secondary-entities/m2-slot.entity';
+import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
+
 const KNOWN_WIDTHS = [22, 25];
 
 const KNOWN_LENGTHS = [30, 42, 60, 80, 110];
@@ -136,4 +139,24 @@ export function comparePcieGen(
 ): 'compatible' | 'downgraded' | 'unverifiable' {
   if (driveGen === null || slotGen === null) return 'unverifiable';
   return slotGen >= driveGen ? 'compatible' : 'downgraded';
+}
+
+export function isM2Drive(drive: StorageDrive): boolean {
+  const ff = drive?.formFactor?.toUpperCase() ?? '';
+  return ff.includes('M.2') || ff.includes('M2');
+}
+
+export function isWifiSlot(slot: M2Slot): boolean {
+  const raw = slot.m2Interface?.toUpperCase() ?? '';
+  return (
+    raw.includes('WIFI') ||
+    raw.includes('WI-FI') ||
+    raw.includes('CNVI') ||
+    raw === 'PCIE WIFI MODULE' ||
+    raw === 'WIFI MODULE'
+  );
+}
+
+export function getStorageSlots(slots: M2Slot[]): M2Slot[] {
+  return slots.filter((slot) => !isWifiSlot(slot));
 }

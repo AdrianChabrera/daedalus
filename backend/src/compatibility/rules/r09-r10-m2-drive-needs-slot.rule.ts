@@ -4,6 +4,9 @@ import { CompatibilityIssueDto } from '../dtos/CompatibilityIssue.dto';
 import { Build } from 'src/builds/entities/build';
 import { FEEL_FREE_TO_CONTRIBUTE } from '../consts/compatibilityMessages';
 import {
+  isM2Drive,
+  isWifiSlot,
+  getStorageSlots,
   parseM2Sizes,
   parseSlotKey,
   parseDriveInterface,
@@ -11,11 +14,6 @@ import {
 } from '../utils/m2SlotsUtils';
 import { M2Slot } from 'src/components/entities/secondary-entities/m2-slot.entity';
 import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
-
-function isM2Drive(drive: StorageDrive): boolean {
-  const ff = drive?.formFactor?.toUpperCase() ?? '';
-  return ff.includes('M.2') || ff.includes('M2');
-}
 
 function driveKey(drive: StorageDrive): M2Key | null {
   const iface = parseDriveInterface(drive.storageInterface);
@@ -29,14 +27,7 @@ function driveSlotCompatible(
   drive: StorageDrive,
   slot: M2Slot,
 ): boolean | null {
-  const slotIfaceRaw = slot.m2Interface?.toUpperCase() ?? '';
-  if (
-    slotIfaceRaw.includes('WIFI') ||
-    slotIfaceRaw.includes('WI-FI') ||
-    slotIfaceRaw.includes('CNVI')
-  ) {
-    return false;
-  }
+  if (isWifiSlot(slot)) return false;
 
   const driveSizes = parseM2Sizes(drive.formFactor);
   const slotSizes = parseM2Sizes(slot.size);
@@ -67,7 +58,6 @@ function driveSlotCompatible(
   }
 
   if (keyOk === false) return false;
-
   if (sizeOk === null || keyOk === null) return null;
 
   return true;
@@ -144,16 +134,7 @@ export class R09R10M2SlotAssignmentRule implements CompatibilityRule {
 
     if (m2Drives.length === 0) return null;
 
-    const slots = (motherboard.m2Slots ?? []).filter((s) => {
-      const raw = s.m2Interface?.toUpperCase() ?? '';
-      return !(
-        raw.includes('WIFI') ||
-        raw.includes('WI-FI') ||
-        raw.includes('CNVI') ||
-        raw === 'PCIE WIFI MODULE' ||
-        raw === 'WIFI MODULE'
-      );
-    });
+    const slots = getStorageSlots(motherboard.m2Slots ?? []);
 
     const driveNames = [...new Set(m2Drives.map((d) => d.name ?? 'M.2 Drive'))];
     const components = [motherboard.name ?? 'Motherboard', ...driveNames];

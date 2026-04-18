@@ -5,6 +5,9 @@ import { Build } from 'src/builds/entities/build';
 import { M2Slot } from 'src/components/entities/secondary-entities/m2-slot.entity';
 import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
 import {
+  isM2Drive,
+  isWifiSlot,
+  getStorageSlots,
   comparePcieGen,
   parseDriveInterface,
   parseM2Interface,
@@ -18,9 +21,17 @@ function bestCompatibleSlotGen(
 ): number | null {
   const driveSizes = parseM2Sizes(drive.formFactor);
 
+  const driveIface = parseDriveInterface(drive.storageInterface);
+  const driveUsesOnlyMKey =
+    driveIface !== null &&
+    driveIface.maxPcieGen !== null &&
+    !driveIface.hasSata;
+
   let best: number | null = null;
 
   for (const slot of slots) {
+    if (isWifiSlot(slot)) continue;
+
     const slotIface = parseM2Interface(slot.m2Interface);
     if (!slotIface || slotIface.isWifi) continue;
 
@@ -32,6 +43,7 @@ function bestCompatibleSlotGen(
 
     const sKey = parseSlotKey(slot.key);
     if (sKey === 'E') continue;
+    if (driveUsesOnlyMKey && sKey !== 'M') continue;
 
     if (slotIface.maxPcieGen !== null) {
       if (best === null || slotIface.maxPcieGen > best) {
@@ -44,14 +56,14 @@ function bestCompatibleSlotGen(
 }
 
 @Injectable()
-export class W04M2PcieGenDowngradeRule implements CompatibilityRule {
+export class W04M2SlotGenRule implements CompatibilityRule {
   check(build: Build): CompatibilityIssueDto | null {
     const { motherboard, storageDrives } = build;
     if (!motherboard || !storageDrives || storageDrives.length === 0)
       return null;
 
-    const availableSlots = motherboard.m2Slots ?? [];
-    if (availableSlots.length === 0) return null;
+    const storageSlots = getStorageSlots(motherboard.m2Slots ?? []);
+    if (storageSlots.length === 0) return null;
 
     const downgradedDrives: Array<{
       name: string;
@@ -62,10 +74,7 @@ export class W04M2PcieGenDowngradeRule implements CompatibilityRule {
     for (const bs of storageDrives) {
       const drive = bs.storageDrive;
 
-      const isM2 =
-        drive?.formFactor?.toUpperCase().includes('M.2') ||
-        drive?.formFactor?.toUpperCase().includes('M2');
-      if (!isM2) continue;
+      if (!isM2Drive(drive)) continue;
 
       const driveIface = parseDriveInterface(drive.storageInterface);
       if (!driveIface || driveIface.hasSata || driveIface.isWifi) continue;
@@ -73,7 +82,7 @@ export class W04M2PcieGenDowngradeRule implements CompatibilityRule {
       const driveGen = driveIface.maxPcieGen;
       if (driveGen === null) continue;
 
-      const bestSlotGen = bestCompatibleSlotGen(drive, availableSlots);
+      const bestSlotGen = bestCompatibleSlotGen(drive, storageSlots);
       if (bestSlotGen === null) continue;
 
       const verdict = comparePcieGen(driveGen, bestSlotGen);
