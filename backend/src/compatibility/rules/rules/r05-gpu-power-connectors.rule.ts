@@ -70,7 +70,7 @@ export class R05GpuPowerConnectorsRule implements CompatibilityRule {
       return {
         rule: 'R05_GPU_POWER_CONNECTORS',
         severity: 'error',
-        message: `GPU demands ${demanded8Pin} 6+2-pin connector(s), but the power supply only offers ${offered8Pin}.`,
+        message: `GPU demands (${demanded8Pin}) 6+2-pin connector(s), but the power supply only offers (${offered8Pin}).`,
         components: [gpu.name ?? 'GPU', powerSupply.name ?? 'Power Supply'],
       };
     }
@@ -93,7 +93,7 @@ export class R05GpuPowerConnectorsRule implements CompatibilityRule {
         severity: 'warning',
         message: `The power supply does not have a native 16-pin connector required by the GPU. 
           You will need to use an adapter, which typically requires between 2 and 4 spare 6+2-pin 
-          cables. You currently have ${free8Pin} spare cable(s) available.
+          cables. You currently have (${free8Pin}) spare cable(s) available.
           Please verify the exact cable requirement in your GPU's official 
           specifications, and make sure that an adapter is either included in 
           the box or purchased separately if not.`,

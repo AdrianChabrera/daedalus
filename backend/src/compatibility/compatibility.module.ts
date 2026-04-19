@@ -50,6 +50,7 @@ import { U01UnverifiableStorageInterfaces } from './rules/unverifiable/u01-unver
 import { R07R11PcieSlotAssignmentRule } from './rules/rules/r07-r11-pcie-slot-assignments.rule';
 import { R05GpuPowerConnectorsRule } from './rules/rules/r05-gpu-power-connectors.rule';
 import { W05W06CpuPowerConnectorWarning } from './rules/warnings/w05-w06-cpu-power-connector.warning';
+import { R24R25SATAConnectorsRule } from './rules/rules/r24-r25-SATA-power-connectors.rule';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
@@ -72,6 +73,7 @@ const rules = [
   new R21PSUEnoughEneryForAllSystemRule(),
   new R22MotherboardSataPortsRule(),
   new R23MotherbardU2PortsRule(),
+  new R24R25SATAConnectorsRule(),
   new W01MultipleRamModelsWarning(),
   new W02RamCpuMotherboardEccRule(),
   new W03IncludedPowerSupplyWarning(),
