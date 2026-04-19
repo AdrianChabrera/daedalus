@@ -47,13 +47,18 @@ import { W04M2SlotGenRule } from './rules/warnings/w04-m2-slot-gen.rule';
 import { R23MotherbardU2PortsRule } from './rules/rules/r23-motherboard-u2-ports.rule';
 import { R22MotherboardSataPortsRule } from './rules/rules/r22-motherboard-sata-ports.rule';
 import { U01UnverifiableStorageInterfaces } from './rules/unverifiable/u01-unverifiable-storage-interfaces.unverifiable';
+import { R07R11PcieSlotAssignmentRule } from './rules/rules/r07-r11-pcie-slot-assignments.rule';
+import { R05GpuPowerConnectorsRule } from './rules/rules/r05-gpu-power-connectors.rule';
+import { W05W06CpuPowerConnectorWarning } from './rules/warnings/w05-w06-cpu-power-connector.warning';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
   new R02CpuCpuCoolerSocketRule(),
   new R03CpuRamTypeRule(),
   new R04CpuMustHaveCoolerRule(),
+  new R05GpuPowerConnectorsRule(),
   new R06GpuFitsInCaseRule(),
+  new R07R11PcieSlotAssignmentRule(),
   new R08SystemMustHaveGpuRule(),
   new R09R10M2SlotAssignmentRule(),
   new R12R13DrivesBaysRule(),
@@ -71,6 +76,7 @@ const rules = [
   new W02RamCpuMotherboardEccRule(),
   new W03IncludedPowerSupplyWarning(),
   new W04M2SlotGenRule(),
+  new W05W06CpuPowerConnectorWarning(),
   new U01UnverifiableStorageInterfaces(),
 ];
 

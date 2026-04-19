@@ -261,6 +261,7 @@ export async function mapMotherboard(
   const m2Slots = (raw.m2_slots as Record<string, unknown>[]) ?? [];
   const onboardEthernet =
     (raw.onboard_ethernet as Record<string, unknown>[]) ?? [];
+  const powerConnectors = obj(raw.power_connectors);
 
   const entity = mapBaseEntity(new Motherboard(), raw);
 
@@ -293,6 +294,7 @@ export async function mapMotherboard(
       .map((e) => [str(e?.controller), str(e?.speed)].filter(Boolean).join(' '))
       .filter(Boolean)
       .join(', ') || null;
+  entity.cpuPowerConnectors = arr(powerConnectors.cpu_power);
 
   pcieSlots.map((p) => {
     const quantity = num(p.quantity) || 1;

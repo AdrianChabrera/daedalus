@@ -103,4 +103,11 @@ export class Motherboard extends Component {
 
   @Column({ type: 'int', nullable: true, name: 'pcie_slot_count' })
   pcieSlotCount!: number;
+
+  @Column({
+    type: 'simple-array',
+    nullable: true,
+    name: 'cpu_power_connectors',
+  })
+  cpuPowerConnectors!: string[] | null;
 }
