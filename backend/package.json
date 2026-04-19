@@ -74,12 +74,24 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.ts",
+      "!**/*.spec.ts",
+      "!**/*.module.ts",
+      "!main.ts",
+      "!**/entities/**",
+      "!**/dtos/**",
+      "!**/migration/**",
+      "!**/interfaces/**",
+      "!**/consts/**"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1"
-    }
+    },
+    "coverageReporters": [
+    "lcov",
+    "text-summary"
+    ]
   }
 }
