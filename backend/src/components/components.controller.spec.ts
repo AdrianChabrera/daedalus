@@ -71,8 +71,6 @@ describe('ComponentsController', () => {
     });
   });
 
-  // ── getAllComponents ──────────────────────────────────────────────────────
-
   describe('getAllComponents()', () => {
     it('calls findAllComponents with parsed page and limit', async () => {
       mockComponentsService.findAllComponents.mockResolvedValue(
