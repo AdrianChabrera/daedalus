@@ -11,7 +11,7 @@ import {
   parseSlotKey,
   parseDriveInterface,
   M2Key,
-} from '../../utils/m2SlotsUtils';
+} from '../../utils/m2-slot-utils';
 import { M2Slot } from 'src/components/entities/secondary-entities/m2-slot.entity';
 import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
 

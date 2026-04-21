@@ -12,9 +12,9 @@ import {
   maximumMatching,
   PhysicalPcieSlot,
   ParsedPcieInterface,
-} from '../../utils/pcieSlotsUtils';
+} from '../../utils/pcie-slot-utils';
 import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
-import { isM2Drive } from '../../utils/m2SlotsUtils';
+import { isM2Drive } from '../../utils/m2-slot-utils';
 
 function needsFullSizePcieSlot(drive: StorageDrive): boolean {
   if (!drive.storageInterface) return false;

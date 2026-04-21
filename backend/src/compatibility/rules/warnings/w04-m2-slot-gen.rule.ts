@@ -13,7 +13,7 @@ import {
   parseM2Interface,
   parseM2Sizes,
   parseSlotKey,
-} from '../../utils/m2SlotsUtils';
+} from '../../utils/m2-slot-utils';
 
 function bestCompatibleSlotGen(
   drive: StorageDrive,
