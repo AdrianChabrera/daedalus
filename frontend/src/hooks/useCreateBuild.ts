@@ -188,7 +188,7 @@ export function useCreateBuild() {
       }
 
       clearDraft();
-      navigate('/builds');
+      navigate('/builds/my-builds');
     } catch {
       setWarnings(['Network error. Please try again.']);
     } finally {

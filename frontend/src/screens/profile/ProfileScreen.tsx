@@ -41,14 +41,21 @@ export default function ProfileScreen() {
       <div className="bgGlow" aria-hidden />
       <div className="bgGrid" aria-hidden />
 
-      <div style={{ padding: '20px', position: 'relative', zIndex: 10 }}>
+      <div style={{ padding: '20px', position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h2>Profile Screen: To be implemented</h2>
         <button
           onClick={() => setModalOpen(true)}
           disabled={loading}
-          style={{ background: 'red', color: 'white', padding: '10px', marginTop: '10px' }}
+          style={{ background: 'red', color: 'white', padding: '10px', marginTop: '10px'}}
         >
           {loading ? 'Deleting...' : 'Delete My Profile'}
+        </button>
+        <button
+          onClick={() => navigate('/builds/my-builds')}
+          disabled={loading}
+          style={{ background: 'white', color: 'black', padding: '10px', marginTop: '10px'}}
+        >
+          My builds
         </button>
       </div>
 

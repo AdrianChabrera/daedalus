@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import styles from '../../styles/Navbar.module.css';
-import { Component, Computer, LogOut, MonitorCog, User } from 'lucide-react';
+import { Component, Computer, LogOut, MonitorCog, User, LibraryBig } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -46,6 +46,16 @@ export default function Navbar() {
         <Computer />
         Public Builds
       </Link>
+
+      {user && (
+        <Link
+          to="/builds/my-builds"
+          className={`${styles.navBtn} ${isActive('/builds/my-builds') ? styles.navBtnActive : ''}`}
+        >
+          <LibraryBig />
+          My Builds
+        </Link>
+      )}
 
       <div className={styles.spacer} />
 
