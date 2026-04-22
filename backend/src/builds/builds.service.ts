@@ -309,7 +309,8 @@ export class BuildsService {
           search: trimmedSearch,
           threshold: SIMILARITY_THRESHOLD,
         })
-          .orderBy(`similarity(build.name, :search)`, 'DESC')
+          .addSelect(`similarity(build.name, :search)`, 'search_similarity')
+          .orderBy('search_similarity', 'DESC')
           .addOrderBy(`build.name`, 'ASC');
       } else {
         if (orderField) {
