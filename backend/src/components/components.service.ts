@@ -124,6 +124,8 @@ export class ComponentsService {
     order: string = 'name-ASC',
     search: string = '',
   ): Promise<PaginatedResult<Component>> {
+    // TODO: add order fields validation (like in buildService)
+
     const repository = this.repositories[componentType.toLowerCase()];
 
     if (!repository) {

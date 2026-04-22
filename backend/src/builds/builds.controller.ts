@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { BuildCreationDto } from './dtos/BuildCreation.dto';
@@ -30,6 +31,48 @@ export class BuildsController {
     @CurrentUser() currentUser: SignInData,
   ): Promise<BuildResponseDto> {
     return await this.buildsService.createBuild(buildDto, currentUser);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/')
+  async getAllPublicBuilds(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '16',
+    @Query('order') order: string = 'name-ASC',
+    @Query('search') search: string = '',
+  ) {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    return await this.buildsService.findAllBuilds(
+      null,
+      pageNumber,
+      limitNumber,
+      order,
+      search,
+    );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/my-builds')
+  @UseGuards(AuthGuard)
+  async getMyBuilds(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '16',
+    @Query('order') order: string = 'name-ASC',
+    @Query('search') search: string = '',
+    @CurrentUser() currentUser: SignInData,
+  ) {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    return await this.buildsService.findAllBuilds(
+      currentUser,
+      pageNumber,
+      limitNumber,
+      order,
+      search,
+    );
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

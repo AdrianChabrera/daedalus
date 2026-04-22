@@ -35,6 +35,10 @@ import { BuildWithComponentCountDto } from './dtos/BuildWithComponentCountDto';
 import { Component } from 'src/components/entities/component.entity';
 import { CheckCompatibilityDto } from 'src/compatibility/dtos/CheckCompatibility.dto';
 import { ComponentWithQuantityDto } from './dtos/ComponentWithQuantity.dto';
+import { PaginatedResult } from 'src/components/interfaces/pc-components.interfaces';
+import { SelectQueryBuilder } from 'typeorm/browser';
+
+const SIMILARITY_THRESHOLD = 0.1;
 
 @Injectable()
 export class BuildsService {
@@ -269,6 +273,65 @@ export class BuildsService {
       return dto;
     });
     return buildsWithComponentsCount;
+  }
+
+  async findAllBuilds(
+    currentUser: SignInData | null,
+    page: number = 1,
+    limit: number = 16,
+    order: string = 'name-ASC',
+    search: string = '',
+  ): Promise<PaginatedResult<Build>> {
+    const validOrderFileds = ['name', 'createdAt'];
+    const [orderField, orderDir = 'ASC'] = order.split('-');
+
+    if (!validOrderFileds.includes(orderField)) {
+      throw new BadRequestException(
+        `${order} param is not a valid order param`,
+      );
+    }
+
+    const skip = (page - 1) * limit;
+    const direction = orderDir.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+    try {
+      const qb: SelectQueryBuilder<Build> = this.buildRepository
+        .createQueryBuilder('build')
+        .leftJoin('build.user', 'user')
+        .addSelect(['user.username'])
+        .skip(skip)
+        .take(limit);
+
+      const trimmedSearch = search.trim();
+
+      if (trimmedSearch) {
+        qb.andWhere(`similarity(build.name, :search) > :threshold`, {
+          search: trimmedSearch,
+          threshold: SIMILARITY_THRESHOLD,
+        })
+          .orderBy(`similarity(build.name, :search)`, 'DESC')
+          .addOrderBy(`build.name`, 'ASC');
+      } else {
+        if (orderField) {
+          qb.orderBy(`build.${orderField}`, direction, 'NULLS LAST');
+        }
+      }
+
+      if (currentUser) {
+        qb.andWhere('build.userId = :userId', {
+          userId: currentUser.userId,
+        });
+      } else {
+        qb.andWhere('build.published = true');
+      }
+
+      const [data, total] = await qb.getManyAndCount();
+
+      return { data, total, page, limit };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new BadRequestException(message);
+    }
   }
 
   findComponentCountInBuild(

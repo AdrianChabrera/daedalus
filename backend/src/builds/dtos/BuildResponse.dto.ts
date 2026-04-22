@@ -4,6 +4,7 @@ import {
   MaxLength,
   IsArray,
   IsOptional,
+  IsBoolean,
 } from 'class-validator';
 
 export class BuildResponseDto {
@@ -16,6 +17,10 @@ export class BuildResponseDto {
   @MaxLength(1000)
   @IsOptional()
   description?: string;
+
+  @IsString()
+  @IsOptional()
+  photoUrl?: string;
 
   @IsOptional()
   pcCaseName?: string;
@@ -55,4 +60,8 @@ export class BuildResponseDto {
 
   @IsNotEmpty()
   username!: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isPublished?: boolean;
 }
