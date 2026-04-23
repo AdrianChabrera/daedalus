@@ -229,6 +229,7 @@ export class BuildsService {
     const build = await this.buildRepository.findOne({
       where: { id: id },
       relations: [
+        'user',
         'cpu',
         'motherboard',
         'cpuCooler',
@@ -736,5 +737,20 @@ export class BuildsService {
         )?.quantity ?? 1;
       return buildStorageDrive;
     });
+  }
+
+  async deleteBuild(currentUser: SignInData, id: number): Promise<void> {
+    const build = await this.findBuildById(id);
+    if (!currentUser || currentUser.userId !== build.user.id) {
+      throw new UnauthorizedException(
+        "You can't delete a build that is not yours",
+      );
+    }
+
+    const result = await this.buildRepository.delete(build.id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Build with ID ${id} not found`);
+    }
   }
 }

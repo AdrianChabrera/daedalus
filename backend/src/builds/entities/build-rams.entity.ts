@@ -13,7 +13,10 @@ export class BuildRam {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Build, (b) => b.rams, { nullable: false })
+  @ManyToOne(() => Build, (b) => b.rams, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'build_id' })
   build!: Build;
 

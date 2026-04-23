@@ -85,6 +85,6 @@ export class Build {
   @OneToMany(() => BuildStorageDrive, (s) => s.build, { cascade: true })
   storageDrives!: BuildStorageDrive[];
 
-  @ManyToOne(() => User, (u) => u.builds)
+  @ManyToOne(() => User, (u) => u.builds, { onDelete: 'CASCADE' })
   user!: User;
 }

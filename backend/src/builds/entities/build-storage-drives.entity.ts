@@ -13,7 +13,10 @@ export class BuildStorageDrive {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Build, (b) => b.storageDrives, { nullable: false })
+  @ManyToOne(() => Build, (b) => b.storageDrives, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'build_id' })
   build!: Build;
 

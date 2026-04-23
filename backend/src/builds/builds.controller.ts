@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -108,5 +110,15 @@ export class BuildsController {
       componentId,
       componentType,
     );
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('/:id')
+  @UseGuards(AuthGuard)
+  async deleteBuildById(
+    @CurrentUser() currentUser: SignInData,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    return await this.buildsService.deleteBuild(currentUser, id);
   }
 }

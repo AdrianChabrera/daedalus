@@ -13,7 +13,10 @@ export class BuildFan {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Build, (b) => b.fans, { nullable: false })
+  @ManyToOne(() => Build, (b) => b.fans, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'build_id' })
   build!: Build;
 

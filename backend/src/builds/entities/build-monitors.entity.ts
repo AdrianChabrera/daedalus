@@ -13,7 +13,10 @@ export class BuildMonitor {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Build, (b) => b.monitors, { nullable: false })
+  @ManyToOne(() => Build, (b) => b.monitors, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'build_id' })
   build!: Build;
 
