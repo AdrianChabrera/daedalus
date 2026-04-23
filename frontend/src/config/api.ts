@@ -14,6 +14,7 @@ export const API_ROUTES = {
     PUBLIC_BUILDS: `${BASE_URL}/builds`,
     ASSIGN_COMPONENT: `${BASE_URL}/builds/assign_component`,
     REMOVE_COMPONENT: `${BASE_URL}/builds/remove_component`,
+    DELETE_BUILD: (id: number) =>  `${BASE_URL}/builds/${id}`,
     UNPUBLISHED_BUILDS: (cType: string, cId: string) => `${BASE_URL}/builds/unpublished/${cType}/${cId}`,
     // Compatibility
     CHECK_COMPATIBILITY: `${BASE_URL}/compatibility`,

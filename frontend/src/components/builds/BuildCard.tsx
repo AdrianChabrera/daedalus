@@ -51,7 +51,7 @@ export function BuildCard({ build, onClick, footerInfo }: BuildCardProps) {
   );
 }
 
-export function MyBuildCard({ build, onClick }: Omit<BuildCardProps, 'footerInfo'>) {
+export function MyBuildCard({ build, onClick, onDelete }: Omit<BuildCardProps, 'footerInfo'> & { onDelete?: () => void }) {
   return (
     <BuildCard
       build={build}
@@ -71,7 +71,7 @@ export function MyBuildCard({ build, onClick }: Omit<BuildCardProps, 'footerInfo
             <button
               type="button"
               className={`${styles.cardActionBtn} ${styles['cardActionBtn--danger']}`}
-              onClick={e => e.stopPropagation()}
+              onClick={e => { e.stopPropagation(); onDelete?.(); }}
               aria-label="Delete build"
               title="Delete"
             >

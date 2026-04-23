@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_ROUTES } from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
-import DeleteAccountModal from '../../components/profile/DeleteAccountModal';
+import ConfirmModal from '../../components/general/ConfirmModal';
 
 export default function ProfileScreen() {
   const navigate = useNavigate();
@@ -59,9 +59,18 @@ export default function ProfileScreen() {
         </button>
       </div>
 
-      <DeleteAccountModal
+      <ConfirmModal
         isOpen={modalOpen}
         loading={loading}
+        title="Delete account"
+        description={
+          <>
+            This action is <strong>permanent and irreversible</strong>. Your profile,
+            builds, and all associated data will be deleted immediately.
+          </>
+        }
+        confirmLabel="Yes, delete my account"
+        variant="danger"
         onConfirm={handleDeleteConfirm}
         onCancel={() => setModalOpen(false)}
       />
