@@ -193,34 +193,9 @@ export class BuildsService {
 
     build.published = false;
 
-    await this.buildRepository.save(build);
+    const savedBuild = await this.buildRepository.save(build);
 
-    const response = new BuildResponseDto();
-    response.pcCaseName = pcCase?.name ? pcCase.name : undefined;
-    response.cpuCoolerName = cpuCooler?.name ? cpuCooler.name : undefined;
-    response.cpuName = cpu?.name ? cpu.name : undefined;
-    response.motherboardName = motherboard?.name ? motherboard.name : undefined;
-    response.powerSupplyName = powerSupply?.name ? powerSupply.name : undefined;
-    response.gpuName = gpu?.name ? gpu.name : undefined;
-    response.keyboardName = keyboard?.name ? keyboard.name : undefined;
-    response.mouseName = mouse?.name ? mouse.name : undefined;
-    response.fanNames = fans
-      ? fans.map((f: Fan) => f.name ?? 'Unknown Fan')
-      : [];
-    response.ramNames = rams
-      ? rams.map((r: Ram) => r.name ?? 'Unknown Ram')
-      : [];
-    response.monitorNames = monitors
-      ? monitors.map((m: Monitor) => m.name ?? 'Unknown Monitor')
-      : [];
-    response.storageDriveNames = storageDrives
-      ? storageDrives.map(
-          (s: StorageDrive) => s.name ?? 'Unknown Storage Drive',
-        )
-      : [];
-    response.name = buildDto.name;
-    response.description = buildDto.description;
-    response.username = currentUser.username;
+    const response = new BuildResponseDto(savedBuild, currentUser.username);
 
     return response;
   }
@@ -752,5 +727,10 @@ export class BuildsService {
     if (result.affected === 0) {
       throw new NotFoundException(`Build with ID ${id} not found`);
     }
+  }
+
+  async setPublished(build: Build, published: boolean): Promise<void> {
+    build.published = published;
+    await this.buildRepository.save(build);
   }
 }
