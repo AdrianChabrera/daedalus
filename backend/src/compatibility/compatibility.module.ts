@@ -21,7 +21,6 @@ import { BuildFan } from 'src/builds/entities/build-fans.entity';
 import { BuildRam } from 'src/builds/entities/build-rams.entity';
 import { BuildMonitor } from 'src/builds/entities/build-monitors.entity';
 import { BuildStorageDrive } from 'src/builds/entities/build-storage-drives.entity';
-import { ComponentsModule } from 'src/components/components.module';
 import { BuildsModule } from 'src/builds/builds.module';
 import { COMPATIBILITY_RULES } from './interfaces/compatibility-rule.interface';
 import { R01CpuMotherboardSocketRule } from './rules/rules/r01-cpu-motherboard-socket.rule';
@@ -116,7 +115,6 @@ const rules = [
       BuildStorageDrive,
     ]),
     BuildsModule,
-    ComponentsModule,
   ],
 })
 export class CompatibilityModule {}

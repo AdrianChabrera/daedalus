@@ -3,7 +3,6 @@ import {
   COMPATIBILITY_RULES,
   CompatibilityRule,
 } from './interfaces/compatibility-rule.interface';
-import { ComponentsService } from 'src/components/components.service';
 import { BuildsService } from 'src/builds/builds.service';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';
 import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
@@ -13,7 +12,6 @@ export class CompatibilityService {
   constructor(
     @Inject(COMPATIBILITY_RULES)
     private readonly rules: CompatibilityRule[],
-    private readonly componentsService: ComponentsService,
     private readonly buildsService: BuildsService,
   ) {}
 
