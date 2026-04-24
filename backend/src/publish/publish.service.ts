@@ -51,6 +51,10 @@ export class PublishService {
       );
     }
 
+    if (build.published) {
+      throw new ConflictException('This build is already published');
+    }
+
     this.assertNoCompatibilityErrors(build);
     this.assertMandatoryComponentsInBuild(build);
 

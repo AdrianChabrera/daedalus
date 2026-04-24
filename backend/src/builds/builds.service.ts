@@ -88,105 +88,9 @@ export class BuildsService {
 
     const repo = manager?.getRepository(Build) ?? this.buildRepository;
 
-    const [pcCase, cpuCooler, cpu, motherboard, powerSupply] =
-      await Promise.all([
-        buildDto.pcCaseId
-          ? this.componentsService.findComponentById<PcCase>(
-              'pc-case',
-              buildDto.pcCaseId,
-            )
-          : null,
-        buildDto.cpuCoolerId
-          ? this.componentsService.findComponentById<CpuCooler>(
-              'cpu-cooler',
-              buildDto.cpuCoolerId,
-            )
-          : null,
-        buildDto.cpuId
-          ? this.componentsService.findComponentById<Cpu>('cpu', buildDto.cpuId)
-          : null,
-        buildDto.motherboardId
-          ? this.componentsService.findComponentById<Motherboard>(
-              'motherboard',
-              buildDto.motherboardId,
-            )
-          : null,
-        buildDto.powerSupplyId
-          ? this.componentsService.findComponentById<PowerSupply>(
-              'power-supply',
-              buildDto.powerSupplyId,
-            )
-          : null,
-      ]);
+    const components = await this.resolveComponents(buildDto);
 
-    const [gpu, keyboard, mouse] = await Promise.all([
-      buildDto.gpuId
-        ? this.componentsService.findComponentById<Gpu>('gpu', buildDto.gpuId)
-        : null,
-      buildDto.keyboardId
-        ? this.componentsService.findComponentById<Keyboard>(
-            'keyboard',
-            buildDto.keyboardId,
-          )
-        : null,
-      buildDto.mouseId
-        ? this.componentsService.findComponentById<Mouse>(
-            'mouse',
-            buildDto.mouseId,
-          )
-        : null,
-    ]);
-
-    const [fans, rams, monitors, storageDrives] = await Promise.all([
-      buildDto.fanIds
-        ? this.componentsService.findComponentsByIds<Fan>(
-            'fan',
-            buildDto.fanIds?.map((f) => f.componentId) ?? [],
-          )
-        : [],
-      buildDto.ramIds
-        ? this.componentsService.findComponentsByIds<Ram>(
-            'ram',
-            buildDto.ramIds?.map((r) => r.componentId) ?? [],
-          )
-        : [],
-      buildDto.monitorIds
-        ? this.componentsService.findComponentsByIds<Monitor>(
-            'monitor',
-            buildDto.monitorIds?.map((m) => m.componentId) ?? [],
-          )
-        : [],
-      buildDto.storageDriveIds
-        ? this.componentsService.findComponentsByIds<StorageDrive>(
-            'storage-drive',
-            buildDto.storageDriveIds?.map((s) => s.componentId) ?? [],
-          )
-        : [],
-    ]);
-
-    this.assignComponentsToBuild(
-      build,
-      {
-        pcCase,
-        cpuCooler,
-        cpu,
-        motherboard,
-        powerSupply,
-        gpu,
-        keyboard,
-        mouse,
-        fans,
-        rams,
-        monitors,
-        storageDrives,
-      },
-      {
-        fanIds: buildDto.fanIds,
-        ramIds: buildDto.ramIds,
-        monitorIds: buildDto.monitorIds,
-        storageDriveIds: buildDto.storageDriveIds,
-      },
-    );
+    this.assignComponentsToBuild(build, components, buildDto);
 
     build.name = buildDto.name;
     build.description = buildDto.description;
@@ -199,6 +103,42 @@ export class BuildsService {
     const savedBuild = await repo.save(build);
 
     const response = new BuildResponseDto(savedBuild, currentUser.username);
+
+    return response;
+  }
+
+  async updateBuild(
+    buildDto: BuildCreationDto,
+    currentUser: SignInData,
+    id: number,
+    manager?: EntityManager,
+  ): Promise<BuildResponseDto> {
+    const repo = manager?.getRepository(Build) ?? this.buildRepository;
+
+    const build = await this.findBuildById(id, manager);
+
+    if (build.user.id !== currentUser.userId) {
+      throw new UnauthorizedException(
+        "You can't update a build that is not yours",
+      );
+    }
+
+    if (build.published) {
+      throw new ConflictException(
+        "You can't update an already published build",
+      );
+    }
+
+    const components = await this.resolveComponents(buildDto);
+
+    this.assignComponentsToBuild(build, components, buildDto);
+
+    build.name = buildDto.name;
+    build.description = buildDto.description;
+
+    const updatedBuild = await repo.save(build);
+
+    const response = new BuildResponseDto(updatedBuild, currentUser.username);
 
     return response;
   }
@@ -529,111 +469,9 @@ export class BuildsService {
   }
 
   async assembleFromIds(dto: CheckCompatibilityDto): Promise<Build> {
-    const [
-      pcCase,
-      cpuCooler,
-      cpu,
-      motherboard,
-      powerSupply,
-      gpu,
-      keyboard,
-      mouse,
-    ] = await Promise.all([
-      dto.pcCaseId
-        ? this.componentsService.findComponentById<PcCase>(
-            'pc-case',
-            dto.pcCaseId,
-          )
-        : null,
-      dto.cpuCoolerId
-        ? this.componentsService.findComponentById<CpuCooler>(
-            'cpu-cooler',
-            dto.cpuCoolerId,
-          )
-        : null,
-      dto.cpuId
-        ? this.componentsService.findComponentById<Cpu>('cpu', dto.cpuId)
-        : null,
-      dto.motherboardId
-        ? this.componentsService.findComponentById<Motherboard>(
-            'motherboard',
-            dto.motherboardId,
-          )
-        : null,
-      dto.powerSupplyId
-        ? this.componentsService.findComponentById<PowerSupply>(
-            'power-supply',
-            dto.powerSupplyId,
-          )
-        : null,
-      dto.gpuId
-        ? this.componentsService.findComponentById<Gpu>('gpu', dto.gpuId)
-        : null,
-      dto.keyboardId
-        ? this.componentsService.findComponentById<Keyboard>(
-            'keyboard',
-            dto.keyboardId,
-          )
-        : null,
-      dto.mouseId
-        ? this.componentsService.findComponentById<Mouse>('mouse', dto.mouseId)
-        : null,
-    ]);
-
-    const [fans, rams, monitors, storageDrives] = await Promise.all([
-      dto.fanIds?.length
-        ? this.componentsService.findComponentsByIds<Fan>(
-            'fan',
-            dto.fanIds.map((f) => f.componentId),
-          )
-        : [],
-      dto.ramIds?.length
-        ? this.componentsService.findComponentsByIds<Ram>(
-            'ram',
-            dto.ramIds.map((r) => r.componentId),
-          )
-        : [],
-      dto.monitorIds?.length
-        ? this.componentsService.findComponentsByIds<Monitor>(
-            'monitor',
-            dto.monitorIds.map((m) => m.componentId),
-          )
-        : [],
-      dto.storageDriveIds?.length
-        ? this.componentsService.findComponentsByIds<StorageDrive>(
-            'storage-drive',
-            dto.storageDriveIds.map(
-              (s: ComponentWithQuantityDto) => s.componentId,
-            ),
-          )
-        : [],
-    ]);
-
     const build = new Build();
-
-    this.assignComponentsToBuild(
-      build,
-      {
-        pcCase,
-        cpuCooler,
-        cpu,
-        motherboard,
-        powerSupply,
-        gpu,
-        keyboard,
-        mouse,
-        fans,
-        rams,
-        monitors,
-        storageDrives,
-      },
-      {
-        fanIds: dto.fanIds,
-        ramIds: dto.ramIds,
-        monitorIds: dto.monitorIds,
-        storageDriveIds: dto.storageDriveIds,
-      },
-    );
+    const components = await this.resolveComponents(dto);
+    this.assignComponentsToBuild(build, components, dto);
 
     return build;
   }
@@ -744,5 +582,105 @@ export class BuildsService {
     const repo = manager?.getRepository(Build) ?? this.buildRepository;
     build.published = published;
     await repo.save(build);
+  }
+
+  private async resolveComponents(
+    input: BuildCreationDto | CheckCompatibilityDto,
+  ) {
+    const [
+      pcCase,
+      cpuCooler,
+      cpu,
+      motherboard,
+      powerSupply,
+      gpu,
+      keyboard,
+      mouse,
+    ] = await Promise.all([
+      input.pcCaseId
+        ? this.componentsService.findComponentById<PcCase>(
+            'pc-case',
+            input.pcCaseId,
+          )
+        : null,
+      input.cpuCoolerId
+        ? this.componentsService.findComponentById<CpuCooler>(
+            'cpu-cooler',
+            input.cpuCoolerId,
+          )
+        : null,
+      input.cpuId
+        ? this.componentsService.findComponentById<Cpu>('cpu', input.cpuId)
+        : null,
+      input.motherboardId
+        ? this.componentsService.findComponentById<Motherboard>(
+            'motherboard',
+            input.motherboardId,
+          )
+        : null,
+      input.powerSupplyId
+        ? this.componentsService.findComponentById<PowerSupply>(
+            'power-supply',
+            input.powerSupplyId,
+          )
+        : null,
+      input.gpuId
+        ? this.componentsService.findComponentById<Gpu>('gpu', input.gpuId)
+        : null,
+      input.keyboardId
+        ? this.componentsService.findComponentById<Keyboard>(
+            'keyboard',
+            input.keyboardId,
+          )
+        : null,
+      input.mouseId
+        ? this.componentsService.findComponentById<Mouse>(
+            'mouse',
+            input.mouseId,
+          )
+        : null,
+    ]);
+
+    const [fans, rams, monitors, storageDrives] = await Promise.all([
+      input.fanIds?.length
+        ? this.componentsService.findComponentsByIds<Fan>(
+            'fan',
+            input.fanIds.map((f) => f.componentId),
+          )
+        : [],
+      input.ramIds?.length
+        ? this.componentsService.findComponentsByIds<Ram>(
+            'ram',
+            input.ramIds.map((r) => r.componentId),
+          )
+        : [],
+      input.monitorIds?.length
+        ? this.componentsService.findComponentsByIds<Monitor>(
+            'monitor',
+            input.monitorIds.map((m) => m.componentId),
+          )
+        : [],
+      input.storageDriveIds?.length
+        ? this.componentsService.findComponentsByIds<StorageDrive>(
+            'storage-drive',
+            input.storageDriveIds.map((s) => s.componentId),
+          )
+        : [],
+    ]);
+
+    return {
+      pcCase,
+      cpuCooler,
+      cpu,
+      motherboard,
+      powerSupply,
+      gpu,
+      keyboard,
+      mouse,
+      fans,
+      rams,
+      monitors,
+      storageDrives,
+    };
   }
 }

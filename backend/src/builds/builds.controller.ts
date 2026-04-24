@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -33,6 +34,17 @@ export class BuildsController {
     @CurrentUser() currentUser: SignInData,
   ): Promise<BuildResponseDto> {
     return await this.buildsService.createBuild(buildDto, currentUser);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Put('/:id')
+  @UseGuards(AuthGuard)
+  async updateBuild(
+    @Body() buildDto: BuildCreationDto,
+    @CurrentUser() currentUser: SignInData,
+    @Param('id') id: number,
+  ): Promise<BuildResponseDto> {
+    return await this.buildsService.updateBuild(buildDto, currentUser, id);
   }
 
   @HttpCode(HttpStatus.OK)
