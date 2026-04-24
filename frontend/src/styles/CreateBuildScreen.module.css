@@ -246,6 +246,7 @@ slotAddBtn:active {
   border-radius: 8px;
   padding: 14px 16px;
   animation: shakeIn 0.3s ease;
+  text-align: justify;
 }
 
 @keyframes shakeIn {
@@ -399,6 +400,15 @@ slotAddBtn:active {
   background: var(--accent);
   border: 1px solid transparent;
   color: var(--white);
+}
+
+.actionBtnAccent:hover:not(:disabled) {
+  background: var(--accent2);
+  box-shadow: 0 4px 20px rgba(176, 38, 200, 0.4);
+  transform: translateY(-1px);
+}
+
+.actionBtnAccent:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

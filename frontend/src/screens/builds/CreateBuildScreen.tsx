@@ -12,7 +12,8 @@ import { CompatibilityPanel } from '../../components/builds/CompatibilityPanel';
 export default function CreateBuildScreen() {
   const {
     build, populated, name, setName, description, setDescription,
-    warnings, saving, handleSelect, removeSingle, removeMulti, changeQuantity, handleSave,
+    warnings, saving, handleSelect, removeSingle, removeMulti, 
+    changeQuantity, handleSave, handleSaveAndPublish,
   } = useCreateBuild();
 
   const { issues, loading: compatLoading, error: compatError } = useCompatibility(build);
@@ -114,8 +115,8 @@ export default function CreateBuildScreen() {
               </button>
               <button
                 className={styles.actionBtnAccent}
-                disabled
-                aria-label="Publish build — not yet implemented"
+                onClick={handleSaveAndPublish}
+                disabled={saving}
               >
                 <Upload size={16} />
                 Publish build

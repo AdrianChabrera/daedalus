@@ -196,6 +196,64 @@ export function useCreateBuild() {
     }
   };
 
+  const handleSaveAndPublish = async () => {
+    if (!name.trim()) {
+      setWarnings(['Build title is required.']);
+      return;
+    }
+    if (!user) {
+      setWarnings(['You must be logged in to publish a build.']);
+      return;
+    }
+
+    setSaving(true);
+    setWarnings([]);
+
+    const body = {
+      name: name.trim(),
+      description: description.trim() || undefined,
+      pcCaseId: build.pcCaseId,
+      cpuCoolerId: build.cpuCoolerId,
+      cpuId: build.cpuId,
+      gpuId: build.gpuId,
+      keyboardId: build.keyboardId,
+      motherboardId: build.motherboardId,
+      mouseId: build.mouseId,
+      powerSupplyId: build.powerSupplyId,
+      fanIds: build.fanIds,
+      monitorIds: build.monitorIds,
+      ramIds: build.ramIds,
+      storageDriveIds: build.storageDriveIds,
+    };
+
+    try {
+      const res = await fetch(API_ROUTES.CREATE_AND_PUBLISH_BUILD, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        const msgs: string[] = [];
+        if (typeof err.message === 'string') msgs.push(err.message);
+        else msgs.push('Could not publish the build. Check compatibility errors.');
+        setWarnings(msgs);
+        return;
+      }
+
+      clearDraft();
+      navigate('/builds/my-builds');
+    } catch {
+      setWarnings(['Network error. Please try again.']);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return {
     build,
     populated,
@@ -208,5 +266,6 @@ export function useCreateBuild() {
     removeMulti,
     changeQuantity,
     handleSave,
+    handleSaveAndPublish,
   };
 }

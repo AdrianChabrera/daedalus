@@ -16,6 +16,8 @@ export const API_ROUTES = {
     REMOVE_COMPONENT: `${BASE_URL}/builds/remove_component`,
     DELETE_BUILD: (id: number) =>  `${BASE_URL}/builds/${id}`,
     UNPUBLISHED_BUILDS: (cType: string, cId: string) => `${BASE_URL}/builds/unpublished/${cType}/${cId}`,
+    PUBLISH_BUILD: `${BASE_URL}/publish`,
+    CREATE_AND_PUBLISH_BUILD: `${BASE_URL}/publish`,
     // Compatibility
     CHECK_COMPATIBILITY: `${BASE_URL}/compatibility`,
 };
