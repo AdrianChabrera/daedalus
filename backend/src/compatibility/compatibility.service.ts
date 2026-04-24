@@ -6,6 +6,7 @@ import {
 import { BuildsService } from 'src/builds/builds.service';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';
 import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
+import { Build } from 'src/builds/entities/build';
 
 @Injectable()
 export class CompatibilityService {
@@ -20,8 +21,18 @@ export class CompatibilityService {
   ): Promise<CompatibilityIssueDto[]> {
     const build = await this.buildsService.assembleFromIds(buildDto);
 
-    return this.rules
+    const results = this.rules
       .map((rule) => rule.check(build))
       .filter((issue): issue is CompatibilityIssueDto => issue !== null);
+
+    return results;
+  }
+
+  checkCompatibilityFromBuild(build: Build): CompatibilityIssueDto[] {
+    const results = this.rules
+      .map((rule) => rule.check(build))
+      .filter((issue): issue is CompatibilityIssueDto => issue !== null);
+
+    return results;
   }
 }

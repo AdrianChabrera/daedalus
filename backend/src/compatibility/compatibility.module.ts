@@ -116,5 +116,6 @@ const rules = [
     ]),
     BuildsModule,
   ],
+  exports: [CompatibilityService],
 })
 export class CompatibilityModule {}

@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { BuildsModule } from './builds/builds.module';
 import { CompatibilityModule } from './compatibility/compatibility.module';
+import { PublishModule } from './publish/publish.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CompatibilityModule } from './compatibility/compatibility.module';
     UsersModule,
     BuildsModule,
     CompatibilityModule,
+    PublishModule,
   ],
   controllers: [AppController],
   providers: [AppService],

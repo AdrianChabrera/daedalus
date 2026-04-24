@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Build } from './entities/build';
 import { BuildCreationDto } from './dtos/BuildCreation.dto';
 import { ComponentsService } from '../components/components.service';
@@ -82,8 +82,11 @@ export class BuildsService {
   async createBuild(
     buildDto: BuildCreationDto,
     currentUser: SignInData,
+    manager?: EntityManager,
   ): Promise<BuildResponseDto> {
     const build = new Build();
+
+    const repo = manager?.getRepository(Build) ?? this.buildRepository;
 
     const [pcCase, cpuCooler, cpu, motherboard, powerSupply] =
       await Promise.all([
@@ -193,20 +196,24 @@ export class BuildsService {
 
     build.published = false;
 
-    const savedBuild = await this.buildRepository.save(build);
+    const savedBuild = await repo.save(build);
 
     const response = new BuildResponseDto(savedBuild, currentUser.username);
 
     return response;
   }
 
-  async findBuildById(id: number): Promise<Build> {
-    const build = await this.buildRepository.findOne({
+  async findBuildById(id: number, manager?: EntityManager): Promise<Build> {
+    const repo = manager?.getRepository(Build) ?? this.buildRepository;
+
+    const build = await repo.findOne({
       where: { id: id },
       relations: [
         'user',
         'cpu',
         'motherboard',
+        'motherboard.m2Slots',
+        'motherboard.pcieSlots',
         'cpuCooler',
         'gpu',
         'pcCase',
@@ -729,8 +736,13 @@ export class BuildsService {
     }
   }
 
-  async setPublished(build: Build, published: boolean): Promise<void> {
+  async setPublished(
+    build: Build,
+    published: boolean,
+    manager?: EntityManager,
+  ): Promise<void> {
+    const repo = manager?.getRepository(Build) ?? this.buildRepository;
     build.published = published;
-    await this.buildRepository.save(build);
+    await repo.save(build);
   }
 }
