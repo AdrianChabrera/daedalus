@@ -3,7 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
@@ -118,7 +118,7 @@ export class BuildsService {
     const build = await this.findBuildById(id, manager);
 
     if (build.user.id !== currentUser.userId) {
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         "You can't update a build that is not yours",
       );
     }
@@ -148,8 +148,8 @@ export class BuildsService {
     currentUser: SignInData,
   ): Promise<BuildResponseDto> {
     const build = await this.findBuildById(id);
-    if (build.user.id !== currentUser.userId || !build.published) {
-      throw new UnauthorizedException(
+    if (build.user.id !== currentUser.userId && build.published) {
+      throw new ForbiddenException(
         "You don't have access to this build details",
       );
     }
@@ -324,7 +324,7 @@ export class BuildsService {
     const build = await this.findBuildById(componentAssignment.buildId);
 
     if (build.user.id !== currentUser.userId) {
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         "You can't add a component to a build that's not yours",
       );
     }
@@ -417,9 +417,7 @@ export class BuildsService {
     const build = await this.findBuildById(componentAssignment.buildId);
 
     if (build.user.id !== currentUser.userId) {
-      throw new UnauthorizedException(
-        "You can't modify a build that's not yours",
-      );
+      throw new ForbiddenException("You can't modify a build that's not yours");
     }
 
     if (build.published) {
@@ -537,38 +535,63 @@ export class BuildsService {
     if (keyboard) build.keyboard = keyboard;
     if (mouse) build.mouse = mouse;
 
-    build.fans = fans.map((fan: Fan) => {
-      const buildFan = new BuildFan();
-      buildFan.fan = fan;
-      buildFan.quantity =
-        idSources.fanIds?.find((f) => f.componentId === fan.buildcoresId)
-          ?.quantity ?? 1;
-      return buildFan;
-    });
     build.rams = rams.map((ram: Ram) => {
-      const buildRam = new BuildRam();
+      const fromDto = idSources.ramIds?.find(
+        (r) => r.componentId === ram.buildcoresId,
+      );
+      const existing = (build.rams ?? []).find(
+        (br) => br.ram.buildcoresId === ram.buildcoresId,
+      );
+
+      const buildRam = existing ?? new BuildRam();
+      buildRam.build = build;
       buildRam.ram = ram;
-      buildRam.quantity =
-        idSources.ramIds?.find((r) => r.componentId === ram.buildcoresId)
-          ?.quantity ?? 1;
+      buildRam.quantity = fromDto?.quantity ?? 1;
       return buildRam;
     });
+
+    build.fans = fans.map((fan: Fan) => {
+      const fromDto = idSources.fanIds?.find(
+        (f) => f.componentId === fan.buildcoresId,
+      );
+      const existing = (build.fans ?? []).find(
+        (bf) => bf.fan.buildcoresId === fan.buildcoresId,
+      );
+
+      const buildFan = existing ?? new BuildFan();
+      buildFan.build = build;
+      buildFan.fan = fan;
+      buildFan.quantity = fromDto?.quantity ?? 1;
+      return buildFan;
+    });
+
     build.monitors = monitors.map((monitor: Monitor) => {
-      const buildMonitor = new BuildMonitor();
+      const fromDto = idSources.monitorIds?.find(
+        (m) => m.componentId === monitor.buildcoresId,
+      );
+      const existing = (build.monitors ?? []).find(
+        (bm) => bm.monitor.buildcoresId === monitor.buildcoresId,
+      );
+
+      const buildMonitor = existing ?? new BuildMonitor();
+      buildMonitor.build = build;
       buildMonitor.monitor = monitor;
-      buildMonitor.quantity =
-        idSources.monitorIds?.find(
-          (m) => m.componentId === monitor.buildcoresId,
-        )?.quantity ?? 1;
+      buildMonitor.quantity = fromDto?.quantity ?? 1;
       return buildMonitor;
     });
+
     build.storageDrives = storageDrives.map((storageDrive: StorageDrive) => {
-      const buildStorageDrive = new BuildStorageDrive();
+      const fromDto = idSources.storageDriveIds?.find(
+        (s) => s.componentId === storageDrive.buildcoresId,
+      );
+      const existing = (build.storageDrives ?? []).find(
+        (bs) => bs.storageDrive.buildcoresId === storageDrive.buildcoresId,
+      );
+
+      const buildStorageDrive = existing ?? new BuildStorageDrive();
+      buildStorageDrive.build = build;
       buildStorageDrive.storageDrive = storageDrive;
-      buildStorageDrive.quantity =
-        idSources.storageDriveIds?.find(
-          (s) => s.componentId === storageDrive.buildcoresId,
-        )?.quantity ?? 1;
+      buildStorageDrive.quantity = fromDto?.quantity ?? 1;
       return buildStorageDrive;
     });
   }
@@ -576,7 +599,7 @@ export class BuildsService {
   async deleteBuild(currentUser: SignInData, id: number): Promise<void> {
     const build = await this.findBuildById(id);
     if (!currentUser || currentUser.userId !== build.user.id) {
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         "You can't delete a build that is not yours",
       );
     }

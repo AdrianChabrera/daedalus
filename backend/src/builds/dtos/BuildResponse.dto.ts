@@ -20,6 +20,7 @@ import { Fan } from 'src/components/entities/main-entities/fan.entity';
 import { Cpu } from 'src/components/entities/main-entities/cpu.entity';
 import { CpuCooler } from 'src/components/entities/main-entities/cpu-cooler.entity';
 import { PcCase } from 'src/components/entities/main-entities/pc-case.entity';
+import { ComponentWithQuantityResponseDto } from './ComponentWithQuantityResponse.dto';
 
 export class BuildResponseDto {
   @IsNumber()
@@ -45,7 +46,7 @@ export class BuildResponseDto {
   cpu?: Cpu | null;
 
   @IsArray()
-  fans?: Fan[];
+  fans?: ComponentWithQuantityResponseDto<Fan>[];
 
   @IsOptional()
   gpu?: Gpu | null;
@@ -54,7 +55,7 @@ export class BuildResponseDto {
   keyboard?: Keyboard | null;
 
   @IsArray()
-  monitors?: Monitor[];
+  monitors?: ComponentWithQuantityResponseDto<Monitor>[];
 
   @IsOptional()
   motherboard?: Motherboard | null;
@@ -66,10 +67,10 @@ export class BuildResponseDto {
   powerSupply?: PowerSupply | null;
 
   @IsArray()
-  rams?: Ram[];
+  rams?: ComponentWithQuantityResponseDto<Ram>[];
 
   @IsArray()
-  storageDrives?: StorageDrive[];
+  storageDrives?: ComponentWithQuantityResponseDto<StorageDrive>[];
 
   @IsNotEmpty()
   username!: string;
@@ -93,13 +94,22 @@ export class BuildResponseDto {
     this.keyboard = build.keyboard;
     this.mouse = build.mouse;
 
-    this.fans = build.fans?.map((bf) => bf.fan ?? 'Unknown Fan') ?? [];
-    this.rams = build.rams?.map((br) => br.ram ?? 'Unknown Ram') ?? [];
+    this.fans =
+      build.fans?.map(
+        (bf) => new ComponentWithQuantityResponseDto(bf.fan, bf.quantity),
+      ) ?? [];
+    this.rams =
+      build.rams?.map(
+        (br) => new ComponentWithQuantityResponseDto(br.ram, br.quantity),
+      ) ?? [];
     this.monitors =
-      build.monitors?.map((bm) => bm.monitor ?? 'Unknown Monitor') ?? [];
+      build.monitors?.map(
+        (bm) => new ComponentWithQuantityResponseDto(bm.monitor, bm.quantity),
+      ) ?? [];
     this.storageDrives =
       build.storageDrives?.map(
-        (bs) => bs.storageDrive ?? 'Unknown Storage Drive',
+        (bs) =>
+          new ComponentWithQuantityResponseDto(bs.storageDrive, bs.quantity),
       ) ?? [];
   }
 }

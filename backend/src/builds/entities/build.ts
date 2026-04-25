@@ -53,7 +53,10 @@ export class Build {
   @JoinColumn({ name: 'cpu_id' })
   cpu?: Cpu;
 
-  @OneToMany(() => BuildFan, (f) => f.build, { cascade: true })
+  @OneToMany(() => BuildFan, (f) => f.build, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
   fans!: BuildFan[];
 
   @ManyToOne(() => Gpu, { nullable: true })
@@ -64,7 +67,10 @@ export class Build {
   @JoinColumn({ name: 'keyboard_id' })
   keyboard?: Keyboard;
 
-  @OneToMany(() => BuildMonitor, (m) => m.build, { cascade: true })
+  @OneToMany(() => BuildMonitor, (m) => m.build, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
   monitors!: BuildMonitor[];
 
   @ManyToOne(() => Motherboard, { nullable: true })
@@ -79,10 +85,16 @@ export class Build {
   @JoinColumn({ name: 'power_supply_id' })
   powerSupply?: PowerSupply;
 
-  @OneToMany(() => BuildRam, (r) => r.build, { cascade: true })
+  @OneToMany(() => BuildRam, (r) => r.build, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
   rams!: BuildRam[];
 
-  @OneToMany(() => BuildStorageDrive, (s) => s.build, { cascade: true })
+  @OneToMany(() => BuildStorageDrive, (s) => s.build, {
+    cascade: true,
+    orphanedRowAction: 'delete',
+  })
   storageDrives!: BuildStorageDrive[];
 
   @ManyToOne(() => User, (u) => u.builds, { onDelete: 'CASCADE' })
