@@ -39,6 +39,10 @@ export default function MyBuildsScreen() {
     }
   };
 
+  const handleEditBuild = (build: BuildSummary) => {
+    navigate(`/builds/${build.id}/edit`);
+  };
+
   return (
     <>
       <BuildsListScreen
@@ -49,6 +53,7 @@ export default function MyBuildsScreen() {
         key={refreshKey}
         onBuildClick={handleBuildClick}
         onDeleteBuild={setBuildToDelete}
+        onEditBuild={handleEditBuild}
         cardVariant="my-builds"
       />
 

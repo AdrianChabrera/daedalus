@@ -11,6 +11,7 @@ import ComponentDetailsScreen from './screens/pc_components/PcComponentDetailsSc
 import CreateBuildScreen from './screens/builds/CreateBuildScreen';
 import MyBuildsScreen from './screens/builds/MyBuildsScreen';
 import PublicBuildsScreen from './screens/builds/PublicBuildsScreen';
+import EditBuildScreen from './screens/builds/EditBuildScreen';
 
 export default function App() {
   return (
@@ -36,6 +37,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <MyBuildsScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/builds/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <EditBuildScreen />
                 </ProtectedRoute>
               }
             />

@@ -51,7 +51,7 @@ export function BuildCard({ build, onClick, footerInfo }: BuildCardProps) {
   );
 }
 
-export function MyBuildCard({ build, onClick, onDelete }: Omit<BuildCardProps, 'footerInfo'> & { onDelete?: () => void }) {
+export function MyBuildCard({ build, onClick, onDelete, onEdit }: Omit<BuildCardProps, 'footerInfo'> & { onDelete?: () => void; onEdit?: () => void }) {
   return (
     <BuildCard
       build={build}
@@ -59,15 +59,17 @@ export function MyBuildCard({ build, onClick, onDelete }: Omit<BuildCardProps, '
       footerInfo={
         <>
           <span className={styles.cardActions}>
-            <button
-              type="button"
-              className={styles.cardActionBtn}
-              onClick={e => e.stopPropagation()}
-              aria-label="Edit build"
-              title="Edit"
-            >
-              <Pencil size={12} />
-            </button>
+            { !build.published && 
+              <button
+                type="button"
+                className={styles.cardActionBtn}
+                onClick={e => { e.stopPropagation(); onEdit?.(); }}
+                aria-label="Edit build"
+                title="Edit"
+              >
+                <Pencil size={12} />
+              </button>
+            }
             <button
               type="button"
               className={`${styles.cardActionBtn} ${styles['cardActionBtn--danger']}`}
@@ -77,14 +79,14 @@ export function MyBuildCard({ build, onClick, onDelete }: Omit<BuildCardProps, '
             >
               <Trash2 size={12} />
             </button>
-            </span>
-                      <span className={styles.cardVisibility}>
-              {build.published ? (
-                <><Globe size={12} /> Public</>
-              ) : (
-                <><Lock size={12} /> Private</>
-              )}
-            </span>
+          </span>
+          <span className={styles.cardVisibility}>
+            {build.published ? (
+              <><Globe size={12} /> Public</>
+            ) : (
+              <><Lock size={12} /> Private</>
+            )}
+          </span>
         </>
       }
     />

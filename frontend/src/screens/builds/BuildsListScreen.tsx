@@ -29,6 +29,7 @@ interface BuildsListScreenProps {
   headerExtra?: React.ReactNode;
   cardVariant: 'my-builds' | 'public-builds';
   onDeleteBuild?: (build: BuildSummary) => void; 
+  onEditBuild?: (build: BuildSummary) => void;
 }
 
 export function BuildsListScreen({
@@ -40,6 +41,7 @@ export function BuildsListScreen({
   headerExtra,
   cardVariant,
   onDeleteBuild,
+  onEditBuild,
 }: BuildsListScreenProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get('page') ?? '1', 10);
@@ -99,6 +101,7 @@ export function BuildsListScreen({
       build, 
       onClick: () => onBuildClick?.(build), 
       onDelete: () => onDeleteBuild?.(build),
+      onEdit: () => onEditBuild?.(build),
     };
     return cardVariant === 'my-builds'
       ? <MyBuildCard {...props} />
