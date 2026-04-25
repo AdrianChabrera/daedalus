@@ -143,6 +143,20 @@ export class BuildsService {
     return response;
   }
 
+  async getBuildDetailsById(
+    id: number,
+    currentUser: SignInData,
+  ): Promise<BuildResponseDto> {
+    const build = await this.findBuildById(id);
+    if (build.user.id !== currentUser.userId || !build.published) {
+      throw new UnauthorizedException(
+        "You don't have access to this build details",
+      );
+    }
+    const response = new BuildResponseDto(build, build.user.username);
+    return response;
+  }
+
   async findBuildById(id: number, manager?: EntityManager): Promise<Build> {
     const repo = manager?.getRepository(Build) ?? this.buildRepository;
 

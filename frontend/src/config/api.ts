@@ -12,6 +12,7 @@ export const API_ROUTES = {
     CREATE_BUILD: `${BASE_URL}/builds`,
     MY_BUILDS: `${BASE_URL}/builds/my-builds`,
     PUBLIC_BUILDS: `${BASE_URL}/builds`,
+    GET_BUILD: (id: number) =>  `${BASE_URL}/builds/${id}`,
     ASSIGN_COMPONENT: `${BASE_URL}/builds/assign_component`,
     REMOVE_COMPONENT: `${BASE_URL}/builds/remove_component`,
     DELETE_BUILD: (id: number) =>  `${BASE_URL}/builds/${id}`,

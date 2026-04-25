@@ -37,17 +37,6 @@ export class BuildsController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Put('/:id')
-  @UseGuards(AuthGuard)
-  async updateBuild(
-    @Body() buildDto: BuildCreationDto,
-    @CurrentUser() currentUser: SignInData,
-    @Param('id') id: number,
-  ): Promise<BuildResponseDto> {
-    return await this.buildsService.updateBuild(buildDto, currentUser, id);
-  }
-
-  @HttpCode(HttpStatus.OK)
   @Get('/')
   async getAllPublicBuilds(
     @Query('page') page: string = '1',
@@ -87,6 +76,27 @@ export class BuildsController {
       order,
       search,
     );
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Put('/:id')
+  @UseGuards(AuthGuard)
+  async updateBuild(
+    @Body() buildDto: BuildCreationDto,
+    @CurrentUser() currentUser: SignInData,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<BuildResponseDto> {
+    return await this.buildsService.updateBuild(buildDto, currentUser, id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/:id')
+  @UseGuards(AuthGuard)
+  async getBuildById(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() currentUser: SignInData,
+  ): Promise<BuildResponseDto> {
+    return await this.buildsService.getBuildDetailsById(id, currentUser);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
