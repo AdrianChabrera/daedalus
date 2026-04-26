@@ -78,9 +78,7 @@ describe('CompatibilityService', () => {
 
       await service.checkCompatibility({} as CheckCompatibilityDto);
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(ruleA.check).toHaveBeenCalledWith(build);
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(ruleB.check).toHaveBeenCalledWith(build);
     });
 
@@ -93,7 +91,6 @@ describe('CompatibilityService', () => {
 
       await service.checkCompatibility(dto);
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(mockBuildsService.assembleFromIds).toHaveBeenCalledWith(dto);
     });
 

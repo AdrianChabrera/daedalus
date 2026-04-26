@@ -1,7 +1,7 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { SignInData } from 'src/auth/interfaces/auth.interfaces';
 import { BuildsService } from 'src/builds/builds.service';
@@ -38,7 +38,7 @@ export class PublishService {
       this.assertNoCompatibilityErrors(build);
 
       await this.buildsService.setPublished(build, true, manager);
-      return { ...response, isPublished: true };
+      return { ...response, published: true };
     });
   }
 
@@ -46,7 +46,7 @@ export class PublishService {
     const build = await this.buildsService.findBuildById(id);
 
     if (build.user.id !== currentUser.userId) {
-      throw new UnauthorizedException(
+      throw new ForbiddenException(
         "You can't publish a build that is not yours.",
       );
     }
