@@ -18,7 +18,7 @@ export interface BuildDetail {
   published: boolean;
   photoUrl?: string;
   createdAt: string;
-  user?: { username: string };
+  username?: string;
   cpu?: BuildComponent;
   gpu?: BuildComponent;
   motherboard?: BuildComponent;

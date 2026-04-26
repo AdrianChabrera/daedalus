@@ -152,6 +152,7 @@
   font-size: 13px;
   color: var(--muted);
   font-family: 'Exo 2', sans-serif;
+  text-align: justify;
 }
 
 .heroActions {
@@ -449,4 +450,58 @@
   .componentRow {
     grid-template-columns: 48px 90px 1fr 32px;
   }
+}
+
+/* ── Owner actions ───────────────────────────────────────────────────────────── */
+.ownerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actionError {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px;
+  color: var(--error);
+  width: 100%;
+}
+
+.ownerBtnEdit,
+.ownerBtnDelete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: opacity 0.15s, box-shadow 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.ownerBtnEdit {
+  background: #378ADD;
+  border: none;
+  color: #fff;
+}
+.ownerBtnEdit:hover {
+  opacity: 0.85;
+  box-shadow: 0 0 16px rgba(55, 138, 221, 0.35);
+}
+
+.ownerBtnDelete {
+  background: var(--error);
+  border: none;
+  color: #fff;
+}
+.ownerBtnDelete:hover:not(:disabled) {
+  opacity: 0.85;
+  box-shadow: 0 0 16px rgba(224, 64, 90, 0.35);
+}
+.ownerBtnDelete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
