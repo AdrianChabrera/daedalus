@@ -77,13 +77,14 @@ export class BuildResponseDto {
 
   @IsBoolean()
   @IsOptional()
-  isPublished?: boolean;
+  published?: boolean;
 
   constructor(build: Build, username: string) {
     this.name = build.name;
     this.description = build.description;
     this.username = username;
     this.id = build.id;
+    this.published = build.published;
 
     this.pcCase = build.pcCase;
     this.cpuCooler = build.cpuCooler;

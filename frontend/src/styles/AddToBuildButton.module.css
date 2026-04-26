@@ -30,7 +30,12 @@
   background: var(--surface);
   border: 1px solid var(--accent);
   color: var(--accent);
-  cursor: default;
+}
+
+.addToBuildBtn.inBuild:hover {
+  background: var(--accent2);
+  color: #fff;
+  opacity: 1;
 }
 
 .stepper {

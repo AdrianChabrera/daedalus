@@ -170,17 +170,18 @@ export function useAddToBuild(componentType: string, componentId: string) {
   }, [componentType, componentId, isMulti, refreshLocalState]);
 
   const handleLocalAdd = useCallback(() => {
-    if (isMulti) {
-      addToLocalBuild();
+  if (isMulti) {
+    addToLocalBuild();
+  } else {
+    if (localStatus === 'in-build') {
+      removeFromLocalBuild();
+    } else if (localOccupied) {
+      setLocalStatus('confirm-replace');
     } else {
-      if (localStatus === 'in-build') return;
-      if (localOccupied) {
-        setLocalStatus('confirm-replace');
-      } else {
-        addToLocalBuild();
-      }
+      addToLocalBuild();
     }
-  }, [isMulti, localStatus, localOccupied, addToLocalBuild]);
+  }
+}, [isMulti, localStatus, localOccupied, addToLocalBuild, removeFromLocalBuild]);
 
   const handleConfirmReplace = useCallback(() => {
     addToLocalBuild();

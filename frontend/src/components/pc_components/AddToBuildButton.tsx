@@ -89,7 +89,6 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
         <button
           className={`${styles.addToBuildBtn} ${isInLocalBuild ? styles.inBuild : ''}`}
           onClick={handleLocalAdd}
-          disabled={isInLocalBuild && !isMulti}
           aria-label={isInLocalBuild ? 'Already in your build' : 'Add to build'}
         >
           {isInLocalBuild ? (
