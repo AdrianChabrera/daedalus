@@ -4,7 +4,6 @@ import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';
 import { CompatibilityRule } from './interfaces/compatibility-rule.interface';
 import { makeBuild } from './utils/test-factories';
-import { ComponentsService } from 'src/components/components.service';
 
 function makeRule(
   result: CompatibilityIssueDto | null,
@@ -26,12 +25,7 @@ function buildService(
   const mockBuildsService = {
     assembleFromIds: jest.fn().mockResolvedValue(build),
   } as unknown as jest.Mocked<BuildsService>;
-  const mockComponentsService = {} as unknown as jest.Mocked<ComponentsService>;
-  return new CompatibilityService(
-    rules,
-    mockComponentsService,
-    mockBuildsService,
-  );
+  return new CompatibilityService(rules, mockBuildsService);
 }
 
 describe('CompatibilityService', () => {
@@ -95,11 +89,7 @@ describe('CompatibilityService', () => {
       const mockBuildsService = {
         assembleFromIds: jest.fn().mockResolvedValue(makeBuild()),
       } as unknown as jest.Mocked<BuildsService>;
-      const service = new CompatibilityService(
-        [],
-        {} as unknown as ComponentsService,
-        mockBuildsService,
-      );
+      const service = new CompatibilityService([], mockBuildsService);
 
       await service.checkCompatibility(dto);
 
