@@ -157,10 +157,14 @@ slotAddBtn:active {
   font-family: 'Exo 2', sans-serif;
   font-size: 13px;
   font-weight: 500;
-  color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--white);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.slotCompName:hover {
+  color: var(--accent2);
+  text-decoration: underline;
 }
 
 .stars {

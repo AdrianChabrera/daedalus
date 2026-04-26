@@ -12,6 +12,7 @@ import CreateBuildScreen from './screens/builds/CreateBuildScreen';
 import MyBuildsScreen from './screens/builds/MyBuildsScreen';
 import PublicBuildsScreen from './screens/builds/PublicBuildsScreen';
 import EditBuildScreen from './screens/builds/EditBuildScreen';
+import BuildDetailsScreen from './screens/builds/BuildDetailsScreen';
 
 export default function App() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/builds/:id" element={<BuildDetailsScreen />} />
             <Route path="/builds" element={<PublicBuildsScreen />} />
             <Route path="/" element={<HomeScreen />} />
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,0 +1,452 @@
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  position: relative;
+  min-height: 0;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+  align-self: flex-start;
+}
+
+.backBtn:hover {
+  color: var(--accent2);
+}
+
+.loadingState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.errorState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.errorText {
+  color: var(--error);
+  font-size: 14px;
+}
+
+.hero {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.heroBuildImage {
+  flex-shrink: 0;
+  width: 260px;
+  height: 210px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.buildPhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.buildPhotoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+}
+
+.buildPhotoPlaceholderText {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'Exo 2', sans-serif;
+}
+
+.heroInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.heroTitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.2;
+  letter-spacing: 0.3px;
+  text-align: justify;
+}
+
+.ratingContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 26px;
+}
+
+.starsPlaceholder {
+  display: flex;
+  gap: 2px;
+}
+
+.starEmpty {
+  font-size: 20px;
+  color: var(--border2);
+  line-height: 1;
+}
+
+.ratingNote {
+  font-size: 13px;
+  color: var(--muted);
+  font-family: 'Exo 2', sans-serif;
+}
+
+.authorBadge {
+  font-size: 13px;
+  color: var(--muted);
+  font-family: 'Exo 2', sans-serif;
+}
+
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.favouriteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--border2);
+  cursor: not-allowed;
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.exportBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: var(--white);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.mainContent {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.componentsSection {
+  flex: 0 0 auto;
+  width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.3px;
+  text-align: justify;
+}
+
+.componentsList {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.emptyComponents {
+  padding: 32px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  font-family: 'Exo 2', sans-serif;
+}
+
+.componentRow {
+  display: grid;
+  grid-template-columns: 56px 110px 1fr;
+  align-items: stretch;
+  min-height: 64px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.componentRow:last-child {
+  border-bottom: none;
+}
+
+.componentRow:hover {
+  background: var(--surface2);
+}
+
+.componentIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: var(--white);
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.componentLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--accent-dim);
+  padding: 4px 6px;
+  text-align: center;
+  gap: 2px;
+}
+
+.quantityBadge {
+  font-size: 11px;
+  color: var(--accent2);
+  font-weight: 600;
+}
+
+.componentInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 12px;
+  min-width: 0;
+}
+
+.componentName {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white);
+  text-decoration: none;
+  transition: color 0.15s;
+  text-align: justify;
+}
+
+.componentName:hover {
+  color: var(--accent2);
+  text-decoration: underline;
+}
+
+.specList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.specItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--accent-dim);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-family: 'Exo 2', sans-serif;
+  white-space: nowrap;
+}
+
+.specKey {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.specVal {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.componentLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  transition: color 0.15s;
+  border-left: 1px solid var(--border);
+  padding: 0 10px;
+  align-self: stretch;
+}
+
+.componentLink:hover {
+  color: var(--accent2);
+  background: var(--accent-dim);
+}
+
+.rightColumn {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.descriptionSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: justify;
+}
+
+.descriptionText {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.reviewsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reviewsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.writeReviewBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  border: none;
+  border-radius: 7px;
+  padding: 8px 14px;
+  color: var(--white);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.reviewsPlaceholder {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reviewsEmpty {
+  font-size: 13px;
+  color: var(--muted);
+  font-family: 'Exo 2', sans-serif;
+}
+
+@media (max-width: 1000px) {
+  .mainContent {
+    flex-direction: column;
+  }
+
+  .componentsSection {
+    width: 100%;
+  }
+
+  .rightColumn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero {
+    flex-direction: column;
+  }
+
+  .heroBuildImage {
+    width: 100%;
+    height: 200px;
+  }
+
+  .componentRow {
+    grid-template-columns: 48px 90px 1fr 32px;
+  }
+}

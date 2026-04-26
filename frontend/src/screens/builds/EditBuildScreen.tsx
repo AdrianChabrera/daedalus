@@ -70,7 +70,7 @@ export default function EditBuildScreen() {
             }}
           >
             <ArrowLeft size={15} />
-            Back to my builds
+            Back
           </button>
         </div>
 

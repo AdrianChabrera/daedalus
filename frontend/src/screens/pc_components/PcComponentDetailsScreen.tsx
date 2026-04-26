@@ -65,7 +65,7 @@ export default function ComponentDetailScreen() {
 
         <button className={styles.backBtn} onClick={() => navigate(-1)}>
           <ArrowLeft size={15} />
-          Back to components
+          Back
         </button>
 
         {loading && (
