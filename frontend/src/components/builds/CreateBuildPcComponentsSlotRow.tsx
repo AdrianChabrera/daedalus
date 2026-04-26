@@ -1,6 +1,7 @@
 import { Minus, Plus, X } from "lucide-react";
 import type { MultiComponentEntry, SlotRowProps } from "../../types/CreateBuildTypes";
 import styles from '../../styles/CreateBuildScreen.module.css';
+import { Link } from "react-router-dom";
 
 function StarPlaceholder() {
   return (
@@ -107,7 +108,7 @@ export function CreteBuildPcComponentsSlotRow({
               <div className={styles.slotLabel}>{slot.label}</div>
               <div className={styles.slotFilled}>
                 <div className={styles.slotCompInfo}>
-                  <span className={styles.slotCompName}>{comp.name}</span>
+                  <Link to={`/components/${slot.endpoint}/${comp.id}`} className={styles.slotCompName}>{comp.name}</Link>
                   <StarPlaceholder />
                   <SpecTags specs={comp.specs} />
                 </div>
@@ -153,7 +154,7 @@ export function CreteBuildPcComponentsSlotRow({
       <div className={styles.slotLabel}>{slot.label}</div>
       <div className={styles.slotFilled}>
         <div className={styles.slotCompInfo}>
-          <span className={styles.slotCompName}>{single!.name}</span>
+          <Link to={`/components/${slot.endpoint}/${single!.id}`} className={styles.slotCompName}>{single!.name}</Link>
           <StarPlaceholder />
           <SpecTags specs={single!.specs} />
         </div>

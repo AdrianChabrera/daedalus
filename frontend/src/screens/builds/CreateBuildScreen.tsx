@@ -8,6 +8,7 @@ import { CreteBuildPcComponentsSlotRow } from '../../components/builds/CreateBui
 import { useCreateBuild } from '../../hooks/useCreateBuild';
 import { useCompatibility } from '../../hooks/useCompatibility';
 import { CompatibilityPanel } from '../../components/builds/CompatibilityPanel';
+import ConfirmModal from '../../components/general/ConfirmModal';
 
 export default function CreateBuildScreen() {
   const {
@@ -19,6 +20,7 @@ export default function CreateBuildScreen() {
   const { issues, loading: compatLoading, error: compatError } = useCompatibility(build);
 
   const [pickerSlot, setPickerSlot] = useState<SlotConfig | null>(null);
+  const [showPublishConfirm, setShowPublishConfirm] = useState(false);
 
   return (
     <div className={styles.page}>
@@ -115,7 +117,7 @@ export default function CreateBuildScreen() {
               </button>
               <button
                 className={styles.actionBtnAccent}
-                onClick={handleSaveAndPublish}
+                onClick={() => setShowPublishConfirm(true)}
                 disabled={saving}
               >
                 <Upload size={16} />
@@ -137,6 +139,25 @@ export default function CreateBuildScreen() {
           onClose={() => setPickerSlot(null)}
         />
       )}
+
+      <ConfirmModal
+        isOpen={showPublishConfirm}
+        loading={saving}
+        title="Publish build"
+        description={
+          <>
+            Your build will be <strong>visible to everyone</strong>. Make sure it's ready before publishing.
+          </>
+        }
+        confirmLabel="Publish"
+        cancelLabel="Cancel"
+        variant="info"
+        onConfirm={() => {
+          handleSaveAndPublish();
+          setShowPublishConfirm(false);
+        }}
+        onCancel={() => setShowPublishConfirm(false)}
+      />
     </div>
   );
 }
