@@ -11,8 +11,11 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { BuildCreationDto } from './dtos/BuildCreation.dto';
 import { BuildsService } from './builds.service';
 import { BuildResponseDto } from './dtos/BuildResponse.dto';
@@ -142,5 +145,42 @@ export class BuildsController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<void> {
     return await this.buildsService.deleteBuild(currentUser, id);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/:id/photo')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    FileInterceptor('photo', {
+      limits: { fileSize: 8 * 1024 * 1024 },
+      fileFilter: (
+        _req: unknown,
+        file: { mimetype: string },
+        cb: (error: Error | null, acceptFile: boolean) => void,
+      ) => {
+        if (/^image\/(jpeg|png|webp)$/.test(file.mimetype)) {
+          cb(null, true);
+        } else {
+          cb(new Error('Only JPEG, PNG and WebP images are allowed'), false);
+        }
+      },
+    }),
+  )
+  async uploadBuildPhoto(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() currentUser: SignInData,
+    @UploadedFile() file: { buffer: Buffer; mimetype: string; size: number },
+  ): Promise<{ photoUrl: string }> {
+    return await this.buildsService.uploadBuildPhoto(id, currentUser, file);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('/:id/photo')
+  @UseGuards(AuthGuard)
+  async deleteBuildPhoto(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() currentUser: SignInData,
+  ): Promise<void> {
+    return await this.buildsService.deleteBuildPhoto(id, currentUser);
   }
 }

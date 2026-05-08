@@ -37,6 +37,7 @@ import { CheckCompatibilityDto } from 'src/compatibility/dtos/CheckCompatibility
 import { ComponentWithQuantityDto } from './dtos/ComponentWithQuantity.dto';
 import { PaginatedResult } from 'src/components/interfaces/pc-components.interfaces';
 import { SelectQueryBuilder } from 'typeorm/browser';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 const SIMILARITY_THRESHOLD = 0.1;
 
@@ -55,6 +56,7 @@ export class BuildsService {
     private buildMonitorRepository: Repository<BuildMonitor>,
     @InjectRepository(BuildStorageDrive)
     private buildStorageDriveRepository: Repository<BuildStorageDrive>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   private readonly componentTypeMap: Record<string, string> = {
@@ -619,6 +621,47 @@ export class BuildsService {
     const repo = manager?.getRepository(Build) ?? this.buildRepository;
     build.published = published;
     await repo.save(build);
+  }
+
+  async uploadBuildPhoto(
+    id: number,
+    currentUser: SignInData,
+    file: { buffer: Buffer; mimetype: string; size: number },
+  ): Promise<{ photoUrl: string }> {
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+
+    const build = await this.findBuildById(id);
+
+    if (build.user.id !== currentUser.userId) {
+      throw new ForbiddenException("You can't edit a build that is not yours");
+    }
+
+    if (build.photoUrl) {
+      await this.cloudinaryService.deleteImage(build.photoUrl);
+    }
+
+    const photoUrl = await this.cloudinaryService.uploadImage(file.buffer);
+
+    await this.buildRepository.update(id, { photoUrl });
+
+    return { photoUrl };
+  }
+
+  async deleteBuildPhoto(id: number, currentUser: SignInData): Promise<void> {
+    const build = await this.findBuildById(id);
+
+    if (build.user.id !== currentUser.userId) {
+      throw new ForbiddenException("You can't edit a build that is not yours");
+    }
+
+    if (build.photoUrl) {
+      await this.cloudinaryService.deleteImage(build.photoUrl);
+      await this.buildRepository.update(id, {
+        photoUrl: null as unknown as undefined,
+      });
+    }
   }
 
   private async resolveComponents(

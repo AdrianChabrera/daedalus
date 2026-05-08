@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 import { BuildsService } from './builds.service';
 import { BuildsController } from './builds.controller';
 import { PcCase } from '../components/entities/main-entities/pc-case.entity';
@@ -23,6 +25,7 @@ import { BuildFan } from './entities/build-fans.entity';
 import { BuildRam } from './entities/build-rams.entity';
 import { BuildMonitor } from './entities/build-monitors.entity';
 import { BuildStorageDrive } from './entities/build-storage-drives.entity';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 
 @Module({
   controllers: [BuildsController],
@@ -49,8 +52,10 @@ import { BuildStorageDrive } from './entities/build-storage-drives.entity';
       BuildMonitor,
       BuildStorageDrive,
     ]),
+    MulterModule.register({ storage: memoryStorage() }),
     UsersModule,
     ComponentsModule,
+    CloudinaryModule,
   ],
   exports: [BuildsService],
 })

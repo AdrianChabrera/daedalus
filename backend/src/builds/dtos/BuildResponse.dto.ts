@@ -36,6 +36,10 @@ export class BuildResponseDto {
   @IsOptional()
   description?: string;
 
+  @IsString()
+  @IsOptional()
+  photoUrl?: string | null;
+
   @IsOptional()
   pcCase?: PcCase | null;
 
@@ -82,6 +86,7 @@ export class BuildResponseDto {
   constructor(build: Build, username: string) {
     this.name = build.name;
     this.description = build.description;
+    this.photoUrl = build.photoUrl;
     this.username = username;
     this.id = build.id;
     this.published = build.published;

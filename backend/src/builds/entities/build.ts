@@ -36,7 +36,7 @@ export class Build {
   published!: boolean;
 
   @Column({ type: 'varchar', nullable: true })
-  photoUrl?: string;
+  photoUrl?: string | null;
 
   @CreateDateColumn()
   createdAt!: Date;
