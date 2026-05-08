@@ -22,6 +22,7 @@ import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { User } from '../users/user.entity';
 import { Gpu } from '../components/entities/main-entities/gpu.entity';
 import { Ram } from '../components/entities/main-entities/ram.entity';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 function makeUser(overrides: Partial<User> = {}): User {
   return Object.assign(new User(), { id: 1, username: 'alice', ...overrides });
@@ -75,6 +76,7 @@ function makeBuildRepoMock(qb = makeQbMock()) {
     find: jest.fn(),
     save: jest.fn(),
     delete: jest.fn(),
+    update: jest.fn(),
     createQueryBuilder: jest.fn().mockReturnValue(qb),
     metadata: {
       relations: [
@@ -104,6 +106,11 @@ const mockComponentsService = {
 
 const mockUsersService = {
   findUserById: jest.fn(),
+};
+
+const mockCloudinaryService = {
+  uploadImage: jest.fn(),
+  deleteImage: jest.fn(),
 };
 
 const currentUser: SignInData = { userId: 1, username: 'alice' };
@@ -139,6 +146,7 @@ async function buildModule(
       },
       { provide: ComponentsService, useValue: mockComponentsService },
       { provide: UsersService, useValue: mockUsersService },
+      { provide: CloudinaryService, useValue: mockCloudinaryService },
     ],
   }).compile();
 
@@ -738,6 +746,242 @@ describe('BuildsService', () => {
 
       expect(build.published).toBe(true);
       expect(buildRepo.save).toHaveBeenCalledWith(build);
+    });
+  });
+
+  describe('uploadBuildPhoto()', () => {
+    const fakeFile = {
+      buffer: Buffer.from('img'),
+      mimetype: 'image/jpeg',
+      size: 3,
+    };
+    const photoUrl =
+      'https://res.cloudinary.com/demo/image/upload/v1/daedalus/builds/x.jpg';
+
+    const mockCloudinaryService = {
+      uploadImage: jest.fn(),
+      deleteImage: jest.fn(),
+    };
+
+    async function buildModuleWithCloudinary(
+      buildRepoOverride?: ReturnType<typeof makeBuildRepoMock>,
+    ) {
+      const buildRepo = buildRepoOverride ?? makeBuildRepoMock();
+      const buildRamRepo = makeJoinRepoMock();
+      const buildFanRepo = makeJoinRepoMock();
+      const buildMonitorRepo = makeJoinRepoMock();
+      const buildStorageDriveRepo = makeJoinRepoMock();
+
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          BuildsService,
+          { provide: getRepositoryToken(Build), useValue: buildRepo },
+          { provide: getRepositoryToken(BuildRam), useValue: buildRamRepo },
+          { provide: getRepositoryToken(BuildFan), useValue: buildFanRepo },
+          {
+            provide: getRepositoryToken(BuildMonitor),
+            useValue: buildMonitorRepo,
+          },
+          {
+            provide: getRepositoryToken(BuildStorageDrive),
+            useValue: buildStorageDriveRepo,
+          },
+          { provide: ComponentsService, useValue: mockComponentsService },
+          { provide: UsersService, useValue: mockUsersService },
+          { provide: CloudinaryService, useValue: mockCloudinaryService },
+        ],
+      }).compile();
+
+      return {
+        service: module.get<BuildsService>(BuildsService),
+        buildRepo,
+      };
+    }
+
+    beforeEach(() => {
+      mockCloudinaryService.uploadImage.mockResolvedValue(photoUrl);
+      mockCloudinaryService.deleteImage.mockResolvedValue(undefined);
+    });
+
+    it('uploads the file and persists the returned URL', async () => {
+      const build = makeBuild();
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(build);
+      buildRepo.update = jest.fn().mockResolvedValue({ affected: 1 });
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+      const result = await service.uploadBuildPhoto(1, currentUser, fakeFile);
+
+      expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
+        fakeFile.buffer,
+      );
+      expect(buildRepo.update).toHaveBeenCalledWith(1, { photoUrl });
+      expect(result).toEqual({ photoUrl });
+    });
+
+    it('deletes the previous Cloudinary image when one already exists', async () => {
+      const existingUrl =
+        'https://res.cloudinary.com/demo/image/upload/v1/old.jpg';
+      const build = makeBuild({ photoUrl: existingUrl });
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(build);
+      buildRepo.update = jest.fn().mockResolvedValue({ affected: 1 });
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+      await service.uploadBuildPhoto(1, currentUser, fakeFile);
+
+      expect(mockCloudinaryService.deleteImage).toHaveBeenCalledWith(
+        existingUrl,
+      );
+    });
+
+    it('does not call deleteImage when the build has no previous photo', async () => {
+      const build = makeBuild();
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(build);
+      buildRepo.update = jest.fn().mockResolvedValue({ affected: 1 });
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+      await service.uploadBuildPhoto(1, currentUser, fakeFile);
+
+      expect(mockCloudinaryService.deleteImage).not.toHaveBeenCalled();
+    });
+
+    it('throws ForbiddenException when the build belongs to another user', async () => {
+      const build = makeBuild({ user: makeUser({ id: 99 }) });
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(build);
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+
+      await expect(
+        service.uploadBuildPhoto(1, currentUser, fakeFile),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('throws NotFoundException when the build does not exist', async () => {
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(null);
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+
+      await expect(
+        service.uploadBuildPhoto(999, currentUser, fakeFile),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('throws BadRequestException when no file is provided', async () => {
+      const build = makeBuild();
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(build);
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+
+      await expect(
+        service.uploadBuildPhoto(
+          1,
+          currentUser,
+          null as unknown as typeof fakeFile,
+        ),
+      ).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('deleteBuildPhoto()', () => {
+    const photoUrl =
+      'https://res.cloudinary.com/demo/image/upload/v1/daedalus/builds/x.jpg';
+
+    const mockCloudinaryService = {
+      uploadImage: jest.fn(),
+      deleteImage: jest.fn(),
+    };
+
+    async function buildModuleWithCloudinary(
+      buildRepoOverride?: ReturnType<typeof makeBuildRepoMock>,
+    ) {
+      const buildRepo = buildRepoOverride ?? makeBuildRepoMock();
+      const buildRamRepo = makeJoinRepoMock();
+      const buildFanRepo = makeJoinRepoMock();
+      const buildMonitorRepo = makeJoinRepoMock();
+      const buildStorageDriveRepo = makeJoinRepoMock();
+
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          BuildsService,
+          { provide: getRepositoryToken(Build), useValue: buildRepo },
+          { provide: getRepositoryToken(BuildRam), useValue: buildRamRepo },
+          { provide: getRepositoryToken(BuildFan), useValue: buildFanRepo },
+          {
+            provide: getRepositoryToken(BuildMonitor),
+            useValue: buildMonitorRepo,
+          },
+          {
+            provide: getRepositoryToken(BuildStorageDrive),
+            useValue: buildStorageDriveRepo,
+          },
+          { provide: ComponentsService, useValue: mockComponentsService },
+          { provide: UsersService, useValue: mockUsersService },
+          { provide: CloudinaryService, useValue: mockCloudinaryService },
+        ],
+      }).compile();
+
+      return {
+        service: module.get<BuildsService>(BuildsService),
+        buildRepo,
+      };
+    }
+
+    beforeEach(() => {
+      mockCloudinaryService.deleteImage.mockResolvedValue(undefined);
+    });
+
+    it('deletes the Cloudinary image and clears photoUrl in the database', async () => {
+      const build = makeBuild({ photoUrl });
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(build);
+      buildRepo.update = jest.fn().mockResolvedValue({ affected: 1 });
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+      await service.deleteBuildPhoto(1, currentUser);
+
+      expect(mockCloudinaryService.deleteImage).toHaveBeenCalledWith(photoUrl);
+      expect(buildRepo.update).toHaveBeenCalledWith(1, { photoUrl: null });
+    });
+
+    it('does not call deleteImage or update when the build has no photo', async () => {
+      const build = makeBuild();
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(build);
+      buildRepo.update = jest.fn();
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+      await service.deleteBuildPhoto(1, currentUser);
+
+      expect(mockCloudinaryService.deleteImage).not.toHaveBeenCalled();
+      expect(buildRepo.update).not.toHaveBeenCalled();
+    });
+
+    it('throws ForbiddenException when the build belongs to another user', async () => {
+      const build = makeBuild({ user: makeUser({ id: 99 }), photoUrl });
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(build);
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+
+      await expect(service.deleteBuildPhoto(1, currentUser)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it('throws NotFoundException when the build does not exist', async () => {
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.findOne.mockResolvedValue(null);
+
+      const { service } = await buildModuleWithCloudinary(buildRepo);
+
+      await expect(service.deleteBuildPhoto(999, currentUser)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

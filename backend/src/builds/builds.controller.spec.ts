@@ -19,6 +19,8 @@ const mockBuildsService: jest.Mocked<
     | 'removeComponent'
     | 'findAllUnpublishedBuildsFromUser'
     | 'deleteBuild'
+    | 'uploadBuildPhoto'
+    | 'deleteBuildPhoto'
   >
 > = {
   createBuild: jest.fn(),
@@ -29,6 +31,8 @@ const mockBuildsService: jest.Mocked<
   removeComponent: jest.fn(),
   findAllUnpublishedBuildsFromUser: jest.fn(),
   deleteBuild: jest.fn(),
+  uploadBuildPhoto: jest.fn(),
+  deleteBuildPhoto: jest.fn(),
 };
 
 const mockAuthGuard = { canActivate: jest.fn().mockReturnValue(true) };
@@ -384,6 +388,82 @@ describe('BuildsController', () => {
       mockBuildsService.deleteBuild.mockRejectedValue(new Error('Forbidden'));
 
       await expect(controller.deleteBuildById(currentUser, 99)).rejects.toThrow(
+        'Forbidden',
+      );
+    });
+  });
+
+  describe('uploadBuildPhoto()', () => {
+    const fakeFile = {
+      buffer: Buffer.from('img'),
+      mimetype: 'image/jpeg',
+      size: 3,
+    } as unknown as Express.Multer.File;
+
+    it('delegates to BuildsService.uploadBuildPhoto with id, user and file', async () => {
+      mockBuildsService.uploadBuildPhoto.mockResolvedValue({
+        photoUrl: 'https://example.com/photo.jpg',
+      });
+
+      await controller.uploadBuildPhoto(1, currentUser, fakeFile);
+
+      expect(mockBuildsService.uploadBuildPhoto).toHaveBeenCalledWith(
+        1,
+        currentUser,
+        fakeFile,
+      );
+    });
+
+    it('returns the photoUrl object from the service', async () => {
+      const expected = { photoUrl: 'https://example.com/photo.jpg' };
+      mockBuildsService.uploadBuildPhoto.mockResolvedValue(expected);
+
+      const result = await controller.uploadBuildPhoto(
+        1,
+        currentUser,
+        fakeFile,
+      );
+
+      expect(result).toEqual(expected);
+    });
+
+    it('propagates errors thrown by the service', async () => {
+      mockBuildsService.uploadBuildPhoto.mockRejectedValue(
+        new Error('Upload failed'),
+      );
+
+      await expect(
+        controller.uploadBuildPhoto(1, currentUser, fakeFile),
+      ).rejects.toThrow('Upload failed');
+    });
+  });
+
+  describe('deleteBuildPhoto()', () => {
+    it('delegates to BuildsService.deleteBuildPhoto with id and user', async () => {
+      mockBuildsService.deleteBuildPhoto.mockResolvedValue(undefined);
+
+      await controller.deleteBuildPhoto(1, currentUser);
+
+      expect(mockBuildsService.deleteBuildPhoto).toHaveBeenCalledWith(
+        1,
+        currentUser,
+      );
+    });
+
+    it('returns void on success', async () => {
+      mockBuildsService.deleteBuildPhoto.mockResolvedValue(undefined);
+
+      const result = await controller.deleteBuildPhoto(1, currentUser);
+
+      expect(result).toBeUndefined();
+    });
+
+    it('propagates errors thrown by the service', async () => {
+      mockBuildsService.deleteBuildPhoto.mockRejectedValue(
+        new Error('Forbidden'),
+      );
+
+      await expect(controller.deleteBuildPhoto(1, currentUser)).rejects.toThrow(
         'Forbidden',
       );
     });
