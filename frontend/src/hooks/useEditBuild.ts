@@ -54,6 +54,7 @@ export function useEditBuild(buildId: number) {
   const [build, setBuild] = useState<BuildState>(EMPTY_BUILD);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [currentPhotoUrl, setCurrentPhotoUrl] = useState<string | undefined>();
   const [populated, setPopulated] = useState<Record<string, SelectedComponent>>({});
   const [warnings, setWarnings] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
@@ -77,6 +78,7 @@ export function useEditBuild(buildId: number) {
         if (!cancelled) {
           setName(data.name ?? '');
           setDescription(data.description ?? '');
+          setCurrentPhotoUrl(data.photoUrl ?? undefined);
           setBuild(buildResponseToBuildState(data));
         }
       } catch (err) {
@@ -294,6 +296,7 @@ export function useEditBuild(buildId: number) {
 
   return {
     build, populated, name, setName, description, setDescription,
+    currentPhotoUrl, setCurrentPhotoUrl,
     warnings, saving, loadingBuild, loadError,
     handleSelect, removeSingle, removeMulti, changeQuantity,
     handleSave, handleSaveAndPublish,

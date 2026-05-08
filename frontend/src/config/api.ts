@@ -19,6 +19,7 @@ export const API_ROUTES = {
     UNPUBLISHED_BUILDS: (cType: string, cId: string) => `${BASE_URL}/builds/unpublished/${cType}/${cId}`,
     PUBLISH_BUILD: `${BASE_URL}/publish`,
     CREATE_AND_PUBLISH_BUILD: `${BASE_URL}/publish`,
+    BUILD_PHOTO: (id: number) => `${BASE_URL}/builds/${id}/photo`,
     // Compatibility
     CHECK_COMPATIBILITY: `${BASE_URL}/compatibility`,
 };

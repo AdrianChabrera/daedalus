@@ -9,15 +9,23 @@ import { useCreateBuild } from '../../hooks/useCreateBuild';
 import { useCompatibility } from '../../hooks/useCompatibility';
 import { CompatibilityPanel } from '../../components/builds/CompatibilityPanel';
 import ConfirmModal from '../../components/general/ConfirmModal';
+import { BuildPhotoUpload } from '../../components/builds/BuildPhotoUpload';
+import { useBuildPhoto } from '../../hooks/useBuildPhoto';
 
 export default function CreateBuildScreen() {
   const {
-    build, populated, name, setName, description, setDescription,
-    warnings, saving, handleSelect, removeSingle, removeMulti, 
+    build, populated,
+    name, setName,
+    description, setDescription,
+    pendingPhotoFile, pendingPhotoPreview,
+    handlePhotoSelect, handlePhotoRemove,
+    warnings, saving,
+    handleSelect, removeSingle, removeMulti,
     changeQuantity, handleSave, handleSaveAndPublish,
   } = useCreateBuild();
 
   const { issues, loading: compatLoading, error: compatError } = useCompatibility(build);
+  const { validateFile } = useBuildPhoto();
 
   const [pickerSlot, setPickerSlot] = useState<SlotConfig | null>(null);
   const [showPublishConfirm, setShowPublishConfirm] = useState(false);
@@ -60,7 +68,6 @@ export default function CreateBuildScreen() {
           </div>
 
           <div className={styles.columnRight}>
-
             <CompatibilityPanel
               issues={issues}
               loading={compatLoading}
@@ -91,6 +98,15 @@ export default function CreateBuildScreen() {
                   rows={5}
                 />
               </div>
+              <div className={styles.metaField}>
+                <label className={styles.metaLabel}>Photo</label>
+                <BuildPhotoUpload
+                  currentPhotoUrl={pendingPhotoPreview}
+                  onFileSelect={handlePhotoSelect}
+                  onDelete={pendingPhotoFile ? handlePhotoRemove : undefined}
+                  validateFile={validateFile}
+                />
+              </div>
             </div>
 
             {warnings.length > 0 && (
@@ -109,7 +125,7 @@ export default function CreateBuildScreen() {
               </button>
               <button
                 className={styles.actionBtnPrimary}
-                onClick={() => handleSave()}
+                onClick={() => void handleSave()}
                 disabled={saving}
               >
                 {saving ? <span className={styles.spinner} /> : <Save size={16} />}
@@ -124,7 +140,6 @@ export default function CreateBuildScreen() {
                 Publish build
               </button>
             </div>
-
           </div>
         </div>
       </div>
@@ -153,7 +168,7 @@ export default function CreateBuildScreen() {
         cancelLabel="Cancel"
         variant="info"
         onConfirm={() => {
-          handleSaveAndPublish();
+          void handleSaveAndPublish();
           setShowPublishConfirm(false);
         }}
         onCancel={() => setShowPublishConfirm(false)}

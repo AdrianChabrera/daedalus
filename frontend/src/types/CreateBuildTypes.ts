@@ -107,6 +107,16 @@ export interface Props {
   error: string | null;
 }
 
+export interface BuildPhotoUploadProps {
+  currentPhotoUrl?: string;
+  uploading?: boolean;
+  deleting?: boolean;
+  error?: string | null;
+  onFileSelect: (file: File) => void;
+  onDelete?: () => void;
+  validateFile?: (file: File) => string | null;
+}
+
 export type BuildOpStatus = 'idle' | 'loading' | 'error';
 export type SingleSlot = keyof Omit<BuildState, 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds'>;
 export type MultiSlot = 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds';

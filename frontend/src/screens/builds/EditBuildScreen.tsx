@@ -10,6 +10,8 @@ import { useEditBuild } from '../../hooks/useEditBuild';
 import { useCompatibility } from '../../hooks/useCompatibility';
 import { CompatibilityPanel } from '../../components/builds/CompatibilityPanel';
 import ConfirmModal from '../../components/general/ConfirmModal';
+import { BuildPhotoUpload } from '../../components/builds/BuildPhotoUpload';
+import { useBuildPhoto } from '../../hooks/useBuildPhoto';
 
 export default function EditBuildScreen() {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +21,7 @@ export default function EditBuildScreen() {
   const {
     build, populated, name, setName, description, setDescription,
     warnings, saving, loadingBuild, loadError,
+    currentPhotoUrl, setCurrentPhotoUrl,
     handleSelect, removeSingle, removeMulti,
     changeQuantity, handleSave, handleSaveAndPublish,
   } = useEditBuild(buildId);
@@ -27,6 +30,18 @@ export default function EditBuildScreen() {
 
   const [pickerSlot, setPickerSlot] = useState<SlotConfig | null>(null);
   const [showPublishConfirm, setShowPublishConfirm] = useState(false);
+
+  const { uploading: photoUploading, deleting: photoDeleting, photoError, uploadPhoto, deletePhoto, validateFile } = useBuildPhoto();
+
+  const handlePhotoSelect = async (file: File) => {
+    const url = await uploadPhoto(buildId, file);
+    if (url) setCurrentPhotoUrl(url);
+  };
+
+  const handlePhotoDelete = async () => {
+    const ok = await deletePhoto(buildId);
+    if (ok) setCurrentPhotoUrl(undefined);
+  };
 
   if (loadingBuild) {
     return (
@@ -134,6 +149,18 @@ export default function EditBuildScreen() {
                   onChange={e => setDescription(e.target.value)}
                   maxLength={1000}
                   rows={5}
+                />
+              </div>
+              <div className={styles.metaField}>
+                <label className={styles.metaLabel}>Photo</label>
+                <BuildPhotoUpload
+                  currentPhotoUrl={currentPhotoUrl}
+                  uploading={photoUploading}
+                  deleting={photoDeleting}
+                  error={photoError}
+                  onFileSelect={handlePhotoSelect}
+                  onDelete={currentPhotoUrl ? handlePhotoDelete : undefined}
+                  validateFile={validateFile}
                 />
               </div>
             </div>

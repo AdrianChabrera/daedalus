@@ -30,7 +30,15 @@ export function BuildCard({ build, onClick, footerInfo }: BuildCardProps) {
 
       <div className={styles.cardBody}>
         <div className={styles.cardImage}>
-          <div className={styles.cardImagePlaceholder} />
+          {build.photoUrl ? (
+            <img
+              src={build.photoUrl}
+              alt={build.name}
+              className={styles.cardImagePhoto}
+            />
+          ) : (
+            <div className={styles.cardImagePlaceholder} />
+          )}
         </div>
         <p className={styles.cardDesc}>
           {build.description
