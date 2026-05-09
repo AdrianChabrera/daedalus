@@ -7,6 +7,7 @@ import { BuildComponentAssignmentDto } from './dtos/BuildComponentAssignment.dto
 import { BuildResponseDto } from './dtos/BuildResponse.dto';
 import { BuildWithComponentCountDto } from './dtos/BuildWithComponentCountDto';
 import { SignInData } from '../auth/interfaces/auth.interfaces';
+import { OptionalAuthGuard } from 'src/auth/guards/optionalAuth.guard';
 
 const mockBuildsService: jest.Mocked<
   Pick<
@@ -65,6 +66,8 @@ async function buildModule(): Promise<BuildsController> {
     providers: [{ provide: BuildsService, useValue: mockBuildsService }],
   })
     .overrideGuard(AuthGuard)
+    .useValue(mockAuthGuard)
+    .overrideGuard(OptionalAuthGuard)
     .useValue(mockAuthGuard)
     .compile();
 
