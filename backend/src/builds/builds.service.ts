@@ -25,7 +25,6 @@ import { Monitor } from '../components/entities/main-entities/monitor.entity';
 import { BuildResponseDto } from './dtos/BuildResponse.dto';
 import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/user.entity';
 import { BuildComponentAssignmentDto } from './dtos/BuildComponentAssignment.dto';
 import { BuildRam } from './entities/build-rams.entity';
 import { BuildStorageDrive } from './entities/build-storage-drives.entity';
@@ -98,7 +97,10 @@ export class BuildsService {
     build.description = buildDto.description;
 
     const user = await this.usersService.findUserById(currentUser.userId);
-    build.user = user as User;
+
+    if (!user) throw new NotFoundException('Logged user not found');
+
+    build.user = user;
 
     build.published = false;
 
@@ -220,6 +222,7 @@ export class BuildsService {
     limit: number = 16,
     order: string = 'name-ASC',
     search: string = '',
+    allowedIds?: number[],
   ): Promise<PaginatedResult<Build>> {
     const validOrderFileds = ['name', 'createdAt'];
     const [orderField, orderDir = 'ASC'] = order.split('-');
@@ -240,6 +243,13 @@ export class BuildsService {
         .addSelect(['user.username'])
         .skip(skip)
         .take(limit);
+
+      if (allowedIds !== undefined) {
+        if (allowedIds.length === 0) {
+          return { data: [], total: 0, page, limit };
+        }
+        qb.andWhere('build.id IN (:...allowedIds)', { allowedIds });
+      }
 
       const trimmedSearch = search.trim();
 

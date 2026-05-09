@@ -77,6 +77,10 @@ export class ComponentsService {
     const cType = componentType.toLowerCase();
     const repository = this.repositories[cType];
 
+    if (!repository) {
+      throw new BadRequestException(`Invalid component type: ${componentType}`);
+    }
+
     const relations = cType === 'motherboard' ? ['m2Slots', 'pcieSlots'] : [];
 
     const component = await repository.findOne({
@@ -123,6 +127,7 @@ export class ComponentsService {
     filters: ParsedFilters = { ranges: {}, multiStrings: {}, booleans: {} },
     order: string = 'name-ASC',
     search: string = '',
+    allowedIds?: string[],
   ): Promise<PaginatedResult<Component>> {
     // TODO: add order fields validation (like in buildService)
 
@@ -145,6 +150,15 @@ export class ComponentsService {
         .createQueryBuilder(alias)
         .skip(skip)
         .take(limit);
+
+      if (allowedIds !== undefined) {
+        if (allowedIds.length === 0) {
+          return { data: [], total: 0, page, limit };
+        }
+        qb.andWhere(`${alias}.buildcoresId IN (:...allowedIds)`, {
+          allowedIds,
+        });
+      }
 
       const trimmedSearch = search.trim();
 
@@ -230,6 +244,7 @@ export class ComponentsService {
   ): Promise<Record<string, FilterOptions>> {
     const cType = componentType.toLowerCase();
     const repository = this.repositories[cType];
+
     if (!repository) {
       throw new BadRequestException(`Invalid component type: ${componentType}`);
     }

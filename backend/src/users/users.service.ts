@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -33,5 +37,33 @@ export class UsersService {
 
   async delete(userId: number): Promise<void> {
     await this.userRepository.delete(userId);
+  }
+
+  async addFavoriteBuild(userId: number, buildId: number): Promise<void> {
+    await this.userRepository
+      .createQueryBuilder()
+      .relation(User, 'favoriteBuilds')
+      .of(userId)
+      .add(buildId);
+  }
+
+  async removeFavoriteBuild(userId: number, buildId: number): Promise<void> {
+    await this.userRepository
+      .createQueryBuilder()
+      .relation(User, 'favoriteBuilds')
+      .of(userId)
+      .remove(buildId);
+  }
+
+  async findFavoriteBuildIds(userId: number): Promise<number[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: { favoriteBuilds: true },
+      select: { id: true, favoriteBuilds: { id: true } },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return user.favoriteBuilds.map((b) => b.id);
   }
 }
