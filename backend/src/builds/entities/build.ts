@@ -12,6 +12,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -99,4 +100,7 @@ export class Build {
 
   @ManyToOne(() => User, (u) => u.builds, { onDelete: 'CASCADE' })
   user!: User;
+
+  @ManyToMany(() => User, (user) => user.favoriteBuilds)
+  likedBy!: User[];
 }
