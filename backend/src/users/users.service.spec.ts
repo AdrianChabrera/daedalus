@@ -1,17 +1,26 @@
 jest.mock('bcrypt');
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
+import { Build } from 'src/builds/entities/build';
+
+const mockRelationQueryBuilder = {
+  relation: jest.fn().mockReturnThis(),
+  of: jest.fn().mockReturnThis(),
+  add: jest.fn(),
+  remove: jest.fn(),
+};
 
 const mockUserRepository = {
   findOne: jest.fn(),
   create: jest.fn(),
   save: jest.fn(),
   delete: jest.fn(),
+  createQueryBuilder: jest.fn(() => mockRelationQueryBuilder),
 };
 
 const makeUser = (overrides: Partial<User> = {}): User =>
@@ -20,6 +29,7 @@ const makeUser = (overrides: Partial<User> = {}): User =>
     username: 'alice',
     password: 'hashed_pass',
     createdAt: new Date('2024-01-01'),
+    favoriteBuilds: [],
     ...overrides,
   }) as User;
 
@@ -39,6 +49,9 @@ describe('UsersService', () => {
 
     service = module.get<UsersService>(UsersService);
     jest.clearAllMocks();
+
+    mockRelationQueryBuilder.relation.mockReturnThis();
+    mockRelationQueryBuilder.of.mockReturnThis();
   });
 
   describe('findUserByName', () => {
@@ -132,6 +145,93 @@ describe('UsersService', () => {
       mockUserRepository.delete.mockRejectedValue(new Error('DB error'));
 
       await expect(service.delete(1)).rejects.toThrow('DB error');
+    });
+  });
+
+  describe('addFavoriteBuild', () => {
+    it('should add the build relation for the given user', async () => {
+      mockRelationQueryBuilder.add.mockResolvedValue(undefined);
+
+      await service.addFavoriteBuild(1, 10);
+
+      expect(mockUserRepository.createQueryBuilder).toHaveBeenCalled();
+      expect(mockRelationQueryBuilder.relation).toHaveBeenCalledWith(
+        User,
+        'favoriteBuilds',
+      );
+      expect(mockRelationQueryBuilder.of).toHaveBeenCalledWith(1);
+      expect(mockRelationQueryBuilder.add).toHaveBeenCalledWith(10);
+    });
+
+    it('should propagate errors from the query builder', async () => {
+      mockRelationQueryBuilder.add.mockRejectedValue(
+        new Error('relation error'),
+      );
+
+      await expect(service.addFavoriteBuild(1, 10)).rejects.toThrow(
+        'relation error',
+      );
+    });
+  });
+
+  describe('removeFavoriteBuild', () => {
+    it('should remove the build relation for the given user', async () => {
+      mockRelationQueryBuilder.remove.mockResolvedValue(undefined);
+
+      await service.removeFavoriteBuild(1, 10);
+
+      expect(mockUserRepository.createQueryBuilder).toHaveBeenCalled();
+      expect(mockRelationQueryBuilder.relation).toHaveBeenCalledWith(
+        User,
+        'favoriteBuilds',
+      );
+      expect(mockRelationQueryBuilder.of).toHaveBeenCalledWith(1);
+      expect(mockRelationQueryBuilder.remove).toHaveBeenCalledWith(10);
+    });
+
+    it('should propagate errors from the query builder', async () => {
+      mockRelationQueryBuilder.remove.mockRejectedValue(
+        new Error('remove error'),
+      );
+
+      await expect(service.removeFavoriteBuild(1, 10)).rejects.toThrow(
+        'remove error',
+      );
+    });
+  });
+
+  describe('findFavoriteBuildIds', () => {
+    it('should return an array of favorite build ids for the user', async () => {
+      const user = makeUser({
+        favoriteBuilds: [{ id: 10 }, { id: 20 }] as Build[],
+      });
+      mockUserRepository.findOne.mockResolvedValue(user);
+
+      const result = await service.findFavoriteBuildIds(1);
+
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 1 },
+        relations: { favoriteBuilds: true },
+        select: { id: true, favoriteBuilds: { id: true } },
+      });
+      expect(result).toEqual([10, 20]);
+    });
+
+    it('should return an empty array when the user has no favorite builds', async () => {
+      const user = makeUser({ favoriteBuilds: [] });
+      mockUserRepository.findOne.mockResolvedValue(user);
+
+      const result = await service.findFavoriteBuildIds(1);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should throw NotFoundException when the user does not exist', async () => {
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.findFavoriteBuildIds(999)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });
