@@ -57,6 +57,20 @@ export default function ProfileScreen() {
         >
           My builds
         </button>
+        <button
+          onClick={() => navigate('/favorites/builds')}
+          disabled={loading}
+          style={{ background: 'white', color: 'black', padding: '10px', marginTop: '10px'}}
+        >
+          Favorite builds
+        </button>
+        <button
+          onClick={() => navigate('/favorites/components')}
+          disabled={loading}
+          style={{ background: 'white', color: 'black', padding: '10px', marginTop: '10px'}}
+        >
+          Favorite components
+        </button>
       </div>
 
       <ConfirmModal

@@ -22,4 +22,11 @@ export const API_ROUTES = {
     BUILD_PHOTO: (id: number) => `${BASE_URL}/builds/${id}/photo`,
     // Compatibility
     CHECK_COMPATIBILITY: `${BASE_URL}/compatibility`,
+    // Favorites
+    MARK_COMPONENT_AS_FAVORITE: (type: string, id: string) => `${BASE_URL}/favorites/components/${type}/${id}`,
+    UNMARK_COMPONENT_AS_FAVORITE: (id: string) => `${BASE_URL}/favorites/components/${id}`,
+    MARK_AND_UNMARK_BUILD_AS_FAVORITE: (id: number) =>  `${BASE_URL}/favorites/builds/${id}`,
+    LIST_FAVORITE_COMPONENTS: (type: string) => `${BASE_URL}/favorites/components/${type}`,
+    LIST_FAVORITE_BUILDS: `${BASE_URL}/favorites/builds`,
+    // Reviews
 };

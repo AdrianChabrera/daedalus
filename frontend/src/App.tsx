@@ -13,6 +13,8 @@ import MyBuildsScreen from './screens/builds/MyBuildsScreen';
 import PublicBuildsScreen from './screens/builds/PublicBuildsScreen';
 import EditBuildScreen from './screens/builds/EditBuildScreen';
 import BuildDetailsScreen from './screens/builds/BuildDetailsScreen';
+import FavoriteBuildsScreen from './screens/builds/FavoriteBuildsScreen';
+import FavoriteComponentsScreen from './screens/pc_components/FavoriteComponentsScreen';
 
 export default function App() {
   return (
@@ -51,6 +53,22 @@ export default function App() {
             />
             <Route path="/builds/:id" element={<BuildDetailsScreen />} />
             <Route path="/builds" element={<PublicBuildsScreen />} />
+            <Route
+              path="/favorites/components"
+              element={
+                <ProtectedRoute>
+                  <FavoriteComponentsScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/favorites/builds"
+              element={
+                <ProtectedRoute>
+                  <FavoriteBuildsScreen />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/" element={<HomeScreen />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
