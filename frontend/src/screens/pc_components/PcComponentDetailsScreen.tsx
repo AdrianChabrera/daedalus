@@ -9,6 +9,8 @@ import { BASE_ATTRS, COMPONENT_ATTRS } from '../../consts/PcComponentAttributeDe
 import { str } from '../../consts/PcComponentAttributeFormatters';
 import type { M2SlotData, PcieSlotData } from '../../types/PcComponentDetails.types';
 import { AddToBuildButton } from '../../components/pc_components/AddToBuildButton';
+import { useComponentFavorite } from '../../hooks/useFavorites';
+import { useAuth } from '../../context/AuthContext';
 
 function ImagePlaceholder() {
   return <div>TODO Add placeholder</div>;
@@ -17,10 +19,16 @@ function ImagePlaceholder() {
 export default function ComponentDetailScreen() {
   const { type, id } = useParams<{ type: string; id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [component, setComponent] = useState<PcComponent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { isFavorite, loading: favLoading, toggle: toggleFavorite } = useComponentFavorite(
+    type ?? '',
+    id ?? '',
+  );
 
   useEffect(() => {
     if (!type || !id) return;
@@ -103,13 +111,20 @@ export default function ComponentDetailScreen() {
                 </div>
 
                 <div className={styles.heroActions}>
-                  <button
-                    className={styles.favouriteBtn}
-                    disabled
-                    aria-label="Add to favourites — not yet implemented"
-                  >
-                    <Heart size={18} />
-                  </button>
+                  {user && (
+                    <button
+                      className={`${styles.favouriteBtn} ${isFavorite ? styles.favouriteBtnActive : ''}`}
+                      onClick={toggleFavorite}
+                      disabled={favLoading}
+                      aria-label={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
+                      title={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
+                    >
+                      <Heart
+                        size={18}
+                        fill={isFavorite ? 'currentColor' : 'none'}
+                      />
+                    </button>
+                  )}
 
                  {type && id && component.name && (
                     <AddToBuildButton

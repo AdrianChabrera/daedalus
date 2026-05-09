@@ -27,3 +27,14 @@ export interface ActiveSort {
   field: string;
   direction: SortDirection;
 }
+
+export interface UseFavComponentsParams {
+  componentType: string;
+  page: number;
+  pageSize: number;
+  activeSort: ActiveSort;
+  buildOrderParam: (sort: ActiveSort) => string | undefined;
+  buildQueryString: () => string;
+  debouncedSearch: string;
+  authToken?: string;
+}
