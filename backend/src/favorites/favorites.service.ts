@@ -115,7 +115,15 @@ export class FavoritesService {
     const user = await this.usersService.findUserById(currentUser.userId);
     if (!user) throw new NotFoundException('Logged user not found');
 
-    await this.buildsService.findBuildById(buildId);
+    const build = await this.buildsService.findBuildById(buildId);
+
+    if (build.user.id === user.id) {
+      throw new ConflictException("You can't favorite a build that is yours");
+    }
+
+    if (!build.published) {
+      throw new ConflictException("You can't favorite a private build");
+    }
 
     await this.usersService.addFavoriteBuild(currentUser.userId, buildId);
   }
