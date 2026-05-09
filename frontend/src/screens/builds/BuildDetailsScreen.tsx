@@ -9,6 +9,7 @@ import type { BuildComponent, BuildDetail, BuildMultiEntry, ComponentRowProps } 
 import { SLOT_TO_API } from '../../consts/BuildDetailsConsts';
 import { BuildDetailsComponentSlotRow } from '../../components/builds/BuildDetailsComponentSlotRow';
 import ConfirmModal from '../../components/general/ConfirmModal';
+import { useBuildFavorite } from '../../hooks/useFavorites';
 
 export default function BuildDetailsScreen() {
   const { id } = useParams<{ id: string }>();
@@ -21,6 +22,8 @@ export default function BuildDetailsScreen() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+
+  const { isFavorite, loading: favLoading, toggle: toggleFavorite } = useBuildFavorite(Number(id));
 
   useEffect(() => {
     if (!id) return;
@@ -156,14 +159,17 @@ export default function BuildDetailsScreen() {
                 )}
 
                 <div className={styles.heroActions}>
-                  <button
-                    className={styles.favouriteBtn}
-                    disabled
-                    aria-label="Add to favourites — not yet implemented"
-                  >
-                    <Heart size={18} />
-                  </button>
-
+                  { user && build.username !== user.username && (
+                    <button
+                      className={`${styles.favouriteBtn} ${isFavorite ? styles.favouriteBtnActive : ''}`}
+                      onClick={toggleFavorite}
+                      disabled={favLoading}
+                      aria-label={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
+                      title={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
+                    >
+                      <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} />
+                    </button>
+                  )}
                   <button
                     className={styles.exportBtn}
                     disabled
