@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { BuildsModule } from './builds/builds.module';
 import { CompatibilityModule } from './compatibility/compatibility.module';
 import { PublishModule } from './publish/publish.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PublishModule } from './publish/publish.module';
     BuildsModule,
     CompatibilityModule,
     PublishModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
