@@ -152,7 +152,7 @@ export class BuildsService {
     currentUser: SignInData,
   ): Promise<BuildResponseDto> {
     const build = await this.findBuildById(id);
-    if (build.user.id !== currentUser.userId && !build.published) {
+    if (!build.published && build.user.id !== currentUser?.userId) {
       throw new ForbiddenException(
         "You don't have access to this build details",
       );

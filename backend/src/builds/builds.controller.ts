@@ -24,6 +24,7 @@ import type { SignInData } from '../auth/interfaces/auth.interfaces';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { BuildComponentAssignmentDto } from './dtos/BuildComponentAssignment.dto';
 import { BuildWithComponentCountDto } from './dtos/BuildWithComponentCountDto';
+import { OptionalAuthGuard } from 'src/auth/guards/optionalAuth.guard';
 
 @Controller('builds')
 export class BuildsController {
@@ -94,7 +95,7 @@ export class BuildsController {
 
   @HttpCode(HttpStatus.OK)
   @Get('/:id')
-  @UseGuards(AuthGuard)
+  @UseGuards(OptionalAuthGuard)
   async getBuildById(
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser() currentUser: SignInData,
