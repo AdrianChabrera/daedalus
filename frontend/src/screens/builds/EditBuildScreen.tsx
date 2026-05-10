@@ -12,6 +12,8 @@ import { CompatibilityPanel } from '../../components/builds/CompatibilityPanel';
 import ConfirmModal from '../../components/general/ConfirmModal';
 import { BuildPhotoUpload } from '../../components/builds/BuildPhotoUpload';
 import { useBuildPhoto } from '../../hooks/useBuildPhoto';
+import { useBuildPdfFromState } from '../../hooks/useBuildPdfFromState';
+import { useAuth } from '../../context/AuthContext';
 
 export default function EditBuildScreen() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +29,8 @@ export default function EditBuildScreen() {
   } = useEditBuild(buildId);
 
   const { issues, loading: compatLoading, error: compatError } = useCompatibility(build);
+  const { user } = useAuth();
+  const { exporting: pdfExporting, error: pdfError, exportPdfFromState } = useBuildPdfFromState();
 
   const [pickerSlot, setPickerSlot] = useState<SlotConfig | null>(null);
   const [showPublishConfirm, setShowPublishConfirm] = useState(false);
@@ -165,6 +169,15 @@ export default function EditBuildScreen() {
               </div>
             </div>
 
+            {pdfError && (
+              <div className={styles.warningBox}>
+                <AlertTriangle size={16} className={styles.warningIcon} />
+                <div className={styles.warningMessages}>
+                  <p>{pdfError}</p>
+                </div>
+              </div>
+            )}
+
             {warnings.length > 0 && (
               <div className={styles.warningBox}>
                 <AlertTriangle size={16} className={styles.warningIcon} />
@@ -175,9 +188,14 @@ export default function EditBuildScreen() {
             )}
 
             <div className={styles.actions}>
-              <button className={styles.actionBtnSecondary} disabled aria-label="Export to PDF — not yet implemented">
+              <button
+                className={styles.actionBtnSecondary}
+                onClick={() => void exportPdfFromState(build, populated, name, description, user?.username, currentPhotoUrl)}
+                disabled={pdfExporting}
+                aria-label="Export to PDF"
+              >
                 <FileText size={16} />
-                Export to pdf
+                {pdfExporting ? 'Generating…' : 'Export to pdf'}
               </button>
               <button
                 className={styles.actionBtnPrimary}

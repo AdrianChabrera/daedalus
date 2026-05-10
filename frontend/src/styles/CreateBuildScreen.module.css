@@ -379,6 +379,18 @@ slotAddBtn:active {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
+  opacity: 1;
+  cursor: pointer;
+}
+
+.actionBtnSecondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  box-shadow: 0 4px 16px rgba(176, 38, 200, 0.2);
+  transform: translateY(-1px);
+}
+
+.actionBtnSecondary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

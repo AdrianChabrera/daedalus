@@ -117,6 +117,19 @@ export interface BuildPhotoUploadProps {
   validateFile?: (file: File) => string | null;
 }
 
+export interface UseBuildPdfFromStateResult {
+  exporting: boolean;
+  error: string | null;
+  exportPdfFromState: (
+    build: BuildState,
+    populated: Record<string, SelectedComponent>,
+    name: string,
+    description: string,
+    username?: string,
+    photoUrl?: string,
+  ) => Promise<void>;
+}
+
 export type BuildOpStatus = 'idle' | 'loading' | 'error';
 export type SingleSlot = keyof Omit<BuildState, 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds'>;
 export type MultiSlot = 'ramIds' | 'storageDriveIds' | 'fanIds' | 'monitorIds';
