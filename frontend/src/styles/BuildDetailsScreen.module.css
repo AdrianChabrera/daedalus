@@ -503,23 +503,31 @@
 }
 
 .ownerBtnEdit {
-  background: #378ADD;
-  border: none;
-  color: #fff;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  opacity: 1;
+  cursor: pointer;
 }
 .ownerBtnEdit:hover {
   opacity: 0.85;
   box-shadow: 0 0 16px rgba(55, 138, 221, 0.35);
+  color: var(--edit);
+  border: 1px solid var(--edit);
 }
 
 .ownerBtnDelete {
-  background: var(--error);
-  border: none;
-  color: #fff;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  opacity: 1;
+  cursor: pointer;
 }
 .ownerBtnDelete:hover:not(:disabled) {
   opacity: 0.85;
   box-shadow: 0 0 16px rgba(224, 64, 90, 0.35);
+  color: var(--error);
+  border: 1px solid var(--error);
 }
 .ownerBtnDelete:disabled {
   opacity: 0.5;

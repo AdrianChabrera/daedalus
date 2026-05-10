@@ -70,7 +70,7 @@ export function MyBuildCard({ build, onClick, onDelete, onEdit }: Omit<BuildCard
             { !build.published && 
               <button
                 type="button"
-                className={styles.cardActionBtn}
+                className={`${styles.cardActionBtn} ${styles['cardActionBtn--edit']}`}
                 onClick={e => { e.stopPropagation(); onEdit?.(); }}
                 aria-label="Edit build"
                 title="Edit"

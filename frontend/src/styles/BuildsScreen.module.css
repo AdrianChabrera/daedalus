@@ -315,8 +315,14 @@
 
 .cardActionBtn--danger:hover {
   background: rgba(220, 38, 38, 0.12);
-  border-color: rgba(220, 38, 38, 0.4);
-  color: #f87171;
+  border-color: var(--error);
+  color: var(--error);
+}
+
+.cardActionBtn--edit:hover {
+  background: #002142;
+  border-color: var(--edit);
+  color: var(--edit);
 }
 
 .skeleton {
