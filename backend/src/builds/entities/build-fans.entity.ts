@@ -14,7 +14,7 @@ export class BuildFan {
   id!: number;
 
   @ManyToOne(() => Build, (b) => b.fans, {
-    nullable: false,
+    nullable: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'build_id' })

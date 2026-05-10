@@ -14,7 +14,7 @@ export class BuildMonitor {
   id!: number;
 
   @ManyToOne(() => Build, (b) => b.monitors, {
-    nullable: false,
+    nullable: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'build_id' })

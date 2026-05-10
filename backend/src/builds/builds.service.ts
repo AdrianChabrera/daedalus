@@ -538,14 +538,14 @@ export class BuildsService {
       storageDrives,
     } = components;
 
-    if (pcCase) build.pcCase = pcCase;
-    if (cpuCooler) build.cpuCooler = cpuCooler;
-    if (cpu) build.cpu = cpu;
-    if (motherboard) build.motherboard = motherboard;
-    if (powerSupply) build.powerSupply = powerSupply;
-    if (gpu) build.gpu = gpu;
-    if (keyboard) build.keyboard = keyboard;
-    if (mouse) build.mouse = mouse;
+    build.pcCase = pcCase ? pcCase : null;
+    build.cpuCooler = cpuCooler ? cpuCooler : null;
+    build.cpu = cpu ? cpu : null;
+    build.motherboard = motherboard ? motherboard : null;
+    build.powerSupply = powerSupply ? powerSupply : null;
+    build.gpu = gpu ? gpu : null;
+    build.keyboard = keyboard ? keyboard : null;
+    build.mouse = mouse ? mouse : null;
 
     build.rams = rams.map((ram: Ram) => {
       const fromDto = idSources.ramIds?.find(

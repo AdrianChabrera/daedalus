@@ -44,15 +44,15 @@ export class Build {
 
   @ManyToOne(() => PcCase, { nullable: true })
   @JoinColumn({ name: 'pc_case_id' })
-  pcCase?: PcCase;
+  pcCase?: PcCase | null;
 
   @ManyToOne(() => CpuCooler, { nullable: true })
   @JoinColumn({ name: 'cpu_cooler_id' })
-  cpuCooler?: CpuCooler;
+  cpuCooler?: CpuCooler | null;
 
   @ManyToOne(() => Cpu, { nullable: true })
   @JoinColumn({ name: 'cpu_id' })
-  cpu?: Cpu;
+  cpu?: Cpu | null;
 
   @OneToMany(() => BuildFan, (f) => f.build, {
     cascade: true,
@@ -62,11 +62,11 @@ export class Build {
 
   @ManyToOne(() => Gpu, { nullable: true })
   @JoinColumn({ name: 'gpu_id' })
-  gpu?: Gpu;
+  gpu?: Gpu | null;
 
   @ManyToOne(() => Keyboard, { nullable: true })
   @JoinColumn({ name: 'keyboard_id' })
-  keyboard?: Keyboard;
+  keyboard?: Keyboard | null;
 
   @OneToMany(() => BuildMonitor, (m) => m.build, {
     cascade: true,
@@ -76,15 +76,15 @@ export class Build {
 
   @ManyToOne(() => Motherboard, { nullable: true })
   @JoinColumn({ name: 'motherboard_id' })
-  motherboard!: Motherboard;
+  motherboard?: Motherboard | null;
 
   @ManyToOne(() => Mouse, { nullable: true })
   @JoinColumn({ name: 'mouse_id' })
-  mouse?: Mouse;
+  mouse?: Mouse | null;
 
   @ManyToOne(() => PowerSupply, { nullable: true })
   @JoinColumn({ name: 'power_supply_id' })
-  powerSupply?: PowerSupply;
+  powerSupply?: PowerSupply | null;
 
   @OneToMany(() => BuildRam, (r) => r.build, {
     cascade: true,

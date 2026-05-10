@@ -14,7 +14,7 @@ export class BuildRam {
   id!: number;
 
   @ManyToOne(() => Build, (b) => b.rams, {
-    nullable: false,
+    nullable: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'build_id' })
