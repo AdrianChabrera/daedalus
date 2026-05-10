@@ -10,6 +10,7 @@ import { SLOT_TO_API } from '../../consts/BuildDetailsConsts';
 import { BuildDetailsComponentSlotRow } from '../../components/builds/BuildDetailsComponentSlotRow';
 import ConfirmModal from '../../components/general/ConfirmModal';
 import { useBuildFavorite } from '../../hooks/useFavorites';
+import { useBuildPdfExport } from '../../hooks/useBuildPdfExport';
 
 export default function BuildDetailsScreen() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +25,7 @@ export default function BuildDetailsScreen() {
   const [actionError, setActionError] = useState<string | null>(null);
 
   const { isFavorite, loading: favLoading, toggle: toggleFavorite } = useBuildFavorite(Number(id));
+  const { exporting, exportPdf } = useBuildPdfExport();
 
   useEffect(() => {
     if (!id) return;
@@ -170,13 +172,16 @@ export default function BuildDetailsScreen() {
                       <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} />
                     </button>
                   )}
+
                   <button
-                    className={styles.exportBtn}
-                    disabled
-                    aria-label="Export to PDF — not yet implemented"
+                    className={`${styles.exportBtn} ${exporting ? styles.exportBtnLoading : ''}`}
+                    onClick={() => exportPdf(build)}
+                    disabled={exporting}
+                    aria-label="Export build to PDF"
+                    title="Export build to PDF"
                   >
                     <FileText size={16} />
-                    Export to PDF
+                    {exporting ? 'Generating…' : 'Export to PDF'}
                   </button>
 
                   {isOwnerAndNotPublished && (

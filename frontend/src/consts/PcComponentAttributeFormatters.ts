@@ -18,3 +18,7 @@ export const liter = (v: unknown) => (v != null ? `${v} L` : '—');
 export const cfm  = (v: unknown) => (v != null ? `${v} CFM` : '—');
 export const mmhgo = (v: unknown) => (v != null ? `${v} mmH₂O` : '—');
 export const v_   = (v: unknown) => (v != null ? `${v} V` : '—');
+
+export const fmt = {
+  bool, num, str, arr, ghz, mb, gb, w, mm, rpm, db, mhz, hz, ms, inch, kg, liter, cfm, mmhgo, v_
+};

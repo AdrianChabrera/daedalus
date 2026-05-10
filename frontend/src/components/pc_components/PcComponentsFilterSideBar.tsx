@@ -119,7 +119,7 @@ function RangeFilter({
   const [minFocused, setMinFocused] = useState(false);
   const [maxFocused, setMaxFocused] = useState(false);
 
-  const fmt = (n: number) =>
+  const sideBarfmt = (n: number) =>
     Number.isInteger(n) ? String(n) : n.toFixed(decimals).replace(/\.?0+$/, '');
 
   const handleSliderMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,7 +144,7 @@ function RangeFilter({
 
   const handleMinFocus = () => {
     setMinFocused(true);
-    setMinText(fmt(sliderMin));
+    setMinText(sideBarfmt(sliderMin));
   };
 
   const handleMinBlur = () => {
@@ -160,7 +160,7 @@ function RangeFilter({
 
   const handleMaxFocus = () => {
     setMaxFocused(true);
-    setMaxText(fmt(sliderMax));
+    setMaxText(sideBarfmt(sliderMax));
   };
 
   const handleMaxBlur = () => {
@@ -174,8 +174,8 @@ function RangeFilter({
     setMaxText('');
   };
 
-  const minDisplay = minFocused ? minText : fmt(sliderMin);
-  const maxDisplay = maxFocused ? maxText : fmt(sliderMax);
+  const minDisplay = minFocused ? minText : sideBarfmt(sliderMin);
+  const maxDisplay = maxFocused ? maxText : sideBarfmt(sliderMax);
 
   return (
     <div className={styles.filterGroup}>
