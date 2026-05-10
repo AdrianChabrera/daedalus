@@ -29,7 +29,7 @@
   --white:     #ffffff;
   --error:     #e05070;
   --success:   #40c080;
-  --nav-height:     44px;
+  --nav-height:     50px;
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
