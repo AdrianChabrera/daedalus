@@ -50,6 +50,7 @@ import { R07R11PcieSlotAssignmentRule } from './rules/rules/r07-r11-pcie-slot-as
 import { R05GpuPowerConnectorsRule } from './rules/rules/r05-gpu-power-connectors.rule';
 import { W05W06CpuPowerConnectorWarning } from './rules/warnings/w05-w06-cpu-power-connector.warning';
 import { R24R25SATAConnectorsRule } from './rules/rules/r24-r25-SATA-power-connectors.rule';
+import { ComponentsModule } from 'src/components/components.module';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),
@@ -115,6 +116,7 @@ const rules = [
       BuildStorageDrive,
     ]),
     BuildsModule,
+    ComponentsModule,
   ],
   exports: [CompatibilityService],
 })

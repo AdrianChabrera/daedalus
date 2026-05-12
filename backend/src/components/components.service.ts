@@ -120,6 +120,29 @@ export class ComponentsService {
     return components as T[];
   }
 
+  async findAllComponentsRaw(componentType: string): Promise<Component[]> {
+    const repository = this.repositories[componentType.toLowerCase()];
+
+    if (!repository) {
+      throw new BadRequestException(`Invalid component type: ${componentType}`);
+    }
+
+    const cType = componentType.toLowerCase();
+    const alias = cType.replace('-', '_');
+
+    try {
+      const qb: SelectQueryBuilder<Component> =
+        repository.createQueryBuilder(alias);
+
+      const data = await qb.getMany();
+
+      return data;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new BadRequestException(message);
+    }
+  }
+
   async findAllComponents(
     componentType: string,
     page: number = 1,

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import {
   COMPATIBILITY_RULES,
   CompatibilityRule,
@@ -7,6 +7,20 @@ import { BuildsService } from 'src/builds/builds.service';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';
 import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
 import { Build } from 'src/builds/entities/build';
+import { ComponentsService } from 'src/components/components.service';
+import {
+  PaginatedResult,
+  ParsedFilters,
+} from 'src/components/interfaces/pc-components.interfaces';
+import { Component } from 'src/components/entities/component.entity';
+import { Ram } from 'src/components/entities/main-entities/ram.entity';
+import { BuildRam } from 'src/builds/entities/build-rams.entity';
+import { BuildFan } from 'src/builds/entities/build-fans.entity';
+import { Fan } from 'src/components/entities/main-entities/fan.entity';
+import { BuildMonitor } from 'src/builds/entities/build-monitors.entity';
+import { Monitor } from 'src/components/entities/main-entities/monitor.entity';
+import { BuildStorageDrive } from 'src/builds/entities/build-storage-drives.entity';
+import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
 
 @Injectable()
 export class CompatibilityService {
@@ -14,6 +28,7 @@ export class CompatibilityService {
     @Inject(COMPATIBILITY_RULES)
     private readonly rules: CompatibilityRule[],
     private readonly buildsService: BuildsService,
+    private readonly componentsService: ComponentsService,
   ) {}
 
   async checkCompatibility(
@@ -34,5 +49,112 @@ export class CompatibilityService {
       .filter((issue): issue is CompatibilityIssueDto => issue !== null);
 
     return results;
+  }
+
+  private readonly multiComponents = new Set([
+    'fans',
+    'monitors',
+    'rams',
+    'storageDrives',
+  ]);
+
+  async findBuildCompatibleComponents(
+    buildDto: CheckCompatibilityDto,
+    componentType: string,
+    page: number = 1,
+    limit: number = 16,
+    filters: ParsedFilters = { ranges: {}, multiStrings: {}, booleans: {} },
+    order: string = 'name-ASC',
+    search: string = '',
+  ): Promise<PaginatedResult<Component>> {
+    const buildKeyMap: Record<string, string> = {
+      'pc-case': 'pcCase',
+      'cpu-cooler': 'cpuCooler',
+      cpu: 'cpu',
+      fan: 'fans',
+      gpu: 'gpu',
+      keyboard: 'keyboard',
+      monitor: 'monitors',
+      motherboard: 'motherboard',
+      mouse: 'mouse',
+      'power-supply': 'powerSupply',
+      ram: 'rams',
+      'storage-drive': 'storageDrives',
+    };
+
+    const buildKey = buildKeyMap[componentType];
+    if (!buildKey)
+      throw new BadRequestException(`Invalid component type: ${componentType}`);
+
+    const build = await this.buildsService.assembleFromIds(buildDto);
+
+    const baseErrors = this.checkCompatibilityFromBuild(build).filter(
+      (r) => r.severity === 'error' || r.severity === 'unverifiable',
+    );
+    const baseRules = new Set(baseErrors.map((r) => r.rule));
+
+    const allComponents =
+      await this.componentsService.findAllComponentsRaw(componentType);
+
+    const results = allComponents.map((component) => {
+      const tempBuild = this.injectComponent(build, component, buildKey);
+      const issues = this.checkCompatibilityFromBuild(tempBuild);
+      const newErrors = issues.filter(
+        (r) => r.severity === 'error' || r.severity === 'unverifiable',
+      );
+      const newRules = new Set(newErrors.map((r) => r.rule));
+      const sameRules =
+        newErrors.length === baseErrors.length &&
+        [...newRules].every((r) => baseRules.has(r));
+      return sameRules ? component.buildcoresId : null;
+    });
+
+    const compatibleIds = results.filter((id): id is string => id !== null);
+
+    return this.componentsService.findAllComponents(
+      componentType,
+      page,
+      limit,
+      filters,
+      order,
+      search,
+      compatibleIds,
+    );
+  }
+
+  private injectComponent(
+    build: Build,
+    component: Component,
+    buildKey: string,
+  ): Build {
+    const multiWrappers: Record<string, (c: Component) => unknown> = {
+      rams: (c) => {
+        const e = new BuildRam();
+        e.ram = c as Ram;
+        e.quantity = 1;
+        return [...(build.rams ?? []), e];
+      },
+      fans: (c) => {
+        const e = new BuildFan();
+        e.fan = c as Fan;
+        e.quantity = 1;
+        return [...(build.fans ?? []), e];
+      },
+      monitors: (c) => {
+        const e = new BuildMonitor();
+        e.monitor = c as Monitor;
+        e.quantity = 1;
+        return [...(build.monitors ?? []), e];
+      },
+      storageDrives: (c) => {
+        const e = new BuildStorageDrive();
+        e.storageDrive = c as StorageDrive;
+        e.quantity = 1;
+        return [...(build.storageDrives ?? []), e];
+      },
+    };
+
+    const wrapper = multiWrappers[buildKey];
+    return { ...build, [buildKey]: wrapper ? wrapper(component) : component };
   }
 }
