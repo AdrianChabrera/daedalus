@@ -165,6 +165,7 @@ export default function CreateBuildScreen() {
       {pickerSlot && (
         <CreateBuildPcComponentPicker
           slot={pickerSlot}
+          build={build}
           onSelect={(comp) => {
             handleSelect(pickerSlot, comp);
             setPickerSlot(null);

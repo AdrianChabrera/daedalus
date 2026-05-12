@@ -1,11 +1,12 @@
 import { useState } from "react";
-import type { ComponentPickerProps, PickerResult } from "../../types/CreateBuildTypes";
+import type { BuildState, ComponentPickerProps, PickerResult } from "../../types/CreateBuildTypes";
 import { API_ROUTES } from "../../config/api";
 import styles from '../../styles/CreateBuildScreen.module.css';
-import { ArrowUpRight, ChevronRight, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowUpRight, ChevronRight, ShieldCheck, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
-export function CreateBuildPcComponentPicker({ slot, onSelect, onClose }: ComponentPickerProps) {
+export function CreateBuildPcComponentPicker({ slot, build, onSelect, onClose }: ComponentPickerProps & { build: BuildState }) {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<PickerResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,16 @@ export function CreateBuildPcComponentPicker({ slot, onSelect, onClose }: Compon
   };
 
   const handleKey = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') doSearch();
+    if (e.key === 'Enter') void doSearch();
+  };
+
+  const handleBrowseCompatible = () => {
+    console.log('navigating to compatible', slot.endpoint, build);
+    onClose();
+    navigate(
+      `/components/compatible?type=${slot.endpoint}&page=1`,
+      { state: { build } },
+    );
   };
 
   return (
@@ -50,14 +60,21 @@ export function CreateBuildPcComponentPicker({ slot, onSelect, onClose }: Compon
             onKeyDown={handleKey}
             autoFocus
           />
-          <button className={styles.pickerSearchBtn} onClick={doSearch}>Search</button>
+          <button className={styles.pickerSearchBtn} onClick={() => void doSearch()}>Search</button>
         </div>
         <div className={styles.pickerCatalogLink}>
-          <span>or</span>
           <Link to={`/components?type=${slot.endpoint}&page=1`}>
             Browse full catalog
             <ArrowUpRight size={12} />
           </Link>
+          <span>·</span>
+          <button
+            className={styles.pickerCompatibleLink}
+            onClick={handleBrowseCompatible}
+          >
+            <ShieldCheck size={12} />
+            Browse compatible only
+          </button>
         </div>
         <div className={styles.pickerResults}>
           {loading && (
@@ -75,8 +92,8 @@ export function CreateBuildPcComponentPicker({ slot, onSelect, onClose }: Compon
             <button
               key={r.buildcoresId}
               className={styles.pickerItem}
-              onClick={() => onSelect({ 
-                id: r.buildcoresId, 
+              onClick={() => onSelect({
+                id: r.buildcoresId,
                 name: r.name ?? r.buildcoresId,
                 specs: Object.fromEntries(
                   slot.specs.map(k => [k, r[k]])

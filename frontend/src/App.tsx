@@ -15,6 +15,7 @@ import EditBuildScreen from './screens/builds/EditBuildScreen';
 import BuildDetailsScreen from './screens/builds/BuildDetailsScreen';
 import FavoriteBuildsScreen from './screens/builds/FavoriteBuildsScreen';
 import FavoriteComponentsScreen from './screens/pc_components/FavoriteComponentsScreen';
+import CompatibleComponentsScreen from './screens/pc_components/CompatibleComponentsScreen';
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
               }
             />
             <Route path="/components" element={<ComponentsScreen />} />
+            <Route path="/components/compatible" element={<CompatibleComponentsScreen />} />
             <Route path="/components/:type/:id" element={<ComponentDetailsScreen />} />
             <Route path="/builds/new" element={<CreateBuildScreen />} />
             <Route

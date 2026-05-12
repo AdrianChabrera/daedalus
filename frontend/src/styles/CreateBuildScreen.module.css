@@ -831,3 +831,24 @@ slotAddBtn:active {
   line-height: 26px;
   user-select: none;
 }
+
+.pickerCompatibleLink {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--edit);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.pickerCompatibleLink:hover {
+  color: var(--white);
+}

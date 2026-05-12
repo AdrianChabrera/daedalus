@@ -41,6 +41,7 @@ export interface PickerResult {
 
 export interface ComponentPickerProps {
   slot: SlotConfig;
+  build: BuildState; 
   onSelect: (c: SelectedComponent) => void;
   onClose: () => void;
 }
