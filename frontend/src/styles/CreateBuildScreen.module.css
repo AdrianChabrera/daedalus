@@ -42,6 +42,7 @@
   min-height: 64px;
   border-bottom: 1px solid var(--border);
   transition: background 0.15s;
+  text-align: left;
 }
 
 .slotRow:last-child {
@@ -851,4 +852,11 @@ slotAddBtn:active {
 
 .pickerCompatibleLink:hover {
   color: var(--white);
+}
+
+.pickerCompatibleLink:disabled {
+  color: var(--color-text-muted, #6b7280);
+  cursor: not-allowed;
+  opacity: 0.55;
+  pointer-events: none;
 }

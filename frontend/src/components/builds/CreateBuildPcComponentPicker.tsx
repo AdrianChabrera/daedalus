@@ -2,10 +2,10 @@ import { useState } from "react";
 import type { BuildState, ComponentPickerProps, PickerResult } from "../../types/CreateBuildTypes";
 import { API_ROUTES } from "../../config/api";
 import styles from '../../styles/CreateBuildScreen.module.css';
-import { ArrowUpRight, ChevronRight, ShieldCheck, X } from "lucide-react";
+import { ChevronRight, Component, ShieldCheck, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-export function CreateBuildPcComponentPicker({ slot, build, onSelect, onClose }: ComponentPickerProps & { build: BuildState }) {
+export function CreateBuildPcComponentPicker({ slot, build, hasErrors, onSelect, onClose }: ComponentPickerProps & { build: BuildState; hasErrors?: boolean }) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<PickerResult[]>([]);
@@ -65,15 +65,19 @@ export function CreateBuildPcComponentPicker({ slot, build, onSelect, onClose }:
         <div className={styles.pickerCatalogLink}>
           <Link to={`/components?type=${slot.endpoint}&page=1`}>
             Browse full catalog
-            <ArrowUpRight size={12} />
+            <Component size={12} />
           </Link>
           <span>·</span>
           <button
             className={styles.pickerCompatibleLink}
             onClick={handleBrowseCompatible}
+            disabled={hasErrors}
+            title={hasErrors ? 'Fix all errors in your build before browsing compatible components' : undefined}
           >
             <ShieldCheck size={12} />
-            Browse compatible only
+            {hasErrors
+              ? 'Fix errors to browse compatible components'
+              : 'Browse compatible only'}
           </button>
         </div>
         <div className={styles.pickerResults}>

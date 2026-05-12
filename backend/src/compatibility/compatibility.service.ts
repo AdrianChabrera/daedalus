@@ -51,13 +51,6 @@ export class CompatibilityService {
     return results;
   }
 
-  private readonly multiComponents = new Set([
-    'fans',
-    'monitors',
-    'rams',
-    'storageDrives',
-  ]);
-
   async findBuildCompatibleComponents(
     buildDto: CheckCompatibilityDto,
     componentType: string,
@@ -67,6 +60,18 @@ export class CompatibilityService {
     order: string = 'name-ASC',
     search: string = '',
   ): Promise<PaginatedResult<Component>> {
+    const build = await this.buildsService.assembleFromIds(buildDto);
+
+    const hasAnyError = this.checkCompatibilityFromBuild(build).some(
+      (r) => r.severity === 'error',
+    );
+
+    if (hasAnyError) {
+      throw new BadRequestException(
+        'The provided build has compatibility errors. Please fix them before looking for compatible components.',
+      );
+    }
+
     const buildKeyMap: Record<string, string> = {
       'pc-case': 'pcCase',
       'cpu-cooler': 'cpuCooler',
@@ -86,27 +91,16 @@ export class CompatibilityService {
     if (!buildKey)
       throw new BadRequestException(`Invalid component type: ${componentType}`);
 
-    const build = await this.buildsService.assembleFromIds(buildDto);
-
-    const baseErrors = this.checkCompatibilityFromBuild(build).filter(
-      (r) => r.severity === 'error' || r.severity === 'unverifiable',
-    );
-    const baseRules = new Set(baseErrors.map((r) => r.rule));
-
     const allComponents =
       await this.componentsService.findAllComponentsRaw(componentType);
 
     const results = allComponents.map((component) => {
       const tempBuild = this.injectComponent(build, component, buildKey);
       const issues = this.checkCompatibilityFromBuild(tempBuild);
-      const newErrors = issues.filter(
-        (r) => r.severity === 'error' || r.severity === 'unverifiable',
-      );
-      const newRules = new Set(newErrors.map((r) => r.rule));
-      const sameRules =
-        newErrors.length === baseErrors.length &&
-        [...newRules].every((r) => baseRules.has(r));
-      return sameRules ? component.buildcoresId : null;
+
+      const hasNewErrors = issues.some((issue) => issue.severity === 'error');
+
+      return hasNewErrors ? null : component.buildcoresId;
     });
 
     const compatibleIds = results.filter((id): id is string => id !== null);

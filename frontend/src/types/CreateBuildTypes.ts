@@ -97,7 +97,7 @@ export interface UserBuildWithCount extends UserBuild {
 
 export interface CompatibilityIssue {
   rule: string;
-  severity: 'error' | 'warning' | 'unverifiable';
+  severity: 'error' | 'dependency' | 'warning' | 'unverifiable';
   message: string;
   components: string[];
 }

@@ -166,6 +166,7 @@ export default function CreateBuildScreen() {
         <CreateBuildPcComponentPicker
           slot={pickerSlot}
           build={build}
+          hasErrors={issues.some(i => i.severity === 'error')}
           onSelect={(comp) => {
             handleSelect(pickerSlot, comp);
             setPickerSlot(null);
