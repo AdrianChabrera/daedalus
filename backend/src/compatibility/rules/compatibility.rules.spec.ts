@@ -247,7 +247,7 @@ describe('R04CpuMustHaveCoolerRule', () => {
           cpu: makeCpu({ includesCooler: false }),
         }),
       )?.severity,
-    ).toBe('error');
+    ).toBe('dependency');
   });
 
   it('returns null when cpu includes cooler', () => {
@@ -513,7 +513,7 @@ describe('R08SystemMustHaveGpuRule', () => {
           cpu: makeCpu({ integratedGraphics: 'None' }),
         }),
       )?.severity,
-    ).toBe('error');
+    ).toBe('dependency');
   });
 
   it('returns null when cpu has integrated graphics', () => {

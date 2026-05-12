@@ -56,7 +56,7 @@ describe('U01UnverifiableStorageInterfaces', () => {
 
   it.each([
     'mSATA',
-    'PATA',
+    'PATA 100',
     'SAS',
     'SAS 12.0 Gb/s',
     'SAS 3.0 Gb/s',
