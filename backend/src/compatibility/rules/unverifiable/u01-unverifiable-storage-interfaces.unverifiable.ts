@@ -28,7 +28,7 @@ export class U01UnverifiableStorageInterfaces implements CompatibilityRule {
       return {
         rule: 'U01_UNVERIFIABLE_STORAGE_INTERFACES',
         severity: 'unverifiable',
-        message: `We are sorry, but our system isn't able to do compatibility verifications at the moment: ${unverifiableStorageInterfaces.join(',')}`,
+        message: `We are sorry, but our system isn't able to do compatibility verifications at the moment for the following storage interfaces: ${unverifiableStorageInterfaces.join(', ')}`,
         components: [
           storageDrives
             .map((bs) => bs.storageDrive?.name ?? 'Storage drive')
