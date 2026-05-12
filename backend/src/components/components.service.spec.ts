@@ -539,4 +539,69 @@ describe('ComponentsService', () => {
       }
     });
   });
+
+  describe('findAllComponentsRaw()', () => {
+    it('returns all components for a valid type', async () => {
+      const fakeData = [{ buildcoresId: 'r-1' }, { buildcoresId: 'r-2' }];
+      const ramRepo = makeRepoMock();
+      ramRepo._qb.getMany = jest.fn().mockResolvedValue(fakeData);
+
+      const { service } = await buildModule({ Ram: ramRepo });
+      const result = await service.findAllComponentsRaw('ram');
+
+      expect(result).toEqual(fakeData);
+    });
+
+    it('throws BadRequestException for an invalid component type', async () => {
+      const { service } = await buildModule();
+
+      await expect(service.findAllComponentsRaw('nonexistent')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('is case-insensitive for the component type', async () => {
+      const fakeData = [{ buildcoresId: 'gpu-1' }];
+      const gpuRepo = makeRepoMock();
+      gpuRepo._qb.getMany = jest.fn().mockResolvedValue(fakeData);
+
+      const { service } = await buildModule({ Gpu: gpuRepo });
+      const result = await service.findAllComponentsRaw('GPU');
+
+      expect(result).toEqual(fakeData);
+    });
+
+    it('returns an empty array when there are no components', async () => {
+      const cpuRepo = makeRepoMock();
+      cpuRepo._qb.getMany = jest.fn().mockResolvedValue([]);
+
+      const { service } = await buildModule({ Cpu: cpuRepo });
+      const result = await service.findAllComponentsRaw('cpu');
+
+      expect(result).toEqual([]);
+    });
+
+    it('propagates BadRequestException if the QueryBuilder throws', async () => {
+      const fanRepo = makeRepoMock();
+      fanRepo._qb.getMany = jest.fn().mockRejectedValue(new Error('DB error'));
+
+      const { service } = await buildModule({ Fan: fanRepo });
+
+      await expect(service.findAllComponentsRaw('fan')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('calls createQueryBuilder with the normalized alias', async () => {
+      const storageRepo = makeRepoMock();
+      storageRepo._qb.getMany = jest.fn().mockResolvedValue([]);
+
+      const { service } = await buildModule({ StorageDrive: storageRepo });
+      await service.findAllComponentsRaw('storage-drive');
+
+      expect(storageRepo.createQueryBuilder).toHaveBeenCalledWith(
+        'storage_drive',
+      );
+    });
+  });
 });
