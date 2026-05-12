@@ -11,7 +11,7 @@ export class U01UnverifiableStorageInterfaces implements CompatibilityRule {
 
     const unverifiableStorageInterfaces = [
       'mSATA',
-      'PATA',
+      'PATA 100',
       'SAS',
       'SAS 12.0 Gb/s',
       'SAS 3.0 Gb/s',

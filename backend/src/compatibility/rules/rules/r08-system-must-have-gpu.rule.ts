@@ -29,7 +29,7 @@ export class R08SystemMustHaveGpuRule implements CompatibilityRule {
     if (cpu.integratedGraphics === 'None' && !gpu) {
       return {
         rule: 'SYSTEM_MUST_HAVE_GPU',
-        severity: 'error',
+        severity: 'dependency',
         message: `CPU doesn't have integrated graphics, so a compatible GPU must be included in the build.`,
         components: [cpu.name ?? 'CPU'],
       };

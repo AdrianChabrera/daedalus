@@ -18,7 +18,7 @@ export class W03IncludedPowerSupplyWarning implements CompatibilityRule {
         rule: 'W03_INCLUDED_POWER_SUPPLY',
         severity: 'warning',
         message:
-          "The selected PC includes a power supply so it won't be necessary to include one in the build. However, be aware that Daedalus isn't able to verify all power-related compatibilty rules because integrated power supplies lack of necessary information. To be sure that the power supply is adequate for your system, we recommend using a independent power supply.",
+          "The selected PC includes a power supply so it won't be necessary to include one in the build. However, be aware that Daedalus isn't able to verify all power-related compatibilty rules because integrated power supplies lack of necessary information. To be sure that the power supply is adequate for your system, we recommend using a independent power supply or checking the necessary information at other sources.",
         components: [pcCase.name ?? 'PC Case'],
       };
     }

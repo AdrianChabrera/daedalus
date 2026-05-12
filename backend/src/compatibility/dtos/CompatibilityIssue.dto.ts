@@ -1,6 +1,6 @@
 export class CompatibilityIssueDto {
   rule!: string;
-  severity!: 'error' | 'warning' | 'unverifiable';
+  severity!: 'error' | 'dependency' | 'warning' | 'unverifiable';
   message!: string;
   components!: string[];
 }

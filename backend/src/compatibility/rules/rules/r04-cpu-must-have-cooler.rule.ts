@@ -26,7 +26,7 @@ export class R04CpuMustHaveCoolerRule implements CompatibilityRule {
     if (!cpu.includesCooler && !cpuCooler) {
       return {
         rule: 'CPU_MUST_HAVE_COOLER',
-        severity: 'error',
+        severity: 'dependency',
         message: `CPU doesn't include a cooler, so a compatible CPU cooler must be included in the build.`,
         components: [cpu.name ?? 'CPU'],
       };

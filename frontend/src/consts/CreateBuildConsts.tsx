@@ -1,4 +1,4 @@
-import { AlertCircle, AlertTriangle, Cpu, Fan, Gpu, HardDrive, HelpCircle, Keyboard, Layers, MemoryStick, Monitor, Mouse, PcCase, Thermometer, Zap } from "lucide-react";
+import { AlertCircle, AlertTriangle, Cpu, Fan, FileQuestionMark, Gpu, HardDrive, HelpCircle, Keyboard, Layers, MemoryStick, Monitor, Mouse, PcCase, Thermometer, Zap } from "lucide-react";
 import type { BuildState, CompatibilityIssue, SlotConfig } from "../types/CreateBuildTypes";
 
 export const CREATE_BUILD_SLOTS: SlotConfig[] = [
@@ -57,6 +57,13 @@ export const SEVERITY_META = {
     iconClass: 'iconUnverifiable',
     badgeClass: 'badgeUnverifiable',
   },
+  dependency: {
+    icon: FileQuestionMark,
+    label: 'Dependency',
+    rowClass: 'rowDependency',
+    iconClass: 'iconDependency',
+    badgeClass: 'badgeDependency',
+  },
 } as const;
 
-export const SEVERITY_ORDER: CompatibilityIssue['severity'][] = ['error', 'warning', 'unverifiable'];
+export const SEVERITY_ORDER: CompatibilityIssue['severity'][] = ['error',  'dependency', 'warning', 'unverifiable'];

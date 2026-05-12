@@ -9,14 +9,17 @@ export function CompatibilityPanel({ issues, loading, error }: Props) {
   );
 
   const errorCount       = issues.filter(i => i.severity === 'error').length;
+  const dependencyCount  = issues.filter(i => i.severity === 'dependency').length;
   const warningCount     = issues.filter(i => i.severity === 'warning').length;
   const unverifiableCount = issues.filter(i => i.severity === 'unverifiable').length;
 
-  const headerState: 'ok' | 'error' | 'warning' | 'unverifiable' | 'loading' =
+  const headerState: 'ok' | 'error' | 'warning' | 'unverifiable' | 'dependency' | 'loading' =
     loading
       ? 'loading'
       : errorCount > 0
       ? 'error'
+      : dependencyCount > 0
+      ? 'dependency'
       : warningCount > 0
       ? 'warning'
       : unverifiableCount > 0
@@ -33,6 +36,11 @@ export function CompatibilityPanel({ issues, loading, error }: Props) {
             {errorCount > 0 && (
               <span className={`${styles.badge} ${styles.badgeError}`}>
                 {errorCount} error{errorCount > 1 ? 's' : ''}
+              </span>
+            )}
+            {dependencyCount > 0 && (
+              <span className={`${styles.badge} ${styles.badgeDependency}`}>
+                {dependencyCount} {dependencyCount > 1 ? 'dependencies' : 'dependency'}
               </span>
             )}
             {warningCount > 0 && (

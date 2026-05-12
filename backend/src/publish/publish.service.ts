@@ -63,10 +63,12 @@ export class PublishService {
 
   private assertNoCompatibilityErrors(build: Build): void {
     const issues = this.compatibilityService.checkCompatibilityFromBuild(build);
-    const errors = issues.filter((i) => i.severity === 'error');
+    const errors = issues.filter(
+      (i) => i.severity === 'error' || i.severity === 'dependency',
+    );
     if (errors.length > 0) {
       throw new ConflictException(
-        "You can't publish a build with compatibility errors.",
+        "You can't publish a build with dependencies or compatibility errors.",
       );
     }
   }
