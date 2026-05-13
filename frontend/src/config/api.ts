@@ -30,4 +30,9 @@ export const API_ROUTES = {
     LIST_FAVORITE_COMPONENTS: (type: string) => `${BASE_URL}/favorites/components/${type}`,
     LIST_FAVORITE_BUILDS: `${BASE_URL}/favorites/builds`,
     // Reviews
+    CREATE_REVIEW: `${BASE_URL}/reviews`,
+    BUILD_REVIEWS: (buildId: number) => `${BASE_URL}/reviews/builds/${buildId}`,
+    COMPONENT_REVIEWS: (componentType: string, componentId: string) => `${BASE_URL}/reviews/components/${componentType}/${componentId}`,
+    MY_REVIEWS: `${BASE_URL}/reviews/my-reviews`,
+    DELETE_REVIEW: (reviewId: number) => `${BASE_URL}/reviews/${reviewId}`,
 };

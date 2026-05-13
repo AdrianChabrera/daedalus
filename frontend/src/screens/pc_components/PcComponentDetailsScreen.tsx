@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, PenLine } from 'lucide-react';
+import { ArrowLeft, Heart } from 'lucide-react';
 import { API_ROUTES } from '../../config/api';
 import type { PcComponent } from '../../types/PcComponents.types';
 import styles from '../../styles/PcComponentDetailsScreen.module.css';
@@ -11,6 +11,7 @@ import type { M2SlotData, PcieSlotData } from '../../types/PcComponentDetails.ty
 import { AddToBuildButton } from '../../components/pc_components/AddToBuildButton';
 import { useComponentFavorite } from '../../hooks/useFavorites';
 import { useAuth } from '../../context/AuthContext';
+import ReviewsSection from '../../components/reviews/ReviewSection';
 
 function ImagePlaceholder() {
   return <div>TODO Add placeholder</div>;
@@ -214,22 +215,11 @@ export default function ComponentDetailScreen() {
               </section>
 
               <section className={styles.reviewsSection}>
-                <div className={styles.reviewsHeader}>
-                  <h2 className={styles.sectionTitle}>Reviews</h2>
-
-                  <button
-                    className={styles.writeReviewBtn}
-                    disabled
-                    aria-label="Write a review — not yet implemented"
-                  >
-                    <PenLine size={14} />
-                    Write a review
-                  </button>
-                </div>
-
-                <div className={styles.reviewsPlaceholder}>
-                  <p className={styles.reviewsEmpty}>No reviews yet.</p>
-                </div>
+                <ReviewsSection
+                  componentType={type}
+                  componentId={id}
+                  targetName={component.name ?? '—'}
+                />
               </section>
 
             </div>

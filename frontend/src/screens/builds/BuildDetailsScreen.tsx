@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, FileText, PenLine, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, Heart, FileText, Pencil, Trash2 } from 'lucide-react';
 import { API_ROUTES } from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import styles from '../../styles/BuildDetailsScreen.module.css';
@@ -11,6 +11,7 @@ import { BuildDetailsComponentSlotRow } from '../../components/builds/BuildDetai
 import ConfirmModal from '../../components/general/ConfirmModal';
 import { useBuildFavorite } from '../../hooks/useFavorites';
 import { useBuildPdfExport } from '../../hooks/useBuildPdfExport';
+import ReviewsSection from '../../components/reviews/ReviewSection';
 
 export default function BuildDetailsScreen() {
   const { id } = useParams<{ id: string }>();
@@ -233,23 +234,11 @@ export default function BuildDetailsScreen() {
                   </section>
                 )}
 
-                <section className={styles.reviewsSection}>
-                  <div className={styles.reviewsHeader}>
-                    <h2 className={styles.sectionTitle}>Reviews</h2>
-                    <button
-                      className={styles.writeReviewBtn}
-                      disabled
-                      aria-label="Write a review — not yet implemented"
-                    >
-                      <PenLine size={14} />
-                      Write a review
-                    </button>
-                  </div>
-
-                  <div className={styles.reviewsPlaceholder}>
-                    <p className={styles.reviewsEmpty}>No reviews yet.</p>
-                  </div>
-                </section>
+                <ReviewsSection
+                  buildId={Number(id)}
+                  targetName={build.name}
+                  isOwner={isOwner}
+                />
 
               </div>
             </div>
