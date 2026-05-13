@@ -10,6 +10,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { UserFavoriteComponent } from 'src/favorites/entities/userFavoriteComponent.entity';
+import { Review } from 'src/reviews/entities/review.entity';
 
 @Entity()
 export class User {
@@ -28,6 +29,9 @@ export class User {
 
   @OneToMany(() => Build, (b) => b.user)
   builds!: Build[];
+
+  @OneToMany(() => Review, (r) => r.user)
+  reviews!: Review[];
 
   @ManyToMany(() => Build, (build) => build.likedBy)
   @JoinTable({
