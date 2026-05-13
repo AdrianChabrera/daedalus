@@ -14,6 +14,7 @@ import { Review } from './entities/review.entity';
 import { SignInData } from 'src/auth/interfaces/auth.interfaces';
 import { ReviewCreationDto } from './dtos/review-creation.dto';
 import { ReviewResponseDto } from './dtos/review-response.dto';
+import { PaginatedResult } from 'src/components/interfaces/pc-components.interfaces';
 
 @Injectable()
 export class ReviewsService {
@@ -86,35 +87,63 @@ export class ReviewsService {
     );
   }
 
-  async listBuildReviews(buildId: number): Promise<ReviewResponseDto[]> {
+  async listBuildReviews(
+    buildId: number,
+    page: number,
+    limit: number,
+  ): Promise<PaginatedResult<ReviewResponseDto>> {
     await this.buildsService.findBuildById(buildId);
-    const reviews = await this.reviewRepository.find({
+
+    const skip = (page - 1) * limit;
+    const [reviews, total] = await this.reviewRepository.findAndCount({
       where: { build: { id: buildId } },
       relations: ['build', 'user'],
+      order: { createdAt: 'DESC' },
+      skip,
+      take: limit,
     });
-    return reviews.map((review) => new ReviewResponseDto(review));
+
+    return {
+      data: reviews.map((review) => new ReviewResponseDto(review)),
+      total,
+      page,
+      limit,
+    };
   }
 
   async listComponentReviews(
     componentId: string,
     componentType: string,
-  ): Promise<ReviewResponseDto[]> {
+    page: number,
+    limit: number,
+  ): Promise<PaginatedResult<ReviewResponseDto>> {
     const component = await this.componentsService.findComponentById(
       componentType,
       componentId,
     );
-    const reviews = await this.reviewRepository.find({
+
+    const skip = (page - 1) * limit;
+    const [reviews, total] = await this.reviewRepository.findAndCount({
       where: { componentId, componentType },
       relations: ['user'],
+      order: { createdAt: 'DESC' },
+      skip,
+      take: limit,
     });
-    return reviews.map(
-      (review) =>
-        new ReviewResponseDto(
-          review,
-          component.name ?? '',
-          component.manufacturer ?? '',
-        ),
-    );
+
+    return {
+      data: reviews.map(
+        (review) =>
+          new ReviewResponseDto(
+            review,
+            component.name ?? '',
+            component.manufacturer ?? '',
+          ),
+      ),
+      total,
+      page,
+      limit,
+    };
   }
 
   async listUserReviews(currentUser: SignInData): Promise<ReviewResponseDto[]> {
