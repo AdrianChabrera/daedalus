@@ -302,11 +302,21 @@ async function runMigration(): Promise<void> {
     totalErrors += errors;
   }
 
-  const sql = fs.readFileSync(
+  const trgm = fs.readFileSync(
     path.join(__dirname, 'trgm_migration.sql'),
     'utf-8',
   );
-  await dataSource.query(sql);
+  const deleteComponentsReviews = fs.readFileSync(
+    path.join(__dirname, 'delete_components_reviews.sql'),
+    'utf-8',
+  );
+  const deleteFavoriteComponents = fs.readFileSync(
+    path.join(__dirname, 'delete_favorite_components.sql'),
+    'utf-8',
+  );
+  await dataSource.query(trgm);
+  await dataSource.query(deleteComponentsReviews);
+  await dataSource.query(deleteFavoriteComponents);
   console.log('TRGM migration applied.');
 
   await dataSource.destroy();
