@@ -1,16 +1,17 @@
 import { Max, Min } from 'class-validator';
 import { User } from '../../users/user.entity';
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { Build } from 'src/builds/entities/build';
 
+@Unique('UQ_review_user_build', ['user', 'build'])
+@Unique('UQ_review_user_component', ['user', 'componentId', 'componentType'])
 @Entity('reviews')
 export class Review {
   @PrimaryGeneratedColumn()
@@ -36,25 +37,12 @@ export class Review {
   })
   build?: Build;
 
-  @Column({ name: 'component_type' })
+  @Column({ name: 'component_type', nullable: true })
   componentType!: string;
 
-  @Column({ type: 'uuid', name: 'component_id' })
+  @Column({ type: 'uuid', name: 'component_id', nullable: true })
   componentId?: string;
 
   @CreateDateColumn()
   createdAt!: Date;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  validateExclusivity() {
-    const hasBuild = this.build != null;
-    const hasComponentId = this.componentId != null;
-
-    if (hasBuild === hasComponentId) {
-      throw new Error(
-        'A review must be associated with either a build or a component, not both or neither.',
-      );
-    }
-  }
 }

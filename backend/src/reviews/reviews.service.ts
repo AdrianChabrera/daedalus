@@ -1,4 +1,6 @@
 import {
+  BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -31,13 +33,27 @@ export class ReviewsService {
       (review.buildId && review.componentId) ||
       (!review.buildId && !review.componentId)
     ) {
-      throw new ForbiddenException(
+      throw new BadRequestException(
         'A review must be created for either a build or a component, not both or neither.',
       );
     }
 
     const user = await this.usersService.findUserById(currentUser.userId);
-    if (!user) throw new Error('Logged user not found');
+    if (!user) throw new NotFoundException('Logged user not found');
+
+    const existingReview = await this.reviewRepository.findOne({
+      where: review.buildId
+        ? { user: { id: currentUser.userId }, build: { id: review.buildId } }
+        : {
+            user: { id: currentUser.userId },
+            componentId: review.componentId,
+            componentType: review.componentType,
+          },
+    });
+
+    if (existingReview) {
+      throw new ConflictException('You have already reviewed this entity.');
+    }
 
     const newReview = this.reviewRepository.create({
       user,
@@ -104,7 +120,7 @@ export class ReviewsService {
   async listUserReviews(currentUser: SignInData): Promise<ReviewResponseDto[]> {
     const reviews = await this.reviewRepository.find({
       where: { user: { id: currentUser.userId } },
-      relations: ['user'],
+      relations: ['build', 'user'],
     });
 
     const response = Promise.all(
