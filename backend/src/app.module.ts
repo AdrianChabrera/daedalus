@@ -10,6 +10,7 @@ import { BuildsModule } from './builds/builds.module';
 import { CompatibilityModule } from './compatibility/compatibility.module';
 import { PublishModule } from './publish/publish.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     CompatibilityModule,
     PublishModule,
     FavoritesModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
