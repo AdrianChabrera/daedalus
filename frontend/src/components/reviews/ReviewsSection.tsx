@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Pagination } from '../general/Pagination';
 import ReviewCard from './ReviewCard';
 import WriteReviewModal from './WriteReviewModal';
+import ConfirmModal from '../general/ConfirmModal';
 import styles from '../../styles/Reviews.module.css';
 import type { ReviewsSectionProps } from '../../types/Reviews.type';
 
@@ -28,11 +29,15 @@ export default function ReviewsSection({
     error,
     goToPage,
     createReview,
-    deleteReview,
+    reviewToDelete,
+    deleting,
+    deleteError,
+    requestDeleteReview,
+    confirmDeleteReview,
+    cancelDeleteReview,
   } = useReviews({ buildId, componentType, componentId, pageSize: PAGE_SIZE, onReviewChange });
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const canWriteReview = !!user && !isOwner;
   const hasUserReviewed = !!user && reviews.some((r) => r.username === user.username);
@@ -58,13 +63,6 @@ export default function ReviewsSection({
     }
 
     return createReview(payload, user.accessToken);
-  };
-
-  const handleDelete = async (reviewId: number) => {
-    if (!user) return;
-    setDeleteError(null);
-    const result = await deleteReview(reviewId, user.accessToken);
-    if (result.error) setDeleteError(result.error);
   };
 
   const writeReviewDisabledReason = !user
@@ -119,7 +117,7 @@ export default function ReviewsSection({
                 key={review.id}
                 review={review}
                 currentUsername={user?.username}
-                onDelete={handleDelete}
+                onDelete={requestDeleteReview}
               />
             ))}
           </div>
@@ -143,6 +141,22 @@ export default function ReviewsSection({
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
         targetName={targetName}
+      />
+
+      <ConfirmModal
+        isOpen={reviewToDelete !== null}
+        loading={deleting}
+        title="Delete review"
+        description={
+          <>
+            This review will be <strong>permanently deleted</strong>. This action cannot be undone.
+          </>
+        }
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+        onConfirm={() => user && confirmDeleteReview(user.accessToken)}
+        onCancel={cancelDeleteReview}
       />
     </section>
   );

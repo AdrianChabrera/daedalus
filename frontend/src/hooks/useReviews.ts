@@ -8,12 +8,16 @@ export function useReviews({
   componentType,
   componentId,
   pageSize = 5,
-  onReviewChange, 
+  onReviewChange,
 }: UseReviewsOptions) {
   const [page, setPage] = useState(1);
   const [result, setResult] = useState<PaginatedResult<Review> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [reviewToDelete, setReviewToDelete] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const fetchReviews = useCallback(async (targetPage: number) => {
     setLoading(true);
@@ -55,8 +59,7 @@ export function useReviews({
 
   const goToPage = (p: number) => {
     const totalPages = result ? Math.ceil(result.total / pageSize) : 1;
-    const clamped = Math.max(1, Math.min(p, totalPages));
-    setPage(clamped);
+    setPage(Math.max(1, Math.min(p, totalPages)));
   };
 
   const createReview = async (
@@ -90,30 +93,42 @@ export function useReviews({
     }
   };
 
-  const deleteReview = async (
-    reviewId: number,
-    accessToken: string,
-  ): Promise<{ error?: string }> => {
+  const requestDeleteReview = (reviewId: number) => {
+    setDeleteError(null);
+    setReviewToDelete(reviewId);
+  };
+
+  const confirmDeleteReview = async (accessToken: string): Promise<void> => {
+    if (reviewToDelete == null) return;
+    setDeleting(true);
+    setDeleteError(null);
     try {
-      const res = await fetch(API_ROUTES.DELETE_REVIEW(reviewId), {
+      const res = await fetch(API_ROUTES.DELETE_REVIEW(reviewToDelete), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       if (!res.ok) {
-        return { error: `Error ${res.status}` };
+        setDeleteError(`Error ${res.status}`);
+        return;
       }
 
-      const reviews = result?.data ?? [];
-      const isLastOnPage = reviews.length === 1 && page > 1;
+      setReviewToDelete(null);
+      const isLastOnPage = (result?.data ?? []).length === 1 && page > 1;
       const nextPage = isLastOnPage ? page - 1 : page;
       setPage(nextPage);
       onReviewChange?.();
       await fetchReviews(nextPage);
-      return {};
     } catch (err) {
-      return { error: err instanceof Error ? err.message : 'Unexpected error' };
+      setDeleteError(err instanceof Error ? err.message : 'Unexpected error');
+    } finally {
+      setDeleting(false);
     }
+  };
+
+  const cancelDeleteReview = () => {
+    setReviewToDelete(null);
+    setDeleteError(null);
   };
 
   const totalPages = result ? Math.max(1, Math.ceil(result.total / pageSize)) : 1;
@@ -127,6 +142,11 @@ export function useReviews({
     error,
     goToPage,
     createReview,
-    deleteReview,
+    reviewToDelete,
+    deleting,
+    deleteError,
+    requestDeleteReview,
+    confirmDeleteReview,
+    cancelDeleteReview,
   };
 }
