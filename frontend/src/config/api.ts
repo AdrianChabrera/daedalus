@@ -35,4 +35,5 @@ export const API_ROUTES = {
     COMPONENT_REVIEWS: (componentType: string, componentId: string) => `${BASE_URL}/reviews/components/${componentType}/${componentId}`,
     MY_REVIEWS: `${BASE_URL}/reviews/my-reviews`,
     DELETE_REVIEW: (reviewId: number) => `${BASE_URL}/reviews/${reviewId}`,
+    COMPONENT_RATING_STATS: (componentType: string, componentId: string) => `${BASE_URL}/reviews/components/${componentType}/${componentId}/stats`,
 };

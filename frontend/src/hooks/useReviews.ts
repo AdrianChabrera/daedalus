@@ -8,6 +8,7 @@ export function useReviews({
   componentType,
   componentId,
   pageSize = 5,
+  onReviewChange, 
 }: UseReviewsOptions) {
   const [page, setPage] = useState(1);
   const [result, setResult] = useState<PaginatedResult<Review> | null>(null);
@@ -82,6 +83,7 @@ export function useReviews({
 
       setPage(1);
       await fetchReviews(1);
+      onReviewChange?.();
       return {};
     } catch (err) {
       return { error: err instanceof Error ? err.message : 'Unexpected error' };
@@ -106,6 +108,7 @@ export function useReviews({
       const isLastOnPage = reviews.length === 1 && page > 1;
       const nextPage = isLastOnPage ? page - 1 : page;
       setPage(nextPage);
+      onReviewChange?.();
       await fetchReviews(nextPage);
       return {};
     } catch (err) {

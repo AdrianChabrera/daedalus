@@ -19,6 +19,8 @@ export interface BuildDetail {
   photoUrl?: string;
   createdAt: string;
   username?: string;
+  averageRating?: number | null;
+  reviewCount?: number;
   cpu?: BuildComponent;
   gpu?: BuildComponent;
   motherboard?: BuildComponent;

@@ -126,6 +126,25 @@
   min-height: 28px;
 }
 
+.starFilled {
+  font-size: 20px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.ratingText {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  gap: 10px;
+}
+
+.ratingCount {
+  color: var(--muted);
+  font-size: 12px;
+  margin-left: 4px;
+}
+
 .starsPlaceholder {
   display: flex;
   gap: 2px;

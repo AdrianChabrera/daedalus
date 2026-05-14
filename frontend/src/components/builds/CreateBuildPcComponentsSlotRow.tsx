@@ -2,11 +2,31 @@ import { Minus, Plus, X } from "lucide-react";
 import type { MultiComponentEntry, SlotRowProps } from "../../types/CreateBuildTypes";
 import styles from '../../styles/CreateBuildScreen.module.css';
 import { Link } from "react-router-dom";
+import { useComponentRatingStats } from "../../hooks/useComponentsRatingStats";
 
-function StarPlaceholder() {
+function ComponentRating({ componentType, componentId }: { componentType: string; componentId: string }) {
+  const { stats } = useComponentRatingStats(componentType, componentId);
+
   return (
-    <span className={styles.stars} aria-label="Rating — not yet implemented">
-      {[1,2,3,4,5].map(i => <span key={i} className={styles.starEmpty}>★</span>)}
+    <span className={styles.stars}>
+      {[1, 2, 3, 4, 5].map(i => (
+        <span
+          key={i}
+          className={
+            stats?.average && i <= Math.round(stats.average)
+              ? styles.starFilled
+              : styles.starEmpty
+          }
+        >
+          ★
+        </span>
+      ))}
+      {stats?.average != null && (
+        <span className={styles.ratingText}>
+          <span>{stats.average}</span>
+          <span className={styles.ratingCount}>({stats.count})</span>
+        </span>
+      )}
     </span>
   );
 }
@@ -109,7 +129,7 @@ export function CreteBuildPcComponentsSlotRow({
               <div className={styles.slotFilled}>
                 <div className={styles.slotCompInfo}>
                   <Link to={`/components/${slot.endpoint}/${comp.id}`} className={styles.slotCompName}>{comp.name}</Link>
-                  <StarPlaceholder />
+                  <ComponentRating componentType={slot.endpoint} componentId={comp.id} />
                   <SpecTags specs={comp.specs} />
                 </div>
                 <QuantityControl
@@ -155,7 +175,7 @@ export function CreteBuildPcComponentsSlotRow({
       <div className={styles.slotFilled}>
         <div className={styles.slotCompInfo}>
           <Link to={`/components/${slot.endpoint}/${single!.id}`} className={styles.slotCompName}>{single!.name}</Link>
-          <StarPlaceholder />
+          <ComponentRating componentType={slot.endpoint} componentId={single!.id} />
           <SpecTags specs={single!.specs} />
         </div>
         <button className={styles.slotRemoveBtn} onClick={onRemoveSingle} aria-label="Remove">

@@ -15,6 +15,7 @@ export interface UseReviewsOptions {
   componentType?: string;
   componentId?: string;
   pageSize?: number;
+  onReviewChange?: () => void;
 }
 
 export interface CreateReviewPayload {
@@ -37,6 +38,7 @@ export interface ReviewsSectionProps {
   componentId?: string;
   targetName: string;
   isOwner?: boolean;
+  onReviewChange?: () => void;
 }
 
 export interface WriteReviewModalProps {
@@ -44,4 +46,9 @@ export interface WriteReviewModalProps {
   onClose: () => void;
   onSubmit: (stars: number, text: string) => Promise<{ error?: string }>;
   targetName: string;
+}
+
+export interface RatingStats {
+  average: number | null;
+  count: number;
 }

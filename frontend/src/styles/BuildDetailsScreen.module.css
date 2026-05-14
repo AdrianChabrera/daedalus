@@ -136,6 +136,26 @@
   gap: 2px;
 }
 
+.starFilled {
+  font-size: 20px;
+  color: var(--accent2);
+  line-height: 1;
+}
+
+.ratingText {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ratingCount {
+  color: var(--muted);
+  margin-left: 2px;
+}
+
 .starEmpty {
   font-size: 20px;
   color: var(--border2);

@@ -16,8 +16,6 @@ export default function MyBuildsScreen() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleBuildClick = (build: BuildSummary) => {
-    // TODO: navigate to build detail screen when implemented
-    console.log('Clicked build', build.id);
     navigate(`/builds/${build.id}`);
   };
 

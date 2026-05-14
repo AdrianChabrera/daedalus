@@ -8,8 +8,6 @@ export default function PublicBuildsScreen() {
   const navigate = useNavigate();
 
   const handleBuildClick = (build: BuildSummary) => {
-    // TODO: navigate to build detail screen when implemented
-    console.log('Clicked build', build.id);
     navigate(`/builds/${build.id}`);
   };
 

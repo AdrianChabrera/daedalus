@@ -16,6 +16,7 @@ export default function ReviewsSection({
   componentId,
   targetName,
   isOwner = false,
+  onReviewChange,
 }: ReviewsSectionProps) {
   const { user } = useAuth();
   const {
@@ -28,7 +29,7 @@ export default function ReviewsSection({
     goToPage,
     createReview,
     deleteReview,
-  } = useReviews({ buildId, componentType, componentId, pageSize: PAGE_SIZE });
+  } = useReviews({ buildId, componentType, componentId, pageSize: PAGE_SIZE, onReviewChange });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);

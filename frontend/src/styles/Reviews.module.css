@@ -155,7 +155,7 @@
 
 .cardStarFilled {
   font-size: 15px;
-  color: #f5a623;
+  color: var(--accent);
   line-height: 1;
 }
 

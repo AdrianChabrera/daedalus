@@ -6,6 +6,8 @@ export interface BuildSummary {
   photoUrl?: string;
   createdAt: string;
   user?: { username: string };
+  averageRating?: number | null;
+  reviewCount?: number;
 }
 
 export interface BuildCardProps {

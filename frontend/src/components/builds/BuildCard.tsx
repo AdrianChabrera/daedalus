@@ -2,16 +2,6 @@ import { Lock, Globe, User, Pencil, Trash2 } from 'lucide-react';
 import styles from '../../styles/BuildsScreen.module.css';
 import type { BuildCardProps } from '../../types/BuildLists.type';
 
-function StarPlaceholder() {
-  return (
-    <span className={styles.stars} aria-label="Rating — not yet implemented">
-      {[1, 2, 3, 4, 5].map(i => (
-        <span key={i} className={styles.starEmpty}>★</span>
-      ))}
-    </span>
-  );
-}
-
 export function BuildCard({ build, onClick, footerInfo }: BuildCardProps) {
   const date = new Date(build.createdAt).toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -25,7 +15,26 @@ export function BuildCard({ build, onClick, footerInfo }: BuildCardProps) {
         <span className={styles.cardName}>
           {build.name.length > 28 ? `${build.name.substring(0, 28)}…` : build.name}
         </span>
-        <StarPlaceholder />
+        <span className={styles.stars}>
+          {[1, 2, 3, 4, 5].map(i => (
+            <span
+              key={i}
+              className={
+                build.averageRating && i <= Math.round(build.averageRating)
+                  ? styles.starFilled
+                  : styles.starEmpty
+              }
+            >
+              ★
+            </span>
+          ))}
+          {build.averageRating != null && (
+            <span className={styles.ratingText}>
+              <span>{build.averageRating}</span>
+              <span className={styles.ratingCount}>({build.reviewCount})</span>
+            </span>
+          )}
+        </span>
       </div>
 
       <div className={styles.cardBody}>

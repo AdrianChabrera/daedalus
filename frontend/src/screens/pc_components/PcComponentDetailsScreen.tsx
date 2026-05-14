@@ -11,7 +11,8 @@ import type { M2SlotData, PcieSlotData } from '../../types/PcComponentDetails.ty
 import { AddToBuildButton } from '../../components/pc_components/AddToBuildButton';
 import { useComponentFavorite } from '../../hooks/useFavorites';
 import { useAuth } from '../../context/AuthContext';
-import ReviewsSection from '../../components/reviews/ReviewSection';
+import ReviewsSection from '../../components/reviews/ReviewsSection';
+import { useComponentRatingStats } from '../../hooks/useComponentsRatingStats';
 
 function ImagePlaceholder() {
   return <div>TODO Add placeholder</div>;
@@ -30,6 +31,7 @@ export default function ComponentDetailScreen() {
     type ?? '',
     id ?? '',
   );
+  const { stats, refetch: refetchStats } = useComponentRatingStats(type, id);
 
   useEffect(() => {
     if (!type || !id) return;
@@ -103,12 +105,32 @@ export default function ComponentDetailScreen() {
               <div className={styles.heroInfo}>
                 <h1 className={styles.heroTitle}>{component.name ?? '—'}</h1>
 
-                <div className={styles.ratingContainer} aria-label="Rating — not yet implemented">
+                <div className={styles.ratingContainer}>
                   <div className={styles.starsPlaceholder}>
                     {[1, 2, 3, 4, 5].map(i => (
-                      <span key={i} className={styles.starEmpty}>★</span>
+                      <span
+                        key={i}
+                        className={
+                          stats?.average && i <= Math.round(stats.average)
+                            ? styles.starFilled
+                            : styles.starEmpty
+                        }
+                      >
+                        ★
+                      </span>
                     ))}
                   </div>
+                  {stats && (
+                    <span className={styles.ratingText}>
+                      {stats.average !== null
+                        ? `${stats.average} `
+                        : 'No ratings yet'
+                      }
+                      {stats.count > 0 && (
+                        <span className={styles.ratingCount}> ({stats.count})</span>
+                      )}
+                    </span>
+                  )}
                 </div>
 
                 <div className={styles.heroActions}>
@@ -219,9 +241,9 @@ export default function ComponentDetailScreen() {
                   componentType={type}
                   componentId={id}
                   targetName={component.name ?? '—'}
+                  onReviewChange={refetchStats}
                 />
               </section>
-
             </div>
           </>
         )}

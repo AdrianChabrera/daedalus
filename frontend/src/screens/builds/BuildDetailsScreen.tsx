@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Heart, FileText, Pencil, Trash2 } from 'lucide-react';
 import { API_ROUTES } from '../../config/api';
@@ -11,7 +11,7 @@ import { BuildDetailsComponentSlotRow } from '../../components/builds/BuildDetai
 import ConfirmModal from '../../components/general/ConfirmModal';
 import { useBuildFavorite } from '../../hooks/useFavorites';
 import { useBuildPdfExport } from '../../hooks/useBuildPdfExport';
-import ReviewsSection from '../../components/reviews/ReviewSection';
+import ReviewsSection from '../../components/reviews/ReviewsSection';
 
 export default function BuildDetailsScreen() {
   const { id } = useParams<{ id: string }>();
@@ -28,30 +28,27 @@ export default function BuildDetailsScreen() {
   const { isFavorite, loading: favLoading, toggle: toggleFavorite } = useBuildFavorite(Number(id));
   const { exporting, exportPdf } = useBuildPdfExport();
 
-  useEffect(() => {
+  const fetchBuild = useCallback(async () => {
     if (!id) return;
-    let cancelled = false;
-
-    const fetchBuild = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const headers: Record<string, string> = {};
-        if (user?.accessToken) headers['Authorization'] = `Bearer ${user.accessToken}`;
-        const res = await fetch(API_ROUTES.GET_BUILD(Number(id)), { headers });
-        if (!res.ok) throw new Error(`Error ${res.status}`);
-        const data: BuildDetail = await res.json();
-        if (!cancelled) setBuild(data);
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Unexpected error');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    fetchBuild();
-    return () => { cancelled = true; };
+    setLoading(true);
+    setError(null);
+    try {
+      const headers: Record<string, string> = {};
+      if (user?.accessToken) headers['Authorization'] = `Bearer ${user.accessToken}`;
+      const res = await fetch(API_ROUTES.GET_BUILD(Number(id)), { headers });
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      const data: BuildDetail = await res.json();
+      setBuild(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unexpected error');
+    } finally {
+      setLoading(false);
+    }
   }, [id, user]);
+
+  useEffect(() => {
+    fetchBuild();
+  }, [fetchBuild]);
 
   const isOwner = !!user && !!build && user.username === build.username;
   const isOwnerAndNotPublished = isOwner && !build.published;
@@ -148,13 +145,29 @@ export default function BuildDetailsScreen() {
               <div className={styles.heroInfo}>
                 <h1 className={styles.heroTitle}>{build.name}</h1>
 
-                <div className={styles.ratingContainer} aria-label="Rating — not yet implemented">
+                <div className={styles.ratingContainer}>
                   <div className={styles.starsPlaceholder}>
                     {[1, 2, 3, 4, 5].map(i => (
-                      <span key={i} className={styles.starEmpty}>★</span>
+                      <span
+                        key={i}
+                        className={
+                          build.averageRating && i <= Math.round(build.averageRating)
+                            ? styles.starFilled
+                            : styles.starEmpty
+                        }
+                      >
+                        ★
+                      </span>
                     ))}
                   </div>
-                  <span className={styles.ratingNote}>(0)</span>
+                  <span className={styles.ratingText}>
+                    {build.averageRating != null
+                      ? `${build.averageRating}`
+                      : 'No ratings yet'}
+                    {build.reviewCount != null && build.reviewCount > 0 && (
+                      <span className={styles.ratingCount}> ({build.reviewCount})</span>
+                    )}
+                  </span>
                 </div>
 
                 {build.username && (
@@ -238,6 +251,7 @@ export default function BuildDetailsScreen() {
                   buildId={Number(id)}
                   targetName={build.name}
                   isOwner={isOwner}
+                  onReviewChange={fetchBuild}
                 />
 
               </div>

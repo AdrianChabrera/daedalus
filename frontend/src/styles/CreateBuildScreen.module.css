@@ -187,6 +187,31 @@ slotAddBtn:active {
   margin-left: 4px;
 }
 
+.starFilled {
+  font-size: 13px;
+  color: var(--accent2);
+  line-height: 1;
+}
+
+.ratingText {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 11px;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 2px;
+}
+
+.ratingCount {
+  color: var(--muted);
+}
+
+.ratingCount {
+  color: var(--muted);
+  margin-left: 2px;
+}
+
 .slotRemoveBtn {
   display: flex;
   align-items: center;
