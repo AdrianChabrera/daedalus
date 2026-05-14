@@ -7,6 +7,8 @@ export interface Review {
   componentName?: string;
   manufacturerName?: string;
   buildName?: string;
+  buildPhotoUrl?: string;
+  buildAuthorUsername?: string;
   createdAt: string;
 }
 
@@ -52,3 +54,5 @@ export interface RatingStats {
   average: number | null;
   count: number;
 }
+
+export type ReviewsTab = 'all' | 'builds' | 'components';

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
@@ -73,8 +74,8 @@ export class ReviewsController {
   async listUserReviews(
     @CurrentUser() currentUser: SignInData,
     @Query('page') page: string = '1',
-    @Query('limit') limit: string = '16',
-    @Query('order') order: string = 'createdAt-DESC',
+    @Query('limit') limit: string = '8',
+    @Query('order', new DefaultValuePipe('createdAt-DESC')) order: string,
   ): Promise<PaginatedResult<ReviewResponseDto>> {
     return this.reviewsService.listUserReviews(
       currentUser,

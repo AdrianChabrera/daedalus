@@ -285,7 +285,7 @@
 
 .starBtn:hover,
 .starBtnFilled {
-  color: #f5a623;
+  color: var(--accent);
 }
 
 .starBtn:hover {

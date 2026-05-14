@@ -71,6 +71,13 @@ export default function ProfileScreen() {
         >
           Favorite components
         </button>
+        <button
+          onClick={() => navigate('/my-reviews')}
+          disabled={loading}
+          style={{ background: 'white', color: 'black', padding: '10px', marginTop: '10px' }}
+        >
+          My Reviews
+        </button>
       </div>
 
       <ConfirmModal

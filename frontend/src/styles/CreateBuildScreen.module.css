@@ -176,7 +176,7 @@ slotAddBtn:active {
 
 .starEmpty {
   font-size: 13px;
-  color: var(--accent);
+  color: var(--border2);
   line-height: 1;
 }
 
@@ -205,11 +205,8 @@ slotAddBtn:active {
 
 .ratingCount {
   color: var(--muted);
-}
-
-.ratingCount {
-  color: var(--muted);
   margin-left: 2px;
+  font-size: 11px;
 }
 
 .slotRemoveBtn {

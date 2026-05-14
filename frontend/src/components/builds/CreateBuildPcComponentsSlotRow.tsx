@@ -21,12 +21,13 @@ function ComponentRating({ componentType, componentId }: { componentType: string
           ★
         </span>
       ))}
-      {stats?.average != null && (
+      {stats?.count && stats.count > 0 ? (
         <span className={styles.ratingText}>
           <span>{stats.average}</span>
           <span className={styles.ratingCount}>({stats.count})</span>
         </span>
-      )}
+      ): <span className={styles.ratingCount}>No ratings</span> 
+      }
     </span>
   );
 }

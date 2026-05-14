@@ -9,6 +9,8 @@ export class ReviewResponseDto {
   componentName?: string;
   manufacturerName?: string;
   buildName?: string;
+  buildPhotoUrl?: string;
+  buildAuthorUsername?: string;
   createdAt!: Date;
 
   constructor(
@@ -24,6 +26,8 @@ export class ReviewResponseDto {
     this.componentName = componentName;
     this.manufacturerName = manufacturerName;
     this.buildName = review.build?.name;
+    this.buildPhotoUrl = review.build?.photoUrl ?? undefined;
+    this.buildAuthorUsername = review.build?.user?.username ?? undefined;
     this.createdAt = review.createdAt;
   }
 }

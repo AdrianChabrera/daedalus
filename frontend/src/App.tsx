@@ -16,6 +16,7 @@ import BuildDetailsScreen from './screens/builds/BuildDetailsScreen';
 import FavoriteBuildsScreen from './screens/builds/FavoriteBuildsScreen';
 import FavoriteComponentsScreen from './screens/pc_components/FavoriteComponentsScreen';
 import CompatibleComponentsScreen from './screens/pc_components/CompatibleComponentsScreen';
+import MyReviewsScreen from './screens/reviews/MyReviewsScreen';
 
 export default function App() {
   return (
@@ -68,6 +69,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <FavoriteBuildsScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/my-reviews"
+              element={
+                <ProtectedRoute>
+                  <MyReviewsScreen />
                 </ProtectedRoute>
               }
             />

@@ -150,7 +150,7 @@ export class ReviewsService {
     currentUser: SignInData,
     page: number,
     limit: number,
-    order: string,
+    order: string = 'createdAt-DESC',
   ): Promise<PaginatedResult<ReviewResponseDto>> {
     const validOrderFileds = ['createdAt', 'stars'];
     const [orderField, orderDir = 'DESC'] = order.split('-');
@@ -166,7 +166,7 @@ export class ReviewsService {
 
     const [reviews, total] = await this.reviewRepository.findAndCount({
       where: { user: { id: currentUser.userId } },
-      relations: ['build', 'user'],
+      relations: ['build', 'build.user', 'user'],
       order: {
         [orderField]: direction,
       },
