@@ -72,8 +72,16 @@ export class ReviewsController {
   @UseGuards(AuthGuard)
   async listUserReviews(
     @CurrentUser() currentUser: SignInData,
-  ): Promise<ReviewResponseDto[]> {
-    return this.reviewsService.listUserReviews(currentUser);
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '16',
+    @Query('order') order: string = 'createdAt-DESC',
+  ): Promise<PaginatedResult<ReviewResponseDto>> {
+    return this.reviewsService.listUserReviews(
+      currentUser,
+      parseInt(page, 10),
+      parseInt(limit, 10),
+      order,
+    );
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

@@ -146,13 +146,35 @@ export class ReviewsService {
     };
   }
 
-  async listUserReviews(currentUser: SignInData): Promise<ReviewResponseDto[]> {
-    const reviews = await this.reviewRepository.find({
+  async listUserReviews(
+    currentUser: SignInData,
+    page: number,
+    limit: number,
+    order: string,
+  ): Promise<PaginatedResult<ReviewResponseDto>> {
+    const validOrderFileds = ['createdAt', 'stars'];
+    const [orderField, orderDir = 'DESC'] = order.split('-');
+
+    if (!validOrderFileds.includes(orderField)) {
+      throw new BadRequestException(
+        `${order} param is not a valid order param`,
+      );
+    }
+
+    const skip = (page - 1) * limit;
+    const direction = orderDir.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+    const [reviews, total] = await this.reviewRepository.findAndCount({
       where: { user: { id: currentUser.userId } },
       relations: ['build', 'user'],
+      order: {
+        [orderField]: direction,
+      },
+      skip,
+      take: limit,
     });
 
-    const response = Promise.all(
+    const data = await Promise.all(
       reviews.map(async (review) => {
         let componentName: string | undefined;
         let componentManufacturer: string | undefined;
@@ -174,7 +196,7 @@ export class ReviewsService {
       }),
     );
 
-    return response;
+    return { data, total, page, limit };
   }
 
   async deleteReview(reviewId: number, currentUser: SignInData): Promise<void> {
