@@ -7,7 +7,7 @@ import ReviewCard from './ReviewCard';
 import WriteReviewModal from './WriteReviewModal';
 import ConfirmModal from '../general/ConfirmModal';
 import styles from '../../styles/Reviews.module.css';
-import type { ReviewsSectionProps } from '../../types/Reviews.type';
+import type { CreateReviewPayload, ReviewsSectionProps } from '../../types/Reviews.type';
 
 const PAGE_SIZE = 5;
 
@@ -29,29 +29,30 @@ export default function ReviewsSection({
     error,
     goToPage,
     createReview,
+    hasUserReviewed,
     reviewToDelete,
     deleting,
     deleteError,
     requestDeleteReview,
     confirmDeleteReview,
     cancelDeleteReview,
-  } = useReviews({ buildId, componentType, componentId, pageSize: PAGE_SIZE, onReviewChange });
+  } = useReviews({
+    buildId,
+    componentType,
+    componentId,
+    pageSize: PAGE_SIZE,
+    accessToken: user?.accessToken,
+    onReviewChange,
+  });
 
   const [modalOpen, setModalOpen] = useState(false);
 
   const canWriteReview = !!user && !isOwner;
-  const hasUserReviewed = !!user && reviews.some((r) => r.username === user.username);
 
   const handleSubmit = async (stars: number, text: string) => {
     if (!user) return { error: 'You must be logged in.' };
 
-    const payload: {
-      stars: number;
-      text?: string;
-      buildId?: number;
-      componentType?: string;
-      componentId?: string;
-    } = { stars };
+    const payload: CreateReviewPayload = { stars };
 
     if (text) payload.text = text;
 

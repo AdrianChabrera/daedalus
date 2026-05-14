@@ -17,6 +17,7 @@ export interface UseReviewsOptions {
   componentType?: string;
   componentId?: string;
   pageSize?: number;
+  accessToken?: string;
   onReviewChange?: () => void;
 }
 

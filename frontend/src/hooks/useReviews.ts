@@ -1,17 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { API_ROUTES } from '../config/api';
 import type { CreateReviewPayload, Review, UseReviewsOptions } from '../types/Reviews.type';
-import type { PaginatedResult } from '../types/PaginatedResult.type';
+import type { ReviewsPaginatedResult } from '../types/PaginatedResult.type';
 
 export function useReviews({
   buildId,
   componentType,
   componentId,
   pageSize = 5,
+  accessToken,
   onReviewChange,
 }: UseReviewsOptions) {
   const [page, setPage] = useState(1);
-  const [result, setResult] = useState<PaginatedResult<Review> | null>(null);
+  const [result, setResult] = useState<ReviewsPaginatedResult<Review> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,16 +39,19 @@ export function useReviews({
         limit: String(pageSize),
       });
 
-      const res = await fetch(`${url}?${qs.toString()}`);
+      const res = await fetch(`${url}?${qs.toString()}`, {
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+      });
+      
       if (!res.ok) throw new Error(`Error ${res.status}`);
-      const data: PaginatedResult<Review> = await res.json();
+      const data: ReviewsPaginatedResult<Review> = await res.json();
       setResult(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unexpected error');
     } finally {
       setLoading(false);
     }
-  }, [buildId, componentType, componentId, pageSize]);
+  }, [buildId, componentType, componentId, pageSize, accessToken]);
 
   useEffect(() => {
     setPage(1);
@@ -132,6 +136,7 @@ export function useReviews({
   };
 
   const totalPages = result ? Math.max(1, Math.ceil(result.total / pageSize)) : 1;
+  const hasUserReviewed = result?.hasCurrentUserReviewed ?? false;
 
   return {
     reviews: result?.data ?? [],
@@ -142,6 +147,7 @@ export function useReviews({
     error,
     goToPage,
     createReview,
+    hasUserReviewed,
     reviewToDelete,
     deleting,
     deleteError,

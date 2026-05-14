@@ -15,6 +15,7 @@ import { SignInData } from 'src/auth/interfaces/auth.interfaces';
 import { ReviewCreationDto } from './dtos/review-creation.dto';
 import { ReviewResponseDto } from './dtos/review-response.dto';
 import { PaginatedResult } from 'src/components/interfaces/pc-components.interfaces';
+import { ReviewPaginatedResult } from './interfaces/reviews.interfaces';
 
 @Injectable()
 export class ReviewsService {
@@ -91,7 +92,8 @@ export class ReviewsService {
     buildId: number,
     page: number,
     limit: number,
-  ): Promise<PaginatedResult<ReviewResponseDto>> {
+    currentUser?: SignInData,
+  ): Promise<ReviewPaginatedResult<ReviewResponseDto>> {
     await this.buildsService.findBuildById(buildId);
 
     const skip = (page - 1) * limit;
@@ -103,11 +105,18 @@ export class ReviewsService {
       take: limit,
     });
 
+    const hasCurrentUserReviewed = currentUser
+      ? !!(await this.reviewRepository.findOne({
+          where: { user: { id: currentUser.userId }, build: { id: buildId } },
+        }))
+      : undefined;
+
     return {
       data: reviews.map((review) => new ReviewResponseDto(review)),
       total,
       page,
       limit,
+      hasCurrentUserReviewed,
     };
   }
 
@@ -116,7 +125,8 @@ export class ReviewsService {
     componentType: string,
     page: number,
     limit: number,
-  ): Promise<PaginatedResult<ReviewResponseDto>> {
+    currentUser?: SignInData,
+  ): Promise<ReviewPaginatedResult<ReviewResponseDto>> {
     const component = await this.componentsService.findComponentById(
       componentType,
       componentId,
@@ -131,6 +141,16 @@ export class ReviewsService {
       take: limit,
     });
 
+    const hasCurrentUserReviewed = currentUser
+      ? !!(await this.reviewRepository.findOne({
+          where: {
+            user: { id: currentUser.userId },
+            componentId,
+            componentType,
+          },
+        }))
+      : undefined;
+
     return {
       data: reviews.map(
         (review) =>
@@ -143,6 +163,7 @@ export class ReviewsService {
       total,
       page,
       limit,
+      hasCurrentUserReviewed,
     };
   }
 
