@@ -83,6 +83,12 @@ export class BuildResponseDto {
   @IsOptional()
   published?: boolean;
 
+  @IsOptional()
+  averageRating?: number | null;
+
+  @IsOptional()
+  reviewCount?: number;
+
   constructor(build: Build, username: string) {
     this.name = build.name;
     this.description = build.description;
@@ -90,6 +96,9 @@ export class BuildResponseDto {
     this.username = username;
     this.id = build.id;
     this.published = build.published;
+
+    this.averageRating = build.averageRating ?? null;
+    this.reviewCount = build.reviewCount ?? 0;
 
     this.pcCase = build.pcCase;
     this.cpuCooler = build.cpuCooler;

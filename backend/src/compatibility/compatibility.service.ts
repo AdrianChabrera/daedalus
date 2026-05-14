@@ -149,6 +149,9 @@ export class CompatibilityService {
     };
 
     const wrapper = multiWrappers[buildKey];
-    return { ...build, [buildKey]: wrapper ? wrapper(component) : component };
+    return {
+      ...build,
+      [buildKey]: wrapper ? wrapper(component) : component,
+    } as Build;
   }
 }

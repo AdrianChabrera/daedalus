@@ -182,6 +182,7 @@ export class BuildsService {
         'storageDrives.storageDrive',
         'fans',
         'fans.fan',
+        'reviews',
       ],
     });
 
@@ -241,6 +242,7 @@ export class BuildsService {
         .createQueryBuilder('build')
         .leftJoin('build.user', 'user')
         .addSelect(['user.username'])
+        .leftJoinAndSelect('build.reviews', 'reviews')
         .skip(skip)
         .take(limit);
 

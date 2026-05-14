@@ -8,6 +8,7 @@ import { Mouse } from '../../components/entities/main-entities/mouse.entity';
 import { PowerSupply } from '../../components/entities/main-entities/power-supply.entity';
 import { User } from '../../users/user.entity';
 import {
+  AfterLoad,
   Column,
   CreateDateColumn,
   Entity,
@@ -107,4 +108,23 @@ export class Build {
 
   @OneToMany(() => Review, (r) => r.build)
   reviews!: Review[];
+
+  averageRating?: number | null;
+  reviewCount?: number;
+
+  @AfterLoad()
+  computeRatingStats() {
+    if (this.reviews) {
+      this.reviewCount = this.reviews.length;
+      this.averageRating =
+        this.reviews.length > 0
+          ? parseFloat(
+              (
+                this.reviews.reduce((sum, r) => sum + r.stars, 0) /
+                this.reviews.length
+              ).toFixed(2),
+            )
+          : null;
+    }
+  }
 }

@@ -85,4 +85,16 @@ export class ReviewsController {
   ): Promise<void> {
     return this.reviewsService.deleteReview(reviewId, currentUser);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/components/:cType/:cId/stats')
+  async getComponentRatingStats(
+    @Param('cType', parseComponentTypePipe) componentType: ComponentType,
+    @Param('cId') componentId: string,
+  ): Promise<{ average: number | null; count: number }> {
+    return this.reviewsService.getComponentRatingStats(
+      componentId,
+      componentType,
+    );
+  }
 }

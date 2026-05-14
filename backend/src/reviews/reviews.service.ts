@@ -189,4 +189,24 @@ export class ReviewsService {
       );
     await this.reviewRepository.remove(review);
   }
+
+  async getComponentRatingStats(
+    componentId: string,
+    componentType: string,
+  ): Promise<{ average: number | null; count: number }> {
+    const result = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select('AVG(review.stars)', 'average')
+      .addSelect('COUNT(review.id)', 'count')
+      .where('review.componentId = :componentId', { componentId })
+      .andWhere('review.componentType = :componentType', { componentType })
+      .getRawOne<{ average: string | null; count: string }>();
+
+    return {
+      average: result?.average
+        ? parseFloat(parseFloat(result.average).toFixed(2))
+        : null,
+      count: parseInt(result?.count ?? '0', 10),
+    };
+  }
 }
