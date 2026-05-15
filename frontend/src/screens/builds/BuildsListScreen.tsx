@@ -18,6 +18,7 @@ const PAGE_SIZE = 15;
 const SORT_FIELDS = [
   { label: 'Alphabetical', field: 'name' },
   { label: 'Date', field: 'createdAt' },
+  { label: 'Rating', field: 'rating' },
 ];
 
 interface BuildsListScreenProps {

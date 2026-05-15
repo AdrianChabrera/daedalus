@@ -74,7 +74,7 @@ export default function ComponentsScreen() {
     setSearchParams({ type: currentType.endpoint, page: '1' });
   };
 
-  const fixedSortButtons = [{ label: 'Alphabetical', field: 'name' }];
+  const fixedSortButtons = [{ label: 'Alphabetical', field: 'name' }, { label: 'Rating', field: 'rating' }];
   const allSortButtons = [...fixedSortButtons, ...(currentType.sortFields ?? [])];
   const totalPages = result ? Math.ceil(result.total / PAGE_SIZE) : 1;
 
