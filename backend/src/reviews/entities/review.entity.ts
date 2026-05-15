@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   Unique,
@@ -35,6 +36,7 @@ export class Review {
     onDelete: 'CASCADE',
     nullable: true,
   })
+  @JoinColumn({ name: 'build_id' })
   build?: Build;
 
   @Column({ name: 'component_type', nullable: true })

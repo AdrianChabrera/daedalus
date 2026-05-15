@@ -174,6 +174,19 @@ export class ComponentsService {
         .skip(skip)
         .take(limit);
 
+      qb.leftJoin(
+        (sub) =>
+          sub
+            .select('r.component_id', 'cid')
+            .addSelect('AVG(r.stars)', 'avg_rating')
+            .from('reviews', 'r')
+            .where('r.component_type = :cType', { cType })
+            .groupBy('r.component_id'),
+        'rating_agg',
+        `rating_agg.cid = ${alias}.buildcores_id`,
+      );
+      qb.addSelect('rating_agg.avg_rating', 'avg_rating');
+
       if (allowedIds !== undefined) {
         if (allowedIds.length === 0) {
           return { data: [], total: 0, page, limit };
@@ -193,7 +206,9 @@ export class ComponentsService {
           .orderBy(`similarity(${alias}.name, :search)`, 'DESC')
           .addOrderBy(`${alias}.name`, 'ASC');
       } else {
-        if (orderField) {
+        if (orderField === 'rating') {
+          qb.orderBy('avg_rating', direction, 'NULLS LAST');
+        } else if (orderField) {
           qb.orderBy(
             `CASE WHEN ${alias}.${orderField} IS NULL THEN 1 ELSE 0 END`,
             'ASC',

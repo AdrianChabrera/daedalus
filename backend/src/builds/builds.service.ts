@@ -225,20 +225,67 @@ export class BuildsService {
     search: string = '',
     allowedIds?: number[],
   ): Promise<PaginatedResult<Build>> {
-    const validOrderFileds = ['name', 'createdAt'];
+    const validOrderFields = ['name', 'createdAt', 'rating'];
     const [orderField, orderDir = 'ASC'] = order.split('-');
 
-    if (!validOrderFileds.includes(orderField)) {
+    if (!validOrderFields.includes(orderField)) {
       throw new BadRequestException(
         `${order} param is not a valid order param`,
       );
+    }
+
+    if (allowedIds !== undefined && allowedIds.length === 0) {
+      return { data: [], total: 0, page, limit };
     }
 
     const skip = (page - 1) * limit;
     const direction = orderDir.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
     try {
-      const qb: SelectQueryBuilder<Build> = this.buildRepository
+      if (orderField === 'rating') {
+        const rankedQb = this.buildRepository
+          .createQueryBuilder('build')
+          .leftJoin('build.reviews', 'reviews')
+          .select('build.id', 'id')
+          .addSelect('AVG(reviews.stars)', 'avg_rating')
+          .groupBy('build.id')
+          .orderBy('avg_rating', direction, 'NULLS LAST');
+
+        this.applyBuildFilters(rankedQb, currentUser, allowedIds);
+
+        const ranked = await rankedQb.getRawMany<{
+          id: number;
+          avg_rating: string;
+        }>();
+
+        if (ranked.length === 0) {
+          return { data: [], total: 0, page, limit };
+        }
+
+        const total = ranked.length;
+        const pageIds = ranked.slice(skip, skip + limit).map((r) => r.id);
+
+        if (pageIds.length === 0) {
+          return { data: [], total, page, limit };
+        }
+
+        const data = await this.buildRepository
+          .createQueryBuilder('build')
+          .leftJoin('build.user', 'user')
+          .addSelect(['user.username'])
+          .leftJoinAndSelect('build.reviews', 'reviews')
+          .whereInIds(pageIds)
+          .getMany();
+
+        const dataMap = new Map(data.map((b) => [b.id, b]));
+        const orderedData = pageIds
+          .map((id) => dataMap.get(id)!)
+          .filter(Boolean);
+
+        return { data: orderedData, total, page, limit };
+      }
+
+      const qb = this.buildRepository
         .createQueryBuilder('build')
         .leftJoin('build.user', 'user')
         .addSelect(['user.username'])
@@ -246,12 +293,7 @@ export class BuildsService {
         .skip(skip)
         .take(limit);
 
-      if (allowedIds !== undefined) {
-        if (allowedIds.length === 0) {
-          return { data: [], total: 0, page, limit };
-        }
-        qb.andWhere('build.id IN (:...allowedIds)', { allowedIds });
-      }
+      this.applyBuildFilters(qb, currentUser, allowedIds);
 
       const trimmedSearch = search.trim();
 
@@ -262,19 +304,9 @@ export class BuildsService {
         })
           .addSelect(`similarity(build.name, :search)`, 'search_similarity')
           .orderBy('search_similarity', 'DESC')
-          .addOrderBy(`build.name`, 'ASC');
+          .addOrderBy('build.name', 'ASC');
       } else {
-        if (orderField) {
-          qb.orderBy(`build.${orderField}`, direction, 'NULLS LAST');
-        }
-      }
-
-      if (currentUser) {
-        qb.andWhere('build.userId = :userId', {
-          userId: currentUser.userId,
-        });
-      } else {
-        qb.andWhere('build.published = true');
+        qb.orderBy(`build.${orderField}`, direction, 'NULLS LAST');
       }
 
       const [data, total] = await qb.getManyAndCount();
@@ -283,6 +315,22 @@ export class BuildsService {
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
       throw new BadRequestException(message);
+    }
+  }
+
+  private applyBuildFilters(
+    qb: SelectQueryBuilder<Build>,
+    currentUser: SignInData | null,
+    allowedIds?: number[],
+  ): void {
+    if (currentUser) {
+      qb.andWhere('build.userId = :userId', { userId: currentUser.userId });
+    } else {
+      qb.andWhere('build.published = true');
+    }
+
+    if (allowedIds !== undefined) {
+      qb.andWhere('build.id IN (:...allowedIds)', { allowedIds });
     }
   }
 
