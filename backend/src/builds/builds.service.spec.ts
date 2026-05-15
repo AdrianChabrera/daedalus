@@ -60,13 +60,20 @@ function makeGpu(overrides: Partial<Gpu> = {}): Gpu {
 function makeQbMock(): jest.Mocked<SelectQueryBuilder<Build>> {
   return {
     leftJoin: jest.fn().mockReturnThis(),
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
     addSelect: jest.fn().mockReturnThis(),
+    select: jest.fn().mockReturnThis(),
     skip: jest.fn().mockReturnThis(),
     take: jest.fn().mockReturnThis(),
+    where: jest.fn().mockReturnThis(),
     andWhere: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
     addOrderBy: jest.fn().mockReturnThis(),
+    groupBy: jest.fn().mockReturnThis(),
+    whereInIds: jest.fn().mockReturnThis(),
     getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
+    getMany: jest.fn().mockResolvedValue([]),
+    getRawMany: jest.fn().mockResolvedValue([]),
   } as unknown as jest.Mocked<SelectQueryBuilder<Build>>;
 }
 
@@ -384,6 +391,186 @@ describe('BuildsService', () => {
       await expect(
         service.findAllBuilds(null, 1, 16, 'invalid-ASC', ''),
       ).rejects.toThrow(BadRequestException);
+    });
+
+    it('returns empty result immediately when allowedIds is an empty array', async () => {
+      const buildRepo = makeBuildRepoMock();
+      const { service } = await buildModule(buildRepo);
+
+      const result = await service.findAllBuilds(
+        null,
+        1,
+        16,
+        'name-ASC',
+        '',
+        [],
+      );
+
+      expect(result).toEqual({ data: [], total: 0, page: 1, limit: 16 });
+      expect(buildRepo._qb.getManyAndCount).not.toHaveBeenCalled();
+    });
+
+    describe('order by rating', () => {
+      it('uses getRawMany and then getMany when ordering by rating', async () => {
+        const build = makeBuild({ id: 1 });
+        const buildRepo = makeBuildRepoMock();
+        buildRepo._qb.getRawMany.mockResolvedValue([
+          { id: 1, avg_rating: '4.5' },
+        ]);
+        buildRepo._qb.getMany.mockResolvedValue([build]);
+
+        const { service } = await buildModule(buildRepo);
+        const result = await service.findAllBuilds(
+          null,
+          1,
+          16,
+          'rating-DESC',
+          '',
+        );
+
+        expect(buildRepo._qb.getRawMany).toHaveBeenCalled();
+        expect(buildRepo._qb.getMany).toHaveBeenCalled();
+        expect(result.total).toBe(1);
+        expect(result.data[0].id).toBe(1);
+      });
+
+      it('orders by avg_rating DESC when direction is DESC', async () => {
+        const buildRepo = makeBuildRepoMock();
+        buildRepo._qb.getRawMany.mockResolvedValue([]);
+
+        const { service } = await buildModule(buildRepo);
+        await service.findAllBuilds(null, 1, 16, 'rating-DESC', '');
+
+        expect(buildRepo._qb.orderBy).toHaveBeenCalledWith(
+          'avg_rating',
+          'DESC',
+          'NULLS LAST',
+        );
+      });
+
+      it('orders by avg_rating ASC when direction is ASC', async () => {
+        const buildRepo = makeBuildRepoMock();
+        buildRepo._qb.getRawMany.mockResolvedValue([]);
+
+        const { service } = await buildModule(buildRepo);
+        await service.findAllBuilds(null, 1, 16, 'rating-ASC', '');
+
+        expect(buildRepo._qb.orderBy).toHaveBeenCalledWith(
+          'avg_rating',
+          'ASC',
+          'NULLS LAST',
+        );
+      });
+
+      it('returns empty result when no builds match the rating query', async () => {
+        const buildRepo = makeBuildRepoMock();
+        buildRepo._qb.getRawMany.mockResolvedValue([]);
+
+        const { service } = await buildModule(buildRepo);
+        const result = await service.findAllBuilds(
+          null,
+          1,
+          16,
+          'rating-DESC',
+          '',
+        );
+
+        expect(result).toEqual({ data: [], total: 0, page: 1, limit: 16 });
+        expect(buildRepo._qb.getMany).not.toHaveBeenCalled();
+      });
+
+      it('applies published filter in the rating query when currentUser is null', async () => {
+        const buildRepo = makeBuildRepoMock();
+        buildRepo._qb.getRawMany.mockResolvedValue([]);
+
+        const { service } = await buildModule(buildRepo);
+        await service.findAllBuilds(null, 1, 16, 'rating-DESC', '');
+
+        expect(buildRepo._qb.andWhere).toHaveBeenCalledWith(
+          'build.published = true',
+        );
+      });
+
+      it('applies userId filter in the rating query when currentUser is provided', async () => {
+        const buildRepo = makeBuildRepoMock();
+        buildRepo._qb.getRawMany.mockResolvedValue([]);
+
+        const { service } = await buildModule(buildRepo);
+        await service.findAllBuilds(currentUser, 1, 16, 'rating-DESC', '');
+
+        expect(buildRepo._qb.andWhere).toHaveBeenCalledWith(
+          expect.stringContaining('userId'),
+          expect.objectContaining({ userId: currentUser.userId }),
+        );
+      });
+
+      it('respects pagination slicing the ranked list', async () => {
+        const builds = [makeBuild({ id: 3 }), makeBuild({ id: 4 })];
+        const ranked = [
+          { id: 1, avg_rating: '5' },
+          { id: 2, avg_rating: '4' },
+          { id: 3, avg_rating: '3' },
+          { id: 4, avg_rating: '2' },
+        ];
+        const buildRepo = makeBuildRepoMock();
+        buildRepo._qb.getRawMany.mockResolvedValue(ranked);
+        buildRepo._qb.getMany.mockResolvedValue(builds);
+
+        const { service } = await buildModule(buildRepo);
+        const result = await service.findAllBuilds(
+          null,
+          2,
+          2,
+          'rating-DESC',
+          '',
+        );
+
+        expect(result.total).toBe(4);
+        expect(result.data).toHaveLength(2);
+        expect(result.data.map((b) => b.id)).toEqual([3, 4]);
+      });
+
+      it('preserves the rating order in the returned data', async () => {
+        const buildA = makeBuild({ id: 2 });
+        const buildB = makeBuild({ id: 1 });
+        const ranked = [
+          { id: 2, avg_rating: '5' },
+          { id: 1, avg_rating: '3' },
+        ];
+        const buildRepo = makeBuildRepoMock();
+        buildRepo._qb.getRawMany.mockResolvedValue(ranked);
+        // getMany puede devolver en cualquier orden
+        buildRepo._qb.getMany.mockResolvedValue([buildB, buildA]);
+
+        const { service } = await buildModule(buildRepo);
+        const result = await service.findAllBuilds(
+          null,
+          1,
+          16,
+          'rating-DESC',
+          '',
+        );
+
+        expect(result.data[0].id).toBe(2);
+        expect(result.data[1].id).toBe(1);
+      });
+
+      it('returns empty result immediately when allowedIds is empty in rating path', async () => {
+        const buildRepo = makeBuildRepoMock();
+        const { service } = await buildModule(buildRepo);
+
+        const result = await service.findAllBuilds(
+          null,
+          1,
+          16,
+          'rating-DESC',
+          '',
+          [],
+        );
+
+        expect(result).toEqual({ data: [], total: 0, page: 1, limit: 16 });
+        expect(buildRepo._qb.getRawMany).not.toHaveBeenCalled();
+      });
     });
   });
 

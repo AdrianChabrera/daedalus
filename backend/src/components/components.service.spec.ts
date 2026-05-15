@@ -36,6 +36,7 @@ function makeQbMock(
     select: jest.fn().mockReturnThis(),
     addSelect: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
+    leftJoin: jest.fn().mockReturnThis(),
     getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
     getRawOne: jest.fn().mockResolvedValue({ min: null, max: null }),
     getRawMany: jest.fn().mockResolvedValue([]),
@@ -91,7 +92,6 @@ async function buildModule(
   };
 }
 
-/* eslint-disable @typescript-eslint/unbound-method */
 describe('ComponentsService', () => {
   describe('findComponentById()', () => {
     it('returns the component if it exists', async () => {
@@ -415,6 +415,100 @@ describe('ComponentsService', () => {
       await expect(
         service.findAllComponents('cpu', 1, 16, filters),
       ).resolves.toBeDefined();
+    });
+
+    describe('order by rating', () => {
+      it('performs a leftJoin with the reviews subquery when ordering by rating', async () => {
+        const gpuRepo = makeRepoMock();
+        const { service } = await buildModule({ Gpu: gpuRepo });
+
+        await service.findAllComponents(
+          'gpu',
+          1,
+          16,
+          EMPTY_FILTERS,
+          'rating-DESC',
+        );
+
+        expect(gpuRepo._qb.leftJoin).toHaveBeenCalled();
+      });
+
+      it('adds avg_rating select when ordering by rating', async () => {
+        const gpuRepo = makeRepoMock();
+        const { service } = await buildModule({ Gpu: gpuRepo });
+
+        await service.findAllComponents(
+          'gpu',
+          1,
+          16,
+          EMPTY_FILTERS,
+          'rating-DESC',
+        );
+
+        expect(gpuRepo._qb.addSelect).toHaveBeenCalledWith(
+          expect.stringContaining('avg_rating'),
+          'avg_rating',
+        );
+      });
+
+      it('orders by avg_rating DESC when direction is DESC', async () => {
+        const gpuRepo = makeRepoMock();
+        const { service } = await buildModule({ Gpu: gpuRepo });
+
+        await service.findAllComponents(
+          'gpu',
+          1,
+          16,
+          EMPTY_FILTERS,
+          'rating-DESC',
+        );
+
+        expect(gpuRepo._qb.orderBy).toHaveBeenCalledWith(
+          'avg_rating',
+          'DESC',
+          'NULLS LAST',
+        );
+      });
+
+      it('orders by avg_rating ASC with NULLS LAST when direction is ASC', async () => {
+        const gpuRepo = makeRepoMock();
+        const { service } = await buildModule({ Gpu: gpuRepo });
+
+        await service.findAllComponents(
+          'gpu',
+          1,
+          16,
+          EMPTY_FILTERS,
+          'rating-ASC',
+        );
+
+        expect(gpuRepo._qb.orderBy).toHaveBeenCalledWith(
+          'avg_rating',
+          'ASC',
+          'NULLS LAST',
+        );
+      });
+
+      it('does not use leftJoin for rating when a search term is provided', async () => {
+        const gpuRepo = makeRepoMock();
+        const { service } = await buildModule({ Gpu: gpuRepo });
+
+        await service.findAllComponents(
+          'gpu',
+          1,
+          16,
+          EMPTY_FILTERS,
+          'rating-DESC',
+          'RTX',
+        );
+
+        // Con search activo, el orderBy cambia a similarity y no a avg_rating
+        expect(gpuRepo._qb.orderBy).not.toHaveBeenCalledWith(
+          'avg_rating',
+          expect.any(String),
+          expect.any(String),
+        );
+      });
     });
   });
 
