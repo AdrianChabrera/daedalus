@@ -16,6 +16,13 @@ export class ComponentsController {
   constructor(private componentsService: ComponentsService) {}
 
   @HttpCode(HttpStatus.OK)
+  @Get('/count')
+  getComponentsCount(): Promise<number> {
+    const result = this.componentsService.findComponentsCount();
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get('/:componentType/filters')
   getAllComponentsFilterValues(@Param('componentType') componentType: string) {
     return this.componentsService.findAllFilterValues(componentType);
@@ -56,12 +63,5 @@ export class ComponentsController {
     @Param('id', new ParseUUIDPipe()) id: string,
   ) {
     return this.componentsService.findComponentById(componentType, id);
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Get('/count')
-  getComponentsCount(): Promise<number> {
-    const result = this.componentsService.findComponentsCount();
-    return result;
   }
 }

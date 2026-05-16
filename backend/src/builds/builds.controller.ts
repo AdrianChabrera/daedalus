@@ -83,6 +83,13 @@ export class BuildsController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Get('/count')
+  getBuildsCount(): Promise<number> {
+    const result = this.buildsService.findBuildsCount();
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Put('/:id')
   @UseGuards(AuthGuard)
   async updateBuild(
@@ -183,19 +190,5 @@ export class BuildsController {
     @CurrentUser() currentUser: SignInData,
   ): Promise<void> {
     return await this.buildsService.deleteBuildPhoto(id, currentUser);
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Get('/count')
-  getBuildsCount(): Promise<number> {
-    const result = this.buildsService.findBuildsCount();
-    return result;
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Get('/latest')
-  async getLatestBuilds(): Promise<BuildResponseDto[]> {
-    const builds = await this.buildsService.findLatestBuilds();
-    return builds;
   }
 }

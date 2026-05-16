@@ -825,20 +825,9 @@ export class BuildsService {
   }
 
   async findBuildsCount(): Promise<number> {
-    const count = await this.buildRepository.count();
-    return count;
-  }
-
-  async findLatestBuilds(): Promise<BuildResponseDto[]> {
-    const builds = await this.buildRepository.find({
+    const count = await this.buildRepository.count({
       where: { published: true },
-      order: { createdAt: 'DESC' },
-      take: 5,
-      relations: ['user', 'reviews'],
     });
-    const response = builds.map(
-      (b) => new BuildResponseDto(b, b.user.username),
-    );
-    return response;
+    return count;
   }
 }
