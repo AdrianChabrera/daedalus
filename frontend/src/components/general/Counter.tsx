@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from '../../styles/HomeScreen.module.css';
 
-export function HomeCounter({ target }: { target: number | null }) {
+export function Counter({ target }: { target: number | null }) {
   const [val, setVal] = useState(0);
   useEffect(() => {
     if (target == null) return;

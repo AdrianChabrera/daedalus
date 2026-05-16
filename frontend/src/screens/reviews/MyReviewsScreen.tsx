@@ -42,7 +42,7 @@ export default function MyReviewsScreen() {
       <div className={styles.inner}>
         <button className={styles.backBtn} onClick={() => navigate('/profile')}>
           <ArrowLeft size={15} />
-          Back to profile
+          Back
         </button>
 
         <div className={styles.header}>

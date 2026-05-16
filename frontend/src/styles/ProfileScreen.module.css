@@ -1,0 +1,275 @@
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 36px;
+  position: relative;
+  min-height: 0;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--white);
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+
+.sectionLine {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.identCard {
+  background: var(--accent-dim);
+  border: 1px solid rgba(176,38,200,.50);;
+  border-radius: 12px;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 18px;
+  text-align: center;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s, transform .15s;
+}
+
+.statCard::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform .25s;
+}
+
+.statCard:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+}
+
+.statCard:hover::after {
+  transform: scaleX(1);
+}
+
+.statValue {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--accent2);
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.statLabel {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.username {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: .5px;
+  word-break: break-all;
+  line-height: 1.2;
+}
+
+.memberSince {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.memberSince span {
+  color: var(--accent2);
+  font-weight: 600;
+}
+
+.accessGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.accessCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: border-color .18s, box-shadow .18s, transform .15s;
+  text-align: left;
+  width: 100%;
+}
+
+.accessCard:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(176,38,200,.12);
+  transform: translateY(-2px);
+}
+
+.accessIconWrap {
+  width: 44px;
+  height: 44px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(176,38,200,.22);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background .18s;
+}
+
+.accessCard:hover .accessIconWrap {
+  background: rgba(176,38,200,.2);
+}
+
+.accessIconWrap svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+}
+
+.accessTitle {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+
+.accessSub {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.accessArrow {
+  margin-left: auto;
+  width: 16px;
+  height: 16px;
+  color: var(--border2);
+  flex-shrink: 0;
+  transition: color .18s, transform .18s;
+}
+
+.accessCard:hover .accessArrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.accessCardLogout:hover {
+  border-color: var(--border2);
+  box-shadow: none;
+}
+
+.accessIconWrapLogout {
+  background: rgba(255,255,255,.04);
+  border-color: var(--border2);
+}
+
+.accessIconWrapLogout svg {
+  color: var(--muted);
+}
+
+.accessCardLogout:hover .accessIconWrapLogout {
+  background: rgba(255,255,255,.08);
+}
+
+.accessCardLogout:hover .accessArrow {
+  color: var(--border2);
+}
+
+.accessCardDanger:hover {
+  border-color: var(--error);
+  box-shadow: 0 4px 20px rgba(224,80,112,.10);
+}
+
+.accessIconWrapDanger {
+  background: rgba(224,80,112,.08);
+  border-color: rgba(224,80,112,.25);
+}
+
+.accessIconWrapDanger svg {
+  color: var(--error);
+}
+
+.accessCardDanger:hover .accessIconWrapDanger {
+  background: rgba(224,80,112,.15);
+}
+
+.accessTitleDanger {
+  color: var(--error);
+}
+
+.accessArrowDanger {
+  color: rgba(224,80,112,.4);
+}
+
+.accessCardDanger:hover .accessArrowDanger {
+  color: var(--error);
+  transform: translateX(3px);
+}

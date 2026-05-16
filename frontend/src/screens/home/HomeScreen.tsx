@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useBuilds } from '../../hooks/useBuilds';
 import { API_ROUTES } from '../../config/api';
 import styles from '../../styles/HomeScreen.module.css';
-import { HomeCounter } from '../../components/home/HomeCounter';
+import { Counter } from '../../components/general/Counter';
 import { HomeBuildCard } from '../../components/home/HomeBuildCard';
 
 function useCount(url: string) {
@@ -88,12 +88,12 @@ export default function HomeScreen() {
 
       <section className={styles.stats}>
         <div className={styles.statItem}>
-          <span className={styles.statValue}><HomeCounter target={buildsCount} /></span>
+          <span className={styles.statValue}><Counter target={buildsCount} /></span>
           <span className={styles.statLabel}><Monitor size={12} /> BUILDS</span>
         </div>
         <div className={styles.statSep} aria-hidden />
         <div className={styles.statItem}>
-          <span className={styles.statValue}><HomeCounter target={componentsCount} /></span>
+          <span className={styles.statValue}><Counter target={componentsCount} /></span>
           <span className={styles.statLabel}><Cpu size={12} /> COMPONENTS</span>
         </div>
       </section>
