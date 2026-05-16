@@ -22,6 +22,7 @@ const mockBuildsService: jest.Mocked<
     | 'deleteBuild'
     | 'uploadBuildPhoto'
     | 'deleteBuildPhoto'
+    | 'findBuildsCount'
   >
 > = {
   createBuild: jest.fn(),
@@ -34,6 +35,7 @@ const mockBuildsService: jest.Mocked<
   deleteBuild: jest.fn(),
   uploadBuildPhoto: jest.fn(),
   deleteBuildPhoto: jest.fn(),
+  findBuildsCount: jest.fn(),
 };
 
 const mockAuthGuard = { canActivate: jest.fn().mockReturnValue(true) };
@@ -469,6 +471,25 @@ describe('BuildsController', () => {
       await expect(controller.deleteBuildPhoto(1, currentUser)).rejects.toThrow(
         'Forbidden',
       );
+    });
+  });
+
+  describe('getBuildsCount()', () => {
+    it('delegates to BuildsService.findBuildsCount', async () => {
+      mockBuildsService.findBuildsCount = jest.fn().mockResolvedValue(5);
+
+      const result = await controller.getBuildsCount();
+
+      expect(mockBuildsService.findBuildsCount).toHaveBeenCalled();
+      expect(result).toBe(5);
+    });
+
+    it('returns 0 when there are no published builds', async () => {
+      mockBuildsService.findBuildsCount = jest.fn().mockResolvedValue(0);
+
+      const result = await controller.getBuildsCount();
+
+      expect(result).toBe(0);
     });
   });
 });

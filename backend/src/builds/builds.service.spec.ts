@@ -84,6 +84,7 @@ function makeBuildRepoMock(qb = makeQbMock()) {
     save: jest.fn(),
     delete: jest.fn(),
     update: jest.fn(),
+    count: jest.fn(),
     createQueryBuilder: jest.fn().mockReturnValue(qb),
     metadata: {
       relations: [
@@ -539,7 +540,6 @@ describe('BuildsService', () => {
         ];
         const buildRepo = makeBuildRepoMock();
         buildRepo._qb.getRawMany.mockResolvedValue(ranked);
-        // getMany puede devolver en cualquier orden
         buildRepo._qb.getMany.mockResolvedValue([buildB, buildA]);
 
         const { service } = await buildModule(buildRepo);
@@ -1169,6 +1169,31 @@ describe('BuildsService', () => {
       await expect(service.deleteBuildPhoto(999, currentUser)).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('findBuildsCount()', () => {
+    it('returns the count of published builds', async () => {
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.count = jest.fn().mockResolvedValue(7);
+
+      const { service } = await buildModule(buildRepo);
+      const result = await service.findBuildsCount();
+
+      expect(buildRepo.count).toHaveBeenCalledWith({
+        where: { published: true },
+      });
+      expect(result).toBe(7);
+    });
+
+    it('returns 0 when there are no published builds', async () => {
+      const buildRepo = makeBuildRepoMock();
+      buildRepo.count = jest.fn().mockResolvedValue(0);
+
+      const { service } = await buildModule(buildRepo);
+      const result = await service.findBuildsCount();
+
+      expect(result).toBe(0);
     });
   });
 });

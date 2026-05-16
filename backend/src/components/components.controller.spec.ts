@@ -13,6 +13,7 @@ const mockComponentsService: jest.Mocked<ComponentsService> = {
   findAllFilterValues: jest.fn(),
   findAllComponents: jest.fn(),
   findComponentById: jest.fn(),
+  findComponentsCount: jest.fn(),
 } as unknown as jest.Mocked<ComponentsService>;
 
 const EMPTY_FILTERS: ParsedFilters = {
@@ -39,7 +40,6 @@ async function buildModule(): Promise<ComponentsController> {
   return module.get<ComponentsController>(ComponentsController);
 }
 
-/* eslint-disable @typescript-eslint/unbound-method */
 describe('ComponentsController', () => {
   let controller: ComponentsController;
 
@@ -436,6 +436,29 @@ describe('ComponentsController', () => {
       const result = await controller.getComponentById('gpu', VALID_UUID);
 
       expect(result).toEqual(fakeComponent);
+    });
+  });
+
+  describe('getComponentsCount()', () => {
+    it('delegates to findComponentsCount', async () => {
+      mockComponentsService.findComponentsCount = jest
+        .fn()
+        .mockResolvedValue(42);
+
+      const result = await controller.getComponentsCount();
+
+      expect(mockComponentsService.findComponentsCount).toHaveBeenCalled();
+      expect(result).toBe(42);
+    });
+
+    it('returns 0 when there are no components', async () => {
+      mockComponentsService.findComponentsCount = jest
+        .fn()
+        .mockResolvedValue(0);
+
+      const result = await controller.getComponentsCount();
+
+      expect(result).toBe(0);
     });
   });
 });

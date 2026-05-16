@@ -502,7 +502,6 @@ describe('ComponentsService', () => {
           'RTX',
         );
 
-        // Con search activo, el orderBy cambia a similarity y no a avg_rating
         expect(gpuRepo._qb.orderBy).not.toHaveBeenCalledWith(
           'avg_rating',
           expect.any(String),
@@ -696,6 +695,45 @@ describe('ComponentsService', () => {
       expect(storageRepo.createQueryBuilder).toHaveBeenCalledWith(
         'storage_drive',
       );
+    });
+  });
+
+  describe('findComponentsCount()', () => {
+    it('returns the sum of all component counts across all repositories', async () => {
+      const { service, repos } = await buildModule();
+
+      for (const repo of Object.values(repos) as Record<string, any>[]) {
+        repo.count = jest.fn().mockResolvedValue(10);
+      }
+
+      const result = await service.findComponentsCount();
+
+      expect(result).toBe(120);
+    });
+
+    it('returns 0 when all repositories are empty', async () => {
+      const { service, repos } = await buildModule();
+
+      for (const repo of Object.values(repos) as Record<string, any>[]) {
+        repo.count = jest.fn().mockResolvedValue(0);
+      }
+
+      const result = await service.findComponentsCount();
+
+      expect(result).toBe(0);
+    });
+
+    it('sums correctly when repositories have different counts', async () => {
+      const { service, repos } = await buildModule();
+
+      const repoList = Object.values(repos) as Record<string, any>[];
+      repoList.forEach((repo, i) => {
+        repo.count = jest.fn().mockResolvedValue(i + 1);
+      });
+
+      const result = await service.findComponentsCount();
+
+      expect(result).toBe(78);
     });
   });
 });
