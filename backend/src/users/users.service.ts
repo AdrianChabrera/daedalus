@@ -78,27 +78,35 @@ export class UsersService {
 
     const buildsCount = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoin('user.builds', 'build')
+      .innerJoin('user.builds', 'build')
       .where('user.id = :userId', { userId })
-      .getCount();
+      .select('COUNT(build.id)', 'count')
+      .getRawOne()
+      .then((r: { count: string }) => parseInt(r.count, 10));
 
     const favoriteBuildsCount = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoin('user.favoriteBuilds', 'favoriteBuild')
+      .innerJoin('user.favoriteBuilds', 'favoriteBuild')
       .where('user.id = :userId', { userId })
-      .getCount();
+      .select('COUNT(favoriteBuild.id)', 'count')
+      .getRawOne()
+      .then((r: { count: string }) => parseInt(r.count, 10));
 
     const favoriteComponentsCount = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoin('user.favoriteComponents', 'favoriteComponent')
+      .innerJoin('user.favoriteComponents', 'favoriteComponent')
       .where('user.id = :userId', { userId })
-      .getCount();
+      .select('COUNT(favoriteComponent.id)', 'count')
+      .getRawOne()
+      .then((r: { count: string }) => parseInt(r.count, 10));
 
     const reviewsCount = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoin('user.reviews', 'review')
+      .innerJoin('user.reviews', 'review')
       .where('user.id = :userId', { userId })
-      .getCount();
+      .select('COUNT(review.id)', 'count')
+      .getRawOne()
+      .then((r: { count: string }) => parseInt(r.count, 10));
 
     return {
       buildsCount,
