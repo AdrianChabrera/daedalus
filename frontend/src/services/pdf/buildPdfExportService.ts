@@ -81,20 +81,12 @@ async function buildSummaryPage(build: BuildDetail, rows: ComponentRowFull[], lo
   const IMAGE_W = 160;
   const IMAGE_H = 130;
 
-  let imageCol: Content;
+  let imageCol: Content | null = null;  
   if (build.photoUrl) {
     const b64 = await fetchImageBase64(build.photoUrl);
-    imageCol = b64
-      ? ({ image: b64, width: IMAGE_W, height: IMAGE_H } as Content)
-      : ({
-          canvas: [{ type: 'rect', x: 0, y: 0, w: IMAGE_W, h: IMAGE_H,
-            r: 4, lineWidth: 1, lineColor: pdfColors.border, color: pdfColors.surface }],
-        } as Content);
-  } else {
-    imageCol = {
-      canvas: [{ type: 'rect', x: 0, y: 0, w: IMAGE_W, h: IMAGE_H,
-        r: 4, lineWidth: 1, lineColor: pdfColors.border, color: pdfColors.surface }],
-    } as Content;
+    if (b64) {
+      imageCol = { image: b64, width: IMAGE_W, height: IMAGE_H } as Content;
+    }
   }
 
   const infoStack: Content[] = [
@@ -114,12 +106,10 @@ async function buildSummaryPage(build: BuildDetail, rows: ComponentRowFull[], lo
     ],
   } as Content);
 
-  const imageColObject = imageCol as Record<string, any>;
-
   content.push({
     columns: [
-      { ...imageColObject, width: IMAGE_W },
-      { stack: infoStack, width: '*', margin: [20, 0, 0, 0] },
+      ...(imageCol ? [{ ...imageCol as Record<string, any>, width: IMAGE_W }] : []),
+      { stack: infoStack, width: '*', margin: [imageCol ? 20 : 0, 0, 0, 0] },
     ],
     columnGap: 0,
     marginBottom: 20,
