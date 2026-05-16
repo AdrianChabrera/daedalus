@@ -234,4 +234,74 @@ describe('UsersService', () => {
       );
     });
   });
+
+  describe('getUserStats', () => {
+    const mockDate = new Date('2024-01-01');
+
+    const makeCountQB = (count: string) => ({
+      relation: jest.fn().mockReturnThis(),
+      of: jest.fn().mockReturnThis(),
+      add: jest.fn(),
+      remove: jest.fn(),
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      getRawOne: jest.fn().mockResolvedValue({ count }),
+    });
+
+    it('should return stats for a valid user', async () => {
+      const user = makeUser({ createdAt: mockDate });
+      mockUserRepository.findOne.mockResolvedValue(user);
+
+      mockUserRepository.createQueryBuilder
+        .mockReturnValueOnce(makeCountQB('3'))
+        .mockReturnValueOnce(makeCountQB('2'))
+        .mockReturnValueOnce(makeCountQB('5'))
+        .mockReturnValueOnce(makeCountQB('1'));
+
+      const result = await service.getUserStats(1);
+
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 1 },
+        select: { id: true, createdAt: true },
+      });
+      expect(result).toEqual({
+        buildsCount: 3,
+        favoriteBuildsCount: 2,
+        favoriteComponentsCount: 5,
+        reviewsCount: 1,
+        memberSince: mockDate,
+      });
+    });
+
+    it('should throw NotFoundException when the user does not exist', async () => {
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.getUserStats(999)).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(mockUserRepository.createQueryBuilder).not.toHaveBeenCalled();
+    });
+
+    it('should return zero counts when user has no related data', async () => {
+      const user = makeUser({ createdAt: mockDate });
+      mockUserRepository.findOne.mockResolvedValue(user);
+
+      mockUserRepository.createQueryBuilder
+        .mockReturnValueOnce(makeCountQB('0'))
+        .mockReturnValueOnce(makeCountQB('0'))
+        .mockReturnValueOnce(makeCountQB('0'))
+        .mockReturnValueOnce(makeCountQB('0'));
+
+      const result = await service.getUserStats(1);
+
+      expect(result).toEqual({
+        buildsCount: 0,
+        favoriteBuildsCount: 0,
+        favoriteComponentsCount: 0,
+        reviewsCount: 0,
+        memberSince: mockDate,
+      });
+    });
+  });
 });

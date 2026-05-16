@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthDto } from './dto/auth.dto';
+import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 
 const mockAuthService = {
   authenticate: jest.fn(),
@@ -13,6 +14,7 @@ const mockAuthService = {
 const mockUsersService = {
   findUserByName: jest.fn(),
   delete: jest.fn(),
+  getUserStats: jest.fn(),
 };
 
 const mockAuthGuard = { canActivate: jest.fn().mockReturnValue(true) };
@@ -116,6 +118,36 @@ describe('AuthController', () => {
 
       await expect(controller.delete(currentUser)).rejects.toThrow(
         'User not found',
+      );
+    });
+  });
+
+  describe('getUserStats', () => {
+    const currentUser = { userId: 5, username: 'eve' };
+
+    it('should call UsersService.getUserStats with the current user id and return the result', async () => {
+      const stats = {
+        buildsCount: 3,
+        favoriteBuildsCount: 2,
+        favoriteComponentsCount: 5,
+        reviewsCount: 1,
+        memberSince: new Date('2024-01-01'),
+      };
+      mockUsersService.getUserStats.mockResolvedValue(stats);
+
+      const result = await controller.getUserStats(currentUser);
+
+      expect(mockUsersService.getUserStats).toHaveBeenCalledWith(5);
+      expect(result).toEqual(stats);
+    });
+
+    it('should propagate NotFoundException when the user does not exist', async () => {
+      mockUsersService.getUserStats.mockRejectedValue(
+        new NotFoundException('Logged user not found'),
+      );
+
+      await expect(controller.getUserStats(currentUser)).rejects.toThrow(
+        NotFoundException,
       );
     });
   });
