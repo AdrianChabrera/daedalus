@@ -57,4 +57,11 @@ export class ComponentsController {
   ) {
     return this.componentsService.findComponentById(componentType, id);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/count')
+  getComponentsCount(): Promise<number> {
+    const result = this.componentsService.findComponentsCount();
+    return result;
+  }
 }

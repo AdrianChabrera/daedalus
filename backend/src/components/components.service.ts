@@ -324,4 +324,11 @@ export class ComponentsService {
     );
     return result;
   }
+
+  async findComponentsCount(): Promise<number> {
+    const count = await Promise.all(
+      Object.values(this.repositories).map((repo) => repo.count()),
+    );
+    return count.reduce((sum, c) => sum + c, 0);
+  }
 }

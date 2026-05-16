@@ -184,4 +184,18 @@ export class BuildsController {
   ): Promise<void> {
     return await this.buildsService.deleteBuildPhoto(id, currentUser);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/count')
+  getBuildsCount(): Promise<number> {
+    const result = this.buildsService.findBuildsCount();
+    return result;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/latest')
+  async getLatestBuilds(): Promise<BuildResponseDto[]> {
+    const builds = await this.buildsService.findLatestBuilds();
+    return builds;
+  }
 }
