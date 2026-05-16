@@ -8,6 +8,7 @@ export const API_ROUTES = {
     // Components
     COMPONENTS: (type: string) => `${BASE_URL}/components/${type}`,
     COMPONENT: (type: string, id: string) => `${BASE_URL}/components/${type}/${id}`,
+    COMPONENTS_COUNT: `${BASE_URL}/components/count`,
     // Builds
     CREATE_BUILD: `${BASE_URL}/builds`,
     MY_BUILDS: `${BASE_URL}/builds/my-builds`,
@@ -20,6 +21,7 @@ export const API_ROUTES = {
     PUBLISH_BUILD: `${BASE_URL}/publish`,
     CREATE_AND_PUBLISH_BUILD: `${BASE_URL}/publish`,
     BUILD_PHOTO: (id: number) => `${BASE_URL}/builds/${id}/photo`,
+    BUILDS_COUNT: `${BASE_URL}/builds/count`,
     // Compatibility
     CHECK_COMPATIBILITY: `${BASE_URL}/compatibility`,
     COMPATIBLE_COMPONENTS: (type: string) => `${BASE_URL}/compatibility/compatibles/${type}`,
