@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
+import { UserStatsDto } from './dtos/userStats.dto';
 
 @Injectable()
 export class UsersService {
@@ -65,5 +66,46 @@ export class UsersService {
     if (!user) throw new NotFoundException('User not found');
 
     return user.favoriteBuilds.map((b) => b.id);
+  }
+
+  async getUserStats(userId: number): Promise<UserStatsDto> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: { id: true, createdAt: true },
+    });
+
+    if (!user) throw new NotFoundException('Logged user not found');
+
+    const buildsCount = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.builds', 'build')
+      .where('user.id = :userId', { userId })
+      .getCount();
+
+    const favoriteBuildsCount = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.favoriteBuilds', 'favoriteBuild')
+      .where('user.id = :userId', { userId })
+      .getCount();
+
+    const favoriteComponentsCount = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.favoriteComponents', 'favoriteComponent')
+      .where('user.id = :userId', { userId })
+      .getCount();
+
+    const reviewsCount = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.reviews', 'review')
+      .where('user.id = :userId', { userId })
+      .getCount();
+
+    return {
+      buildsCount,
+      favoriteBuildsCount,
+      favoriteComponentsCount,
+      reviewsCount,
+      memberSince: user.createdAt,
+    };
   }
 }

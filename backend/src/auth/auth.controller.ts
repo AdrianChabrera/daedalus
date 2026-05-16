@@ -42,6 +42,12 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('me/stats')
+  async getUserStats(@CurrentUser() user: authInterfaces.SignInData) {
+    return this.usersService.getUserStats(user.userId);
+  }
+
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('delete')
   async delete(@CurrentUser() loggedUser: authInterfaces.SignInData) {

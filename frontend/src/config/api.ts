@@ -5,6 +5,7 @@ export const API_ROUTES = {
     LOGIN: `${BASE_URL}/auth/login`,
     REGISTER: `${BASE_URL}/auth/register`,
     DELETE: `${BASE_URL}/auth/delete`,
+    USER_STATS: `${BASE_URL}/auth/me/stats`,
     // Components
     COMPONENTS: (type: string) => `${BASE_URL}/components/${type}`,
     COMPONENT: (type: string, id: string) => `${BASE_URL}/components/${type}/${id}`,
