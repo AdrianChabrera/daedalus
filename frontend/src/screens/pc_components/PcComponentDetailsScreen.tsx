@@ -13,9 +13,10 @@ import { useComponentFavorite } from '../../hooks/useFavorites';
 import { useAuth } from '../../context/AuthContext';
 import ReviewsSection from '../../components/reviews/ReviewsSection';
 import { useComponentRatingStats } from '../../hooks/useComponentsRatingStats';
+import placeholder from '../../assets/daedalus_placeholder.png';  
 
 function ImagePlaceholder() {
-  return <div>TODO Add placeholder</div>;
+  return <img src={placeholder} alt="" className={styles.heroLogo} />;
 }
 
 export default function ComponentDetailScreen() {

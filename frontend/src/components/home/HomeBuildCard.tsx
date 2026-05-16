@@ -1,6 +1,7 @@
-import { Monitor, User } from "lucide-react";
+import { User } from "lucide-react";
 import type { BuildSummary } from "../../types/BuildLists.type";
 import styles from '../../styles/HomeScreen.module.css';
+import placeholder from '../../assets/daedalus_placeholder.png';
 
 function Stars({ rating, count }: { rating?: number | null; count?: number }) {
   const r = rating ?? 0;
@@ -21,9 +22,7 @@ export function HomeBuildCard({ build, onClick }: { build: BuildSummary; onClick
         {build.photoUrl ? (
           <img src={build.photoUrl} alt={build.name} className={styles.buildCardImg} />
         ) : (
-          <div className={styles.buildCardImgPlaceholder}>
-            <Monitor size={28} strokeWidth={1.2} />
-          </div>
+          <img src={placeholder} alt="" className={styles.buildCardPlaceholder} />
         )}
         <div className={styles.buildCardImgOverlay} />
       </div>

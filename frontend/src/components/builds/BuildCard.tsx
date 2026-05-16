@@ -1,6 +1,8 @@
 import { Lock, Globe, User, Pencil, Trash2 } from 'lucide-react';
 import styles from '../../styles/BuildsScreen.module.css';
 import type { BuildCardProps } from '../../types/BuildLists.type';
+import placeholder from '../../assets/daedalus_placeholder.png';
+
 
 export function BuildCard({ build, onClick, footerInfo }: BuildCardProps) {
   const date = new Date(build.createdAt).toLocaleDateString('en-GB', {
@@ -46,8 +48,8 @@ export function BuildCard({ build, onClick, footerInfo }: BuildCardProps) {
               className={styles.cardImagePhoto}
             />
           ) : (
-            <div className={styles.cardImagePlaceholder} />
-          )}
+            <img src={placeholder} alt="" className={styles.cardImagePlaceholder} />
+            )}
         </div>
         <p className={styles.cardDesc}>
           {build.description

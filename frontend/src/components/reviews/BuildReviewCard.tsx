@@ -3,6 +3,7 @@ import { Trash2 } from "lucide-react";
 import type { ReviewCardProps } from "../../types/Reviews.type";
 import { StarDisplay } from "./StarDisplay";
 import styles from '../../styles/MyReviewsScreen.module.css';
+import placeholder from '../../assets/daedalus_placeholder.png';
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -38,8 +39,8 @@ export function BuildReviewCard({ review, onDelete }: ReviewCardProps) {
         {review.buildPhotoUrl ? (
           <img src={review.buildPhotoUrl} alt={review.buildName ?? 'Build'} className={styles.buildPhoto} />
         ) : (
-          <div className={styles.buildImagePlaceholder}>
-            <div>Todo: add placeholder</div>
+          <div className={styles.entityImagePlaceholder}>
+            <img src={placeholder} alt="" className={styles.imagePlaceholder} />
           </div>
         )}
         <span className={styles.cardTypeBadge}>Build</span>

@@ -271,10 +271,15 @@
   border: 1px solid var(--border);
 }
 
-.buildImagePlaceholder {
+.imagePlaceholder {
+  width: 90%;
+  height: 90%;
+}
+
+.entityImagePlaceholder {
   width: 60px;
   height: 60px;
-  background: var(--accent-dim);
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 6px;
   display: flex;

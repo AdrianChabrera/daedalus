@@ -4,7 +4,6 @@
   import { Component, Computer, MonitorCog, User, LibraryBig } from 'lucide-react';
   import logo from '../../assets/daedalus_logo.png';
 
-
   export default function Navbar() {
     const { user } = useAuth();
     const location = useLocation();
@@ -62,7 +61,7 @@
             className={`${styles.navBtn} ${isActive('/profile') ? styles.navBtnActive : ''}`}
           >
             <User />
-            Personal Area
+            {user.username}
           </Link>
         ) : (
           <div className={styles.authLinks}>

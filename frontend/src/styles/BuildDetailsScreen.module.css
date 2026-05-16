@@ -97,13 +97,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface2);
+  background: var(--white);
 }
 
-.buildPhotoPlaceholderText {
-  font-size: 12px;
-  color: var(--muted);
-  font-family: 'Exo 2', sans-serif;
+.buildPlaceholder {
+  width: 90%;
+  height: 90%;
 }
 
 .heroInfo {

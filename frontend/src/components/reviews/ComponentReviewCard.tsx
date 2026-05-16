@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReviewCardProps } from "../../types/Reviews.type";
 import styles from '../../styles/MyReviewsScreen.module.css';
-import { Package, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { StarDisplay } from "./StarDisplay";
+import placeholder from '../../assets/daedalus_placeholder.png';
 
 const availableLogos = import.meta.glob('../../assets/logos/*.svg', { eager: true });
 
@@ -49,8 +50,8 @@ export function ComponentReviewCard({ review, onDelete }: ReviewCardProps) {
         {logoUrl ? (
           <img src={logoUrl} alt={review.manufacturerName ?? ''} className={styles.componentLogo} />
         ) : (
-          <div className={styles.componentLogoPlaceholder}>
-            <Package size={28} className={styles.placeholderIcon} />
+          <div className={styles.entityImagePlaceholder}>
+            <img src={placeholder} alt="" className={styles.imagePlaceholder} />
           </div>
         )}
         <span className={styles.cardTypeBadge}>

@@ -12,6 +12,7 @@ import ConfirmModal from '../../components/general/ConfirmModal';
 import { useBuildFavorite } from '../../hooks/useFavorites';
 import { useBuildPdfExport } from '../../hooks/useBuildPdfExport';
 import ReviewsSection from '../../components/reviews/ReviewsSection';
+import placeholder from '../../assets/daedalus_placeholder.png';  
 
 export default function BuildDetailsScreen() {
   const { id } = useParams<{ id: string }>();
@@ -137,7 +138,7 @@ export default function BuildDetailsScreen() {
                   <img src={build.photoUrl} alt={build.name} className={styles.buildPhoto} />
                 ) : (
                   <div className={styles.buildPhotoPlaceholder}>
-                    <span className={styles.buildPhotoPlaceholderText}>No image</span>
+                    <img src={placeholder} alt="" className={styles.buildPlaceholder} />
                   </div>
                 )}
               </div>

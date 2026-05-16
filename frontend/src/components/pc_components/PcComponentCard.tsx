@@ -1,5 +1,6 @@
 import type { PcComponent } from "../../types/PcComponents.types";
 import styles from '../../styles/PcComponentsScreen.module.css';
+import placeholder from '../../assets/daedalus_placeholder.png';
 
 export function PcComponentCard({
   component,
@@ -28,7 +29,7 @@ export function PcComponentCard({
         {logoExists ? (
           <img className={styles.cardLogo} src={logo} alt={component.manufacturer ?? ''}/>
         ) : (
-          <div> TODO Design placeholder</div>
+          <img src={placeholder} alt="" className={styles.cardLogo} />
         )}
       </div>
       <div className={styles.cardBody}>
