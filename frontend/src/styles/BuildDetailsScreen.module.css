@@ -161,12 +161,6 @@
   line-height: 1;
 }
 
-.ratingNote {
-  font-size: 13px;
-  color: var(--muted);
-  font-family: 'Exo 2', sans-serif;
-}
-
 .authorBadge {
   font-size: 13px;
   color: var(--muted);
@@ -374,22 +368,6 @@
   font-weight: 600;
 }
 
-.componentLink {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  transition: color 0.15s;
-  border-left: 1px solid var(--border);
-  padding: 0 10px;
-  align-self: stretch;
-}
-
-.componentLink:hover {
-  color: var(--accent2);
-  background: var(--accent-dim);
-}
-
 .rightColumn {
   flex: 1;
   min-width: 0;
@@ -414,52 +392,6 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 16px;
-}
-
-.reviewsSection {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.reviewsHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.writeReviewBtn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--accent);
-  border: none;
-  border-radius: 7px;
-  padding: 8px 14px;
-  color: var(--white);
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.reviewsPlaceholder {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  min-height: 160px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.reviewsEmpty {
-  font-size: 13px;
-  color: var(--muted);
-  font-family: 'Exo 2', sans-serif;
 }
 
 @media (max-width: 1000px) {
@@ -489,14 +421,6 @@
   .componentRow {
     grid-template-columns: 48px 90px 1fr 32px;
   }
-}
-
-/* ── Owner actions ───────────────────────────────────────────────────────────── */
-.ownerActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .actionError {

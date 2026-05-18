@@ -205,15 +205,6 @@
   background: #ffffff;
 }
 
-.cardImagePlaceholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60%;
-  height: 60%;
-  color: var(--border2);
-}
-
 .cardImagePlaceholder svg {
   width: 100%;
   height: 100%;

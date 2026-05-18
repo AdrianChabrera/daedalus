@@ -54,7 +54,3 @@
 .clear:hover {
   color: var(--white);
 }
-
-.wrap:has(.clear) .kbd {
-  display: none;
-}

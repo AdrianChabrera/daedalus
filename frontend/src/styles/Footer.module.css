@@ -19,13 +19,6 @@
   min-width: 0;
 }
 
-.logoRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-
 .logoText {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 700;

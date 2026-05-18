@@ -41,13 +41,6 @@
   pointer-events: none;
 }
 
-.topBar {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--error), transparent);
-}
-
 .iconWrap {
   width: 44px; height: 44px;
   background: color-mix(in srgb, var(--modal-accent) 10%, transparent);

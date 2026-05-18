@@ -95,11 +95,6 @@
   padding: 20px;
 }
 
-.placeholder {
-  width: 100%;
-  height: 100%;
-}
-
 .heroInfo {
   flex: 1;
   display: flex;
@@ -179,23 +174,6 @@
   flex-shrink: 0;
 }
 
-.addToBuildBtn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--accent);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  color: var(--white);
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
 .mainContent {
   display: flex;
   gap: 32px;
@@ -248,16 +226,6 @@
 
 .attrLabelText {
   display: inline;
-}
-
-.helpIcon {
-  display: inline-flex;
-  align-items: center;
-  margin-left: 5px;
-  color: var(--muted);
-  vertical-align: middle;
-  cursor: default;
-  opacity: 0.7;
 }
 
 .attrValue {
@@ -329,46 +297,6 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.reviewsHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.writeReviewBtn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--accent);
-  border: none;
-  border-radius: 7px;
-  padding: 8px 14px;
-  color: var(--white);
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.reviewsPlaceholder {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  min-height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.reviewsEmpty {
-  font-size: 13px;
-  color: var(--muted);
-  font-family: 'Exo 2', sans-serif;
 }
 
 .favouriteBtn:not(:disabled) {
