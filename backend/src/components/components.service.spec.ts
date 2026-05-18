@@ -195,12 +195,8 @@ describe('ComponentsService', () => {
 
       expect(gpuRepo._qb.orderBy).toHaveBeenCalledWith(
         expect.stringContaining('memory'),
-        'ASC',
-      );
-
-      expect(gpuRepo._qb.addOrderBy).toHaveBeenCalledWith(
-        expect.stringContaining('memory'),
         'DESC',
+        'NULLS LAST',
       );
     });
 
