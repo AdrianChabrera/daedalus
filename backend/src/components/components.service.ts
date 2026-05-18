@@ -25,6 +25,7 @@ import {
 } from './interfaces/pc-components.interfaces';
 import { SelectQueryBuilder } from 'typeorm/browser';
 import { COMPONENT_FILTER_SCHEMAS } from './utils/filter-schemas';
+import { COMPONENT_SORTABLE_FIELDS } from './utils/sortable-fields';
 
 const SIMILARITY_THRESHOLD = 0.1;
 
@@ -152,8 +153,6 @@ export class ComponentsService {
     search: string = '',
     allowedIds?: string[],
   ): Promise<PaginatedResult<Component>> {
-    // TODO: add order fields validation (like in buildService)
-
     const repository = this.repositories[componentType.toLowerCase()];
 
     if (!repository) {
@@ -164,6 +163,15 @@ export class ComponentsService {
 
     const [orderField, orderDir = 'ASC'] = order.split('-');
     const direction = orderDir.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+
+    if (
+      orderField &&
+      !COMPONENT_SORTABLE_FIELDS[componentType.toLowerCase()]?.includes(
+        orderField,
+      )
+    ) {
+      throw new BadRequestException(`Invalid order parameter: ${orderField}`);
+    }
 
     const cType = componentType.toLowerCase();
     const alias = cType.replace('-', '_');
@@ -211,10 +219,7 @@ export class ComponentsService {
         if (orderField === 'rating') {
           qb.orderBy('avg_rating', direction, 'NULLS LAST');
         } else if (orderField) {
-          qb.orderBy(
-            `CASE WHEN ${alias}.${orderField} IS NULL THEN 1 ELSE 0 END`,
-            'ASC',
-          ).addOrderBy(`${alias}.${orderField}`, direction);
+          qb.orderBy(`${alias}.${orderField}`, direction, 'NULLS LAST');
         }
       }
 
