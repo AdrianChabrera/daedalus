@@ -1,20 +1,20 @@
-import { str, num, bool, obj, arr } from 'src/components/utils/utils';
-import { Cpu } from '../entities/main-entities/cpu.entity';
-import { PcCase } from '../entities/main-entities/pc-case.entity';
-import { CpuCooler } from '../entities/main-entities/cpu-cooler.entity';
-import { Gpu } from '../entities/main-entities/gpu.entity';
-import { PowerSupply } from '../entities/main-entities/power-supply.entity';
-import { Ram } from '../entities/main-entities/ram.entity';
-import { Fan } from '../entities/main-entities/fan.entity';
-import { Monitor } from '../entities/main-entities/monitor.entity';
-import { Mouse } from '../entities/main-entities/mouse.entity';
-import { Keyboard } from '../entities/main-entities/keyboard.entity';
-import { Motherboard } from '../entities/main-entities/motherboard.entity';
+import { str, num, bool, obj, arr } from '../components/utils/utils';
+import { Cpu } from '../components/entities/main-entities/cpu.entity';
+import { PcCase } from '../components/entities/main-entities/pc-case.entity';
+import { CpuCooler } from '../components/entities/main-entities/cpu-cooler.entity';
+import { Gpu } from '../components/entities/main-entities/gpu.entity';
+import { PowerSupply } from '../components/entities/main-entities/power-supply.entity';
+import { Ram } from '../components/entities/main-entities/ram.entity';
+import { Fan } from '../components/entities/main-entities/fan.entity';
+import { Monitor } from '../components/entities/main-entities/monitor.entity';
+import { Mouse } from '../components/entities/main-entities/mouse.entity';
+import { Keyboard } from '../components/entities/main-entities/keyboard.entity';
+import { Motherboard } from '../components/entities/main-entities/motherboard.entity';
 import { DataSource } from 'typeorm';
-import { PcieSlot } from '../entities/secondary-entities/pcie-slot.entity';
-import { M2Slot } from '../entities/secondary-entities/m2-slot.entity';
-import { Component } from '../entities/component.entity';
-import { StorageDrive } from '../entities/main-entities/storage.entity';
+import { PcieSlot } from '../components/entities/secondary-entities/pcie-slot.entity';
+import { M2Slot } from '../components/entities/secondary-entities/m2-slot.entity';
+import { Component } from '../components/entities/component.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage.entity';
 
 function mapBaseEntity<T extends Component>(
   entity: T,

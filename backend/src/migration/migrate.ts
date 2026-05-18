@@ -2,14 +2,14 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
 import { DataSource, EntityTarget, ObjectLiteral, Repository } from 'typeorm';
-import { Cpu } from '../entities/main-entities/cpu.entity';
-import { Ram } from '../entities/main-entities/ram.entity';
-import { StorageDrive } from '../entities/main-entities/storage.entity';
+import { Cpu } from '../components/entities/main-entities/cpu.entity';
+import { Ram } from '../components/entities/main-entities/ram.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage.entity';
 import { Octokit } from '@octokit/rest';
-import { Gpu } from '../entities/main-entities/gpu.entity';
-import { CpuCooler } from '../entities/main-entities/cpu-cooler.entity';
-import { PowerSupply } from '../entities/main-entities/power-supply.entity';
-import { PcCase } from '../entities/main-entities/pc-case.entity';
+import { Gpu } from '../components/entities/main-entities/gpu.entity';
+import { CpuCooler } from '../components/entities/main-entities/cpu-cooler.entity';
+import { PowerSupply } from '../components/entities/main-entities/power-supply.entity';
+import { PcCase } from '../components/entities/main-entities/pc-case.entity';
 import {
   mapCase,
   mapCpu,
@@ -24,15 +24,15 @@ import {
   mapRam,
   mapStorage,
 } from './mappers';
-import { Fan } from '../entities/main-entities/fan.entity';
-import { Motherboard } from '../entities/main-entities/motherboard.entity';
-import { Monitor } from '../entities/main-entities/monitor.entity';
-import { Mouse } from '../entities/main-entities/mouse.entity';
-import { Keyboard } from '../entities/main-entities/keyboard.entity';
-import { M2Slot } from '../entities/secondary-entities/m2-slot.entity';
-import { PcieSlot } from '../entities/secondary-entities/pcie-slot.entity';
+import { Fan } from '../components/entities/main-entities/fan.entity';
+import { Motherboard } from '../components/entities/main-entities/motherboard.entity';
+import { Monitor } from '../components/entities/main-entities/monitor.entity';
+import { Mouse } from '../components/entities/main-entities/mouse.entity';
+import { Keyboard } from '../components/entities/main-entities/keyboard.entity';
+import { M2Slot } from '../components/entities/secondary-entities/m2-slot.entity';
+import { PcieSlot } from '../components/entities/secondary-entities/pcie-slot.entity';
 
-dotenv.config({ path: path.join(__dirname, '../../../../.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
 
 type Mapper<T extends ObjectLiteral> = (
   raw: Record<string, unknown>,
@@ -307,17 +307,17 @@ async function runMigration(): Promise<void> {
     'utf-8',
   );
   const deleteComponentsReviews = fs.readFileSync(
-    path.join(__dirname, 'delete_components_reviews.sql'),
+    path.join(__dirname, 'triggers/delete_components_reviews.sql'),
     'utf-8',
   );
   const deleteFavoriteComponents = fs.readFileSync(
-    path.join(__dirname, 'delete_favorite_components.sql'),
+    path.join(__dirname, 'triggers/delete_favorite_components.sql'),
     'utf-8',
   );
   await dataSource.query(trgm);
   await dataSource.query(deleteComponentsReviews);
   await dataSource.query(deleteFavoriteComponents);
-  console.log('TRGM migration applied.');
+  console.log('Migrations applied.');
 
   await dataSource.destroy();
 
