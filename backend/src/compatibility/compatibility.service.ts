@@ -94,13 +94,21 @@ export class CompatibilityService {
     const allComponents =
       await this.componentsService.findAllComponentsRaw(componentType);
 
+    const existingUnverifiables = new Set(
+      this.checkCompatibilityFromBuild(build).map((i) => i.rule),
+    );
+
     const results = allComponents.map((component) => {
       const tempBuild = this.injectComponent(build, component, buildKey);
       const issues = this.checkCompatibilityFromBuild(tempBuild);
 
       const hasNewErrors = issues.some((issue) => issue.severity === 'error');
+      const hasNewUnverifiable = issues.some(
+        (i) =>
+          i.severity === 'unverifiable' && !existingUnverifiables.has(i.rule),
+      );
 
-      return hasNewErrors ? null : component.buildcoresId;
+      return hasNewErrors || hasNewUnverifiable ? null : component.buildcoresId;
     });
 
     const compatibleIds = results.filter((id): id is string => id !== null);
