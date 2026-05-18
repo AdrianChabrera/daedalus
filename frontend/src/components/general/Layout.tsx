@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
+import Footer from './Footer';
 
 export default function Layout() {
   return (
@@ -8,6 +9,7 @@ export default function Layout() {
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Outlet />
       </main>
+      <Footer />
     </>
   );
 }
