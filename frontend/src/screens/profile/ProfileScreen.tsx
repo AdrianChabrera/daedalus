@@ -84,7 +84,6 @@ export default function ProfileScreen() {
 
         <h1 className={styles.pageTitle}>Personal Area</h1>
 
-        {/* ── Stats ── */}
         <div>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionTitle}>Stats</span>
@@ -129,7 +128,6 @@ export default function ProfileScreen() {
           </div>
         </div>
 
-        {/* ── Quick access ── */}
         <div>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionTitle}>Quick access</span>
@@ -176,7 +174,6 @@ export default function ProfileScreen() {
           </div>
         </div>
 
-        {/* ── Account actions ── */}
         <div>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionTitle}>Account actions</span>
@@ -199,7 +196,6 @@ export default function ProfileScreen() {
           </div>
         </div>
 
-        {/* ── Danger zone ── */}
         <div className={styles.dangerZone}>
           <div className={styles.dangerZoneHeader}>
             <span className={styles.dangerZoneTitle}>Danger zone</span>
