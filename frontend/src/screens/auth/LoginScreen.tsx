@@ -22,8 +22,16 @@ export default function LoginScreen() {
       setError('Username is required');
       return;
     }
+    if (username.length > 255) {
+      setError('The username must be at most 255 characters long');
+      return;
+    }
     if (password.length < 8) {
       setError('The password must be at least 8 characters long');
+      return;
+    }
+    if (password.length > 255) {
+      setError('The password must be at most 255 characters long');
       return;
     }
     setLoading(true);
@@ -76,6 +84,7 @@ export default function LoginScreen() {
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 autoComplete="username"
+                maxLength={255}
                 autoFocus
                 required
               />
@@ -96,6 +105,7 @@ export default function LoginScreen() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 autoComplete="current-password"
+                maxLength={255}
                 required
               />
               <button

@@ -39,8 +39,16 @@ export default function RegisterScreen() {
       setError('Username is required');
       return;
     }
+    if (username.length > 255) {
+      setError('The username must be at most 255 characters long');
+      return;
+    }
     if (password.length < 8) {
       setError('The password must be at least 8 characters long');
+      return;
+    }
+    if (password.length > 255) {
+      setError('The password must be at most 255 characters long');
       return;
     }
     if (password !== confirm) {
@@ -94,6 +102,7 @@ export default function RegisterScreen() {
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 autoComplete="username"
+                maxLength={255}
                 autoFocus
                 required
               />
@@ -122,6 +131,7 @@ export default function RegisterScreen() {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 autoComplete="new-password"
+                maxLength={255}
                 required
               />
               <button
