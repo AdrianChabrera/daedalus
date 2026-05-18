@@ -90,11 +90,13 @@ export class Motherboard extends Component {
 
   @OneToMany(() => M2Slot, (s) => s.motherboard, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   m2Slots!: M2Slot[];
 
   @OneToMany(() => PcieSlot, (s) => s.motherboard, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   pcieSlots!: PcieSlot[];
 
