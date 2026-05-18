@@ -109,6 +109,8 @@ export const COMPONENT_FILTER_SCHEMAS: Record<
     manufacturer: { field: 'manufacturer', type: 'multi-string' },
     efficencyRating: { field: 'efficency_rating', type: 'multi-string' },
     formFactor: { field: 'form_factor', type: 'multi-string' },
+    modular: { field: 'modular', type: 'multi-string' },
+    fanless: { field: 'fanless', type: 'boolean' },
   },
   ram: {
     quantity: { field: 'quantity', type: 'range' },
