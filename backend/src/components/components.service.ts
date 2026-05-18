@@ -199,11 +199,13 @@ export class ComponentsService {
       const trimmedSearch = search.trim();
 
       if (trimmedSearch) {
-        qb.andWhere(`similarity(${alias}.name, :search) > :threshold`, {
-          search: trimmedSearch,
-          threshold: SIMILARITY_THRESHOLD,
-        })
-          .orderBy(`similarity(${alias}.name, :search)`, 'DESC')
+        qb.addSelect(`similarity(${alias}.name, :search)`, 'similarity_score')
+          .setParameter('search', trimmedSearch)
+          .andWhere(`similarity(${alias}.name, :search) > :threshold`, {
+            search: trimmedSearch,
+            threshold: SIMILARITY_THRESHOLD,
+          })
+          .orderBy('similarity_score', 'DESC')
           .addOrderBy(`${alias}.name`, 'ASC');
       } else {
         if (orderField === 'rating') {
