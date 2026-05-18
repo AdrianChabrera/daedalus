@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  MessageSquare, LogOut,
-  Trash2, ChevronRight,
+  MessageSquare, 
+  LogOut,
+  ChevronRight,
   LibraryBig,
   FolderHeart,
   FileHeart,
@@ -28,6 +29,7 @@ export default function ProfileScreen() {
   const [stats, setStats]                     = useState<UserStats | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [deleteConfirmed, setDeleteConfirmed] = useState(false);
   const [loading, setLoading]                 = useState(false);
 
   useEffect(() => {
@@ -82,6 +84,7 @@ export default function ProfileScreen() {
 
         <h1 className={styles.pageTitle}>Personal Area</h1>
 
+        {/* ── Stats ── */}
         <div>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionTitle}>Stats</span>
@@ -126,6 +129,7 @@ export default function ProfileScreen() {
           </div>
         </div>
 
+        {/* ── Quick access ── */}
         <div>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionTitle}>Quick access</span>
@@ -172,7 +176,7 @@ export default function ProfileScreen() {
           </div>
         </div>
 
-
+        {/* ── Account actions ── */}
         <div>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionTitle}>Account actions</span>
@@ -192,22 +196,42 @@ export default function ProfileScreen() {
               </div>
               <ChevronRight className={styles.accessArrow} aria-hidden />
             </button>
+          </div>
+        </div>
 
+        {/* ── Danger zone ── */}
+        <div className={styles.dangerZone}>
+          <div className={styles.dangerZoneHeader}>
+            <span className={styles.dangerZoneTitle}>Danger zone</span>
+            <div className={styles.dangerZoneLine} />
+          </div>
+
+          <div className={styles.dangerZoneBody}>
+            <div className={styles.dangerZoneInfo}>
+              <div className={styles.dangerZoneLabel}>Delete account</div>
+              <div className={styles.dangerZoneDesc}>
+                Permanently removes your profile, builds, reviews and all associated data
+              </div>
+              <label className={styles.dangerConfirmRow}>
+                <input
+                  type="checkbox"
+                  className={styles.dangerCheckbox}
+                  checked={deleteConfirmed}
+                  onChange={e => setDeleteConfirmed(e.target.checked)}
+                />
+                <span className={styles.dangerConfirmLabel}>
+                  I understand this action is permanent and cannot be undone
+                </span>
+              </label>
+            </div>
             <button
-              className={`${styles.accessCard} ${styles.accessCardDanger}`}
-              onClick={() => setDeleteModalOpen(true)}
+              className={`${styles.deleteBtn} ${deleteConfirmed ? styles.deleteBtnActive : ''}`}
+              onClick={() => deleteConfirmed && setDeleteModalOpen(true)}
               disabled={loading}
+              aria-disabled={!deleteConfirmed}
             >
-              <div className={`${styles.accessIconWrap} ${styles.accessIconWrapDanger}`}>
-                <Trash2 aria-hidden />
-              </div>
-              <div>
-                <div className={`${styles.accessTitle} ${styles.accessTitleDanger}`}>Delete account</div>
-                <div className={styles.accessSub}>Permanently remove your profile and data</div>
-              </div>
-              <ChevronRight className={`${styles.accessArrow} ${styles.accessArrowDanger}`} aria-hidden />
+              Delete account
             </button>
-
           </div>
         </div>
 
