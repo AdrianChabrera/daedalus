@@ -11,6 +11,7 @@ import { CompatibilityModule } from '../src/compatibility/compatibility.module';
 import { PublishModule } from '../src/publish/publish.module';
 import { FavoritesModule } from '../src/favorites/favorites.module';
 import { ReviewsModule } from '../src/reviews/reviews.module';
+import { CloudinaryService } from '../src/cloudinary/cloudinary.service';
 
 let app: INestApplication;
 
@@ -30,7 +31,15 @@ export async function createTestApp(): Promise<INestApplication> {
       FavoritesModule,
       ReviewsModule,
     ],
-  }).compile();
+  })
+    .overrideProvider(CloudinaryService)
+    .useValue({
+      uploadImage: jest
+        .fn()
+        .mockResolvedValue('https://fake-url.com/image.jpg'),
+      deleteImage: jest.fn().mockResolvedValue(undefined),
+    })
+    .compile();
 
   app = moduleFixture.createNestApplication();
 
