@@ -1,4 +1,4 @@
-name: Backend unit tests
+name: Backend e2e tests
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'main'
 
 jobs:
-  test-backend:
+  e2e-backend:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -26,13 +26,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests with coverage
-        run: npm test -- --coverage
+      - name: Run e2e tests with coverage
+        run: npm run test:e2e
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-      - name: Upload coverage to Codecov
+      - name: Upload e2e coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/lcov.info
-          flags: backend
+          files: ./coverage-e2e/lcov.info
+          flags: e2e
           fail_ci_if_error: true
