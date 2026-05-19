@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Post,
   Request,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -38,7 +39,12 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('me')
   async getUserInfo(@CurrentUser() user: authInterfaces.SignInData) {
-    return this.usersService.findUserByName(user.username);
+    const found = await this.usersService.findUserByName(user.username);
+    if (!found) throw new UnauthorizedException();
+    return {
+      userId: found.id,
+      username: found.username,
+    };
   }
 
   @UseGuards(AuthGuard)

@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthDto } from './dto/auth.dto';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
+import { UnauthorizedException } from '@nestjs/common/exceptions/unauthorized.exception';
 
 const mockAuthService = {
   authenticate: jest.fn(),
@@ -84,21 +85,21 @@ describe('AuthController', () => {
     const currentUser = { userId: 3, username: 'carol' };
 
     it('should call UsersService.findUserByName with the current user username', async () => {
-      const userRecord = { id: 3, username: 'carol' };
+      const userRecord = { id: 3, username: 'carol', password: 'hashed' };
       mockUsersService.findUserByName.mockResolvedValue(userRecord);
 
       const result = await controller.getUserInfo(currentUser);
 
       expect(mockUsersService.findUserByName).toHaveBeenCalledWith('carol');
-      expect(result).toEqual(userRecord);
+      expect(result).toEqual({ userId: 3, username: 'carol' });
     });
 
-    it('should return null when the user is not found', async () => {
+    it('should throw UnauthorizedException when the user is not found', async () => {
       mockUsersService.findUserByName.mockResolvedValue(null);
 
-      const result = await controller.getUserInfo(currentUser);
-
-      expect(result).toBeNull();
+      await expect(controller.getUserInfo(currentUser)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
