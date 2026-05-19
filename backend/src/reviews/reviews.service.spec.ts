@@ -14,6 +14,7 @@ import { ComponentsService } from '../components/components.service';
 import { UsersService } from '../users/users.service';
 import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { ReviewCreationDto } from './dtos/review-creation.dto';
+import { ReviewResponseDto } from './dtos/review-response.dto';
 
 function makeUser(overrides = {}) {
   return Object.assign({}, { id: 1, username: 'alice' }, overrides);
@@ -405,12 +406,15 @@ describe('ReviewsService', () => {
       reviewRepo.findOne.mockResolvedValue(null);
 
       const { service } = await buildModule(reviewRepo);
-      const result = await service.listComponentReviews(
+
+      const result = (await service.listComponentReviews(
         'comp-uuid',
         'gpu',
         1,
         5,
-      );
+      )) as {
+        data: ReviewResponseDto[];
+      };
 
       expect(result.data[0].componentName).toBe('RTX 4090');
       expect(result.data[0].manufacturerName).toBe('NVIDIA');
