@@ -83,6 +83,7 @@
     "collectCoverageFrom": [
       "**/*.ts",
       "!**/*.spec.ts",
+      "!**/*.e2e-spec.ts",
       "!**/*.module.ts",
       "!main.ts",
       "!**/entities/**",

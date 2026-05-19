@@ -2,8 +2,6 @@ name: Backend e2e tests
 
 on:
   push:
-    branches:
-      - 'main'
 
 jobs:
   e2e-backend:
@@ -29,12 +27,12 @@ jobs:
       - name: Run e2e tests with coverage
         run: npm run test:e2e
         env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_SECRET: testsecret
 
       - name: Upload e2e coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage-e2e/lcov.info
+          files: ./backend/coverage-e2e/lcov.info
           flags: e2e
           fail_ci_if_error: true
