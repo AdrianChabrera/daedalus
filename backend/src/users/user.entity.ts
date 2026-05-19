@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Matches, MaxLength } from 'class-validator';
 import { Build } from '../builds/entities/build';
 import {
   Entity,
@@ -19,6 +19,8 @@ export class User {
 
   @Column({ unique: true })
   @IsNotEmpty()
+  @Matches(/^\S+$/, { message: 'Username must not contain spaces.' })
+  @MaxLength(255, { message: 'Username must be at most 255 characters long.' })
   username!: string;
 
   @Column()
