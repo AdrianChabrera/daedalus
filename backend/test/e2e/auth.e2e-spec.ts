@@ -2,8 +2,8 @@ import { INestApplication } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import request, { Response } from 'supertest';
-import { createTestApp, closeTestApp } from './test-app';
-import { User } from '../src/users/user.entity';
+import { createTestApp, closeTestApp } from '../test-app';
+import { User } from '../../src/users/user.entity';
 import { App } from 'supertest/types';
 
 describe('Auth (integration)', () => {
@@ -26,10 +26,6 @@ describe('Auth (integration)', () => {
   afterEach(async () => {
     await userRepository.query('TRUNCATE TABLE "user" CASCADE');
   });
-
-  // ---------------------------------------------------------------------------
-  // POST /auth/register
-  // ---------------------------------------------------------------------------
 
   describe('POST /auth/register', () => {
     it('registers a new user and returns an accessToken', async () => {
@@ -110,10 +106,6 @@ describe('Auth (integration)', () => {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // POST /auth/login
-  // ---------------------------------------------------------------------------
-
   describe('POST /auth/login', () => {
     beforeEach(async () => {
       await request(app.getHttpServer() as App)
@@ -171,10 +163,6 @@ describe('Auth (integration)', () => {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // GET /auth/me
-  // ---------------------------------------------------------------------------
-
   describe('GET /auth/me', () => {
     let accessToken: string;
     let userId: number;
@@ -223,10 +211,6 @@ describe('Auth (integration)', () => {
         .expect(401);
     });
   });
-
-  // ---------------------------------------------------------------------------
-  // DELETE /auth/delete
-  // ---------------------------------------------------------------------------
 
   describe('DELETE /auth/delete', () => {
     let accessToken: string;
