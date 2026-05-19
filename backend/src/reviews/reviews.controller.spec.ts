@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReviewsController } from './reviews.controller';
 import { ReviewsService } from './reviews.service';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { OptionalAuthGuard } from 'src/auth/guards/optionalAuth.guard';
-import { SignInData } from 'src/auth/interfaces/auth.interfaces';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { OptionalAuthGuard } from '../auth/guards/optionalAuth.guard';
+import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { ReviewCreationDto } from './dtos/review-creation.dto';
 import { ReviewResponseDto } from './dtos/review-response.dto';
-import { ComponentType } from 'src/components/entities/component-type.enum';
+import { ComponentType } from '../components/entities/component-type.enum';
 
 const mockReviewsService: jest.Mocked<
   Pick<

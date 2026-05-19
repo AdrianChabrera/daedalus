@@ -9,8 +9,8 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { UserFavoriteComponent } from 'src/favorites/entities/userFavoriteComponent.entity';
-import { Review } from 'src/reviews/entities/review.entity';
+import { UserFavoriteComponent } from '../favorites/entities/userFavoriteComponent.entity';
+import { Review } from '../reviews/entities/review.entity';
 
 @Entity()
 export class User {

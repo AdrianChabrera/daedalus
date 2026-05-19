@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { Build } from 'src/builds/entities/build';
+import { Build } from '../builds/entities/build';
 
 const mockRelationQueryBuilder = {
   relation: jest.fn().mockReturnThis(),

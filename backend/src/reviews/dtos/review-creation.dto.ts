@@ -8,7 +8,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { ComponentType } from 'src/components/entities/component-type.enum';
+import { ComponentType } from '../../components/entities/component-type.enum';
 
 export class ReviewCreationDto {
   @IsString()

@@ -3,9 +3,9 @@ import { FavoritesController } from './favorites.controller';
 import { FavoritesService } from './favorites.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserFavoriteComponent } from './entities/userFavoriteComponent.entity';
-import { UsersModule } from 'src/users/users.module';
-import { BuildsModule } from 'src/builds/builds.module';
-import { ComponentsModule } from 'src/components/components.module';
+import { UsersModule } from '../users/users.module';
+import { BuildsModule } from '../builds/builds.module';
+import { ComponentsModule } from '../components/components.module';
 
 @Module({
   controllers: [FavoritesController],

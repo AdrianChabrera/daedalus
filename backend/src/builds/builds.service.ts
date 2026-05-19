@@ -31,10 +31,10 @@ import { BuildStorageDrive } from './entities/build-storage-drives.entity';
 import { BuildFan } from './entities/build-fans.entity';
 import { BuildMonitor } from './entities/build-monitors.entity';
 import { BuildWithComponentCountDto } from './dtos/BuildWithComponentCountDto';
-import { Component } from 'src/components/entities/component.entity';
-import { CheckCompatibilityDto } from 'src/compatibility/dtos/CheckCompatibility.dto';
+import { Component } from '../components/entities/component.entity';
+import { CheckCompatibilityDto } from '../compatibility/dtos/CheckCompatibility.dto';
 import { ComponentWithQuantityDto } from './dtos/ComponentWithQuantity.dto';
-import { PaginatedResult } from 'src/components/interfaces/pc-components.interfaces';
+import { PaginatedResult } from '../components/interfaces/pc-components.interfaces';
 import { SelectQueryBuilder } from 'typeorm/browser';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 

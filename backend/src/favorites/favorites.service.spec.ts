@@ -7,13 +7,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { FavoritesService } from './favorites.service';
 import { UserFavoriteComponent } from './entities/userFavoriteComponent.entity';
-import { BuildsService } from 'src/builds/builds.service';
-import { ComponentsService } from 'src/components/components.service';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/user.entity';
-import { Build } from 'src/builds/entities/build';
-import { Component } from 'src/components/entities/component.entity';
-import { SignInData } from 'src/auth/interfaces/auth.interfaces';
+import { BuildsService } from '../builds/builds.service';
+import { ComponentsService } from '../components/components.service';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/user.entity';
+import { Build } from '../builds/entities/build';
+import { Component } from '../components/entities/component.entity';
+import { SignInData } from '../auth/interfaces/auth.interfaces';
 
 const makeUser = (overrides: Partial<User> = {}): User =>
   ({ id: 1, username: 'alice', password: 'hashed', ...overrides }) as User;

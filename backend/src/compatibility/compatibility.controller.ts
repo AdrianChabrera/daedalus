@@ -10,8 +10,8 @@ import {
 import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';
 import { CompatibilityService } from './compatibility.service';
-import { COMPONENT_FILTER_SCHEMAS } from 'src/components/utils/filter-schemas';
-import { parseFilters } from 'src/components/utils/utils';
+import { COMPONENT_FILTER_SCHEMAS } from '../components/utils/filter-schemas';
+import { parseFilters } from '../components/utils/utils';
 
 @Controller('compatibility')
 export class CompatibilityController {

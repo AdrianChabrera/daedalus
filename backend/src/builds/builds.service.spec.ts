@@ -22,7 +22,7 @@ import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { User } from '../users/user.entity';
 import { Gpu } from '../components/entities/main-entities/gpu.entity';
 import { Ram } from '../components/entities/main-entities/ram.entity';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 function makeUser(overrides: Partial<User> = {}): User {
   return Object.assign(new User(), { id: 1, username: 'alice', ...overrides });

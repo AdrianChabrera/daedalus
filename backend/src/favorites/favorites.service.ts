@@ -5,18 +5,18 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SignInData } from 'src/auth/interfaces/auth.interfaces';
-import { BuildsService } from 'src/builds/builds.service';
-import { ComponentsService } from 'src/components/components.service';
+import { SignInData } from '../auth/interfaces/auth.interfaces';
+import { BuildsService } from '../builds/builds.service';
+import { ComponentsService } from '../components/components.service';
 import { UserFavoriteComponent } from './entities/userFavoriteComponent.entity';
 import { Repository } from 'typeorm';
-import { UsersService } from 'src/users/users.service';
-import { Component } from 'src/components/entities/component.entity';
-import { Build } from 'src/builds/entities/build';
+import { UsersService } from '../users/users.service';
+import { Component } from '../components/entities/component.entity';
+import { Build } from '../builds/entities/build';
 import {
   PaginatedResult,
   ParsedFilters,
-} from 'src/components/interfaces/pc-components.interfaces';
+} from '../components/interfaces/pc-components.interfaces';
 
 @Injectable()
 export class FavoritesService {

@@ -22,7 +22,7 @@ import { BuildRam } from './build-rams.entity';
 import { BuildStorageDrive } from './build-storage-drives.entity';
 import { BuildMonitor } from './build-monitors.entity';
 import { BuildFan } from './build-fans.entity';
-import { Review } from 'src/reviews/entities/review.entity';
+import { Review } from '../../reviews/entities/review.entity';
 
 @Entity('builds')
 export class Build {

@@ -1,4 +1,4 @@
-import { Build } from 'src/builds/entities/build';
+import { Build } from '../../builds/entities/build';
 import { CompatibilityIssueDto } from '../dtos/CompatibilityIssue.dto';
 
 export interface CompatibilityRule {

@@ -6,7 +6,7 @@ import {
   Column,
 } from 'typeorm';
 import { Build } from './build';
-import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../components/entities/main-entities/storage.entity';
 
 @Entity('build_storage_drives')
 export class BuildStorageDrive {

@@ -3,8 +3,8 @@ import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { PublishController } from './publish.controller';
 import { PublishService } from './publish.service';
 import { AuthGuard } from '../auth/guards/auth.guard';
-import { BuildCreationDto } from 'src/builds/dtos/BuildCreation.dto';
-import { BuildResponseDto } from 'src/builds/dtos/BuildResponse.dto';
+import { BuildCreationDto } from '../builds/dtos/BuildCreation.dto';
+import { BuildResponseDto } from '../builds/dtos/BuildResponse.dto';
 import { SignInData } from '../auth/interfaces/auth.interfaces';
 
 const mockPublishService: jest.Mocked<

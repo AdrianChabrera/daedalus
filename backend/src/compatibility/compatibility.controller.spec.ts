@@ -4,8 +4,8 @@ import { CompatibilityService } from './compatibility.service';
 import { CompatibilityController } from './compatibility.controller';
 import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';
-import { PaginatedResult } from 'src/components/interfaces/pc-components.interfaces';
-import { Component } from 'src/components/entities/component.entity';
+import { PaginatedResult } from '../components/interfaces/pc-components.interfaces';
+import { Component } from '../components/entities/component.entity';
 
 const mockCompatibilityService: jest.Mocked<
   Pick<

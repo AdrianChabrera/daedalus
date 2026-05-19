@@ -1,27 +1,27 @@
 import { Module } from '@nestjs/common';
 import { CompatibilityController } from './compatibility.controller';
 import { CompatibilityService } from './compatibility.service';
-import { PcCase } from 'src/components/entities/main-entities/pc-case.entity';
-import { CpuCooler } from 'src/components/entities/main-entities/cpu-cooler.entity';
-import { Cpu } from 'src/components/entities/main-entities/cpu.entity';
+import { PcCase } from '../components/entities/main-entities/pc-case.entity';
+import { CpuCooler } from '../components/entities/main-entities/cpu-cooler.entity';
+import { Cpu } from '../components/entities/main-entities/cpu.entity';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
-import { Gpu } from 'src/components/entities/main-entities/gpu.entity';
-import { Fan } from 'src/components/entities/main-entities/fan.entity';
-import { Keyboard } from 'src/components/entities/main-entities/keyboard.entity';
-import { Monitor } from 'src/components/entities/main-entities/monitor.entity';
-import { Motherboard } from 'src/components/entities/main-entities/motherboard.entity';
-import { Mouse } from 'src/components/entities/main-entities/mouse.entity';
-import { PowerSupply } from 'src/components/entities/main-entities/power-supply.entity';
-import { Ram } from 'src/components/entities/main-entities/ram.entity';
-import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
-import { M2Slot } from 'src/components/entities/secondary-entities/m2-slot.entity';
-import { PcieSlot } from 'src/components/entities/secondary-entities/pcie-slot.entity';
-import { Build } from 'src/builds/entities/build';
-import { BuildFan } from 'src/builds/entities/build-fans.entity';
-import { BuildRam } from 'src/builds/entities/build-rams.entity';
-import { BuildMonitor } from 'src/builds/entities/build-monitors.entity';
-import { BuildStorageDrive } from 'src/builds/entities/build-storage-drives.entity';
-import { BuildsModule } from 'src/builds/builds.module';
+import { Gpu } from '../components/entities/main-entities/gpu.entity';
+import { Fan } from '../components/entities/main-entities/fan.entity';
+import { Keyboard } from '../components/entities/main-entities/keyboard.entity';
+import { Monitor } from '../components/entities/main-entities/monitor.entity';
+import { Motherboard } from '../components/entities/main-entities/motherboard.entity';
+import { Mouse } from '../components/entities/main-entities/mouse.entity';
+import { PowerSupply } from '../components/entities/main-entities/power-supply.entity';
+import { Ram } from '../components/entities/main-entities/ram.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage.entity';
+import { M2Slot } from '../components/entities/secondary-entities/m2-slot.entity';
+import { PcieSlot } from '../components/entities/secondary-entities/pcie-slot.entity';
+import { Build } from '../builds/entities/build';
+import { BuildFan } from '../builds/entities/build-fans.entity';
+import { BuildRam } from '../builds/entities/build-rams.entity';
+import { BuildMonitor } from '../builds/entities/build-monitors.entity';
+import { BuildStorageDrive } from '../builds/entities/build-storage-drives.entity';
+import { BuildsModule } from '../builds/builds.module';
 import { COMPATIBILITY_RULES } from './interfaces/compatibility-rule.interface';
 import { R01CpuMotherboardSocketRule } from './rules/rules/r01-cpu-motherboard-socket.rule';
 import { R02CpuCpuCoolerSocketRule } from './rules/rules/r02-cpu-cpu-cooler-socket.rule';
@@ -50,7 +50,7 @@ import { R07R11PcieSlotAssignmentRule } from './rules/rules/r07-r11-pcie-slot-as
 import { R05GpuPowerConnectorsRule } from './rules/rules/r05-gpu-power-connectors.rule';
 import { W05W06CpuPowerConnectorWarning } from './rules/warnings/w05-w06-cpu-power-connector.warning';
 import { R24R25SATAConnectorsRule } from './rules/rules/r24-r25-SATA-power-connectors.rule';
-import { ComponentsModule } from 'src/components/components.module';
+import { ComponentsModule } from '../components/components.module';
 
 const rules = [
   new R01CpuMotherboardSocketRule(),

@@ -3,12 +3,12 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { SignInData } from 'src/auth/interfaces/auth.interfaces';
-import { BuildsService } from 'src/builds/builds.service';
-import { BuildCreationDto } from 'src/builds/dtos/BuildCreation.dto';
-import { BuildResponseDto } from 'src/builds/dtos/BuildResponse.dto';
-import { Build } from 'src/builds/entities/build';
-import { CompatibilityService } from 'src/compatibility/compatibility.service';
+import { SignInData } from '../auth/interfaces/auth.interfaces';
+import { BuildsService } from '../builds/builds.service';
+import { BuildCreationDto } from '../builds/dtos/BuildCreation.dto';
+import { BuildResponseDto } from '../builds/dtos/BuildResponse.dto';
+import { Build } from '../builds/entities/build';
+import { CompatibilityService } from '../compatibility/compatibility.service';
 import { DataSource } from 'typeorm';
 
 @Injectable()

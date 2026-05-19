@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CompatibilityRule } from '../../interfaces/compatibility-rule.interface';
 import { CompatibilityIssueDto } from '../../dtos/CompatibilityIssue.dto';
-import { Build } from 'src/builds/entities/build';
+import { Build } from '../../../builds/entities/build';
 import { FEEL_FREE_TO_CONTRIBUTE } from '../../consts/compatibilityMessages';
 import {
   parseGpuInterface,
@@ -13,7 +13,7 @@ import {
   PhysicalPcieSlot,
   ParsedPcieInterface,
 } from '../../utils/pcie-slot-utils';
-import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../../components/entities/main-entities/storage.entity';
 import { isM2Drive } from '../../utils/m2-slot-utils';
 
 function needsFullSizePcieSlot(drive: StorageDrive): boolean {

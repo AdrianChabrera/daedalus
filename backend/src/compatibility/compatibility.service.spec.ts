@@ -1,12 +1,12 @@
 import { BadRequestException } from '@nestjs/common';
-import { BuildsService } from 'src/builds/builds.service';
-import { ComponentsService } from 'src/components/components.service';
+import { BuildsService } from '../builds/builds.service';
+import { ComponentsService } from '../components/components.service';
 import {
   PaginatedResult,
   ParsedFilters,
-} from 'src/components/interfaces/pc-components.interfaces';
-import { Component } from 'src/components/entities/component.entity';
-import { Build } from 'src/builds/entities/build';
+} from '../components/interfaces/pc-components.interfaces';
+import { Component } from '../components/entities/component.entity';
+import { Build } from '../builds/entities/build';
 import { CompatibilityService } from './compatibility.service';
 import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';

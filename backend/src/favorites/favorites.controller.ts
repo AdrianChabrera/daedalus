@@ -12,12 +12,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import type { SignInData } from 'src/auth/interfaces/auth.interfaces';
-import { COMPONENT_FILTER_SCHEMAS } from 'src/components/utils/filter-schemas';
-import { parseFilters } from 'src/components/utils/utils';
-import { ComponentType } from 'src/components/entities/component-type.enum';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import type { SignInData } from '../auth/interfaces/auth.interfaces';
+import { COMPONENT_FILTER_SCHEMAS } from '../components/utils/filter-schemas';
+import { parseFilters } from '../components/utils/utils';
+import { ComponentType } from '../components/entities/component-type.enum';
 
 const parseComponentTypePipe = new ParseEnumPipe(ComponentType);
 

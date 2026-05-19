@@ -1,5 +1,5 @@
 import { IsArray, IsOptional, IsUUID } from 'class-validator';
-import { ComponentWithQuantityDto } from 'src/builds/dtos/ComponentWithQuantity.dto';
+import { ComponentWithQuantityDto } from '../../builds/dtos/ComponentWithQuantity.dto';
 
 export class CheckCompatibilityDto {
   @IsOptional()

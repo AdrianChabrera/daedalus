@@ -14,14 +14,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import type { SignInData } from 'src/auth/interfaces/auth.interfaces';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import type { SignInData } from '../auth/interfaces/auth.interfaces';
 import { ReviewCreationDto } from './dtos/review-creation.dto';
 import { ReviewResponseDto } from './dtos/review-response.dto';
-import { ComponentType } from 'src/components/entities/component-type.enum';
-import { PaginatedResult } from 'src/components/interfaces/pc-components.interfaces';
-import { OptionalAuthGuard } from 'src/auth/guards/optionalAuth.guard';
+import { ComponentType } from '../components/entities/component-type.enum';
+import { PaginatedResult } from '../components/interfaces/pc-components.interfaces';
+import { OptionalAuthGuard } from '../auth/guards/optionalAuth.guard';
 import { ReviewPaginatedResult } from './interfaces/reviews.interfaces';
 
 const parseComponentTypePipe = new ParseEnumPipe(ComponentType);

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CompatibilityRule } from '../../interfaces/compatibility-rule.interface';
 import { CompatibilityIssueDto } from '../../dtos/CompatibilityIssue.dto';
-import { Build } from 'src/builds/entities/build';
-import { FEEL_FREE_TO_CONTRIBUTE } from 'src/compatibility/consts/compatibilityMessages';
+import { Build } from '../../../builds/entities/build';
+import { FEEL_FREE_TO_CONTRIBUTE } from '../../../compatibility/consts/compatibilityMessages';
 
 @Injectable()
 export class W05W06CpuPowerConnectorWarning implements CompatibilityRule {

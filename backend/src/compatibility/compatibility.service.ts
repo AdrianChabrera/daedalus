@@ -3,24 +3,24 @@ import {
   COMPATIBILITY_RULES,
   CompatibilityRule,
 } from './interfaces/compatibility-rule.interface';
-import { BuildsService } from 'src/builds/builds.service';
+import { BuildsService } from '../builds/builds.service';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';
 import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
-import { Build } from 'src/builds/entities/build';
-import { ComponentsService } from 'src/components/components.service';
+import { Build } from '../builds/entities/build';
+import { ComponentsService } from '../components/components.service';
 import {
   PaginatedResult,
   ParsedFilters,
-} from 'src/components/interfaces/pc-components.interfaces';
-import { Component } from 'src/components/entities/component.entity';
-import { Ram } from 'src/components/entities/main-entities/ram.entity';
-import { BuildRam } from 'src/builds/entities/build-rams.entity';
-import { BuildFan } from 'src/builds/entities/build-fans.entity';
-import { Fan } from 'src/components/entities/main-entities/fan.entity';
-import { BuildMonitor } from 'src/builds/entities/build-monitors.entity';
-import { Monitor } from 'src/components/entities/main-entities/monitor.entity';
-import { BuildStorageDrive } from 'src/builds/entities/build-storage-drives.entity';
-import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
+} from '../components/interfaces/pc-components.interfaces';
+import { Component } from '../components/entities/component.entity';
+import { Ram } from '../components/entities/main-entities/ram.entity';
+import { BuildRam } from '../builds/entities/build-rams.entity';
+import { BuildFan } from '../builds/entities/build-fans.entity';
+import { Fan } from '../components/entities/main-entities/fan.entity';
+import { BuildMonitor } from '../builds/entities/build-monitors.entity';
+import { Monitor } from '../components/entities/main-entities/monitor.entity';
+import { BuildStorageDrive } from '../builds/entities/build-storage-drives.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage.entity';
 
 @Injectable()
 export class CompatibilityService {

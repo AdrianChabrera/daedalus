@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FavoritesController } from './favorites.controller';
 import { FavoritesService } from './favorites.service';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { ComponentType } from 'src/components/entities/component-type.enum';
-import { SignInData } from 'src/auth/interfaces/auth.interfaces';
-import { Build } from 'src/builds/entities/build';
-import { Component } from 'src/components/entities/component.entity';
+import { AuthGuard } from '../auth/guards/auth.guard';
+import { ComponentType } from '../components/entities/component-type.enum';
+import { SignInData } from '../auth/interfaces/auth.interfaces';
+import { Build } from '../builds/entities/build';
+import { Component } from '../components/entities/component.entity';
 
 const makeCurrentUser = (overrides: Partial<SignInData> = {}): SignInData => ({
   userId: 1,

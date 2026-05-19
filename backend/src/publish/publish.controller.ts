@@ -11,10 +11,10 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { SignInData } from '../auth/interfaces/auth.interfaces';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from '../auth/guards/auth.guard';
 import { PublishService } from './publish.service';
-import { BuildCreationDto } from 'src/builds/dtos/BuildCreation.dto';
-import { BuildResponseDto } from 'src/builds/dtos/BuildResponse.dto';
+import { BuildCreationDto } from '../builds/dtos/BuildCreation.dto';
+import { BuildResponseDto } from '../builds/dtos/BuildResponse.dto';
 
 @Controller('publish')
 export class PublishController {

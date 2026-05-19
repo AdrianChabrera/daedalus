@@ -21,10 +21,10 @@ import { BuildsService } from './builds.service';
 import { BuildResponseDto } from './dtos/BuildResponse.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { SignInData } from '../auth/interfaces/auth.interfaces';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from '../auth/guards/auth.guard';
 import { BuildComponentAssignmentDto } from './dtos/BuildComponentAssignment.dto';
 import { BuildWithComponentCountDto } from './dtos/BuildWithComponentCountDto';
-import { OptionalAuthGuard } from 'src/auth/guards/optionalAuth.guard';
+import { OptionalAuthGuard } from '../auth/guards/optionalAuth.guard';
 
 @Controller('builds')
 export class BuildsController {

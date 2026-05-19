@@ -6,15 +6,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BuildsService } from 'src/builds/builds.service';
-import { ComponentsService } from 'src/components/components.service';
+import { BuildsService } from '../builds/builds.service';
+import { ComponentsService } from '../components/components.service';
 import { Repository } from 'typeorm';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { Review } from './entities/review.entity';
-import { SignInData } from 'src/auth/interfaces/auth.interfaces';
+import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { ReviewCreationDto } from './dtos/review-creation.dto';
 import { ReviewResponseDto } from './dtos/review-response.dto';
-import { PaginatedResult } from 'src/components/interfaces/pc-components.interfaces';
+import { PaginatedResult } from '../components/interfaces/pc-components.interfaces';
 import { ReviewPaginatedResult } from './interfaces/reviews.interfaces';
 
 @Injectable()

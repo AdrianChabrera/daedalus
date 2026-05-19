@@ -1,16 +1,16 @@
-import { Build } from 'src/builds/entities/build';
-import { BuildRam } from 'src/builds/entities/build-rams.entity';
-import { BuildStorageDrive } from 'src/builds/entities/build-storage-drives.entity';
-import { CpuCooler } from 'src/components/entities/main-entities/cpu-cooler.entity';
-import { Cpu } from 'src/components/entities/main-entities/cpu.entity';
-import { Gpu } from 'src/components/entities/main-entities/gpu.entity';
-import { Motherboard } from 'src/components/entities/main-entities/motherboard.entity';
-import { PcCase } from 'src/components/entities/main-entities/pc-case.entity';
-import { PowerSupply } from 'src/components/entities/main-entities/power-supply.entity';
-import { Ram } from 'src/components/entities/main-entities/ram.entity';
-import { StorageDrive } from 'src/components/entities/main-entities/storage.entity';
-import { M2Slot } from 'src/components/entities/secondary-entities/m2-slot.entity';
-import { PcieSlot } from 'src/components/entities/secondary-entities/pcie-slot.entity';
+import { Build } from '../../builds/entities/build';
+import { BuildRam } from '../../builds/entities/build-rams.entity';
+import { BuildStorageDrive } from '../../builds/entities/build-storage-drives.entity';
+import { CpuCooler } from '../../components/entities/main-entities/cpu-cooler.entity';
+import { Cpu } from '../../components/entities/main-entities/cpu.entity';
+import { Gpu } from '../../components/entities/main-entities/gpu.entity';
+import { Motherboard } from '../../components/entities/main-entities/motherboard.entity';
+import { PcCase } from '../../components/entities/main-entities/pc-case.entity';
+import { PowerSupply } from '../../components/entities/main-entities/power-supply.entity';
+import { Ram } from '../../components/entities/main-entities/ram.entity';
+import { StorageDrive } from '../../components/entities/main-entities/storage.entity';
+import { M2Slot } from '../../components/entities/secondary-entities/m2-slot.entity';
+import { PcieSlot } from '../../components/entities/secondary-entities/pcie-slot.entity';
 
 export function makeBuild(overrides: Partial<Build> = {}): Build {
   const b = new Build();

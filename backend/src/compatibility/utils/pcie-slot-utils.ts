@@ -1,4 +1,4 @@
-import { PcieSlot } from 'src/components/entities/secondary-entities/pcie-slot.entity';
+import { PcieSlot } from '../../components/entities/secondary-entities/pcie-slot.entity';
 
 export interface ParsedPcieInterface {
   gen: number | null;

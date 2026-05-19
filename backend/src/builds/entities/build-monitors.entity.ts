@@ -6,7 +6,7 @@ import {
   Column,
 } from 'typeorm';
 import { Build } from './build';
-import { Monitor } from 'src/components/entities/main-entities/monitor.entity';
+import { Monitor } from '../../components/entities/main-entities/monitor.entity';
 
 @Entity('build_monitors')
 export class BuildMonitor {

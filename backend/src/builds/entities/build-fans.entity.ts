@@ -6,7 +6,7 @@ import {
   Column,
 } from 'typeorm';
 import { Build } from './build';
-import { Fan } from 'src/components/entities/main-entities/fan.entity';
+import { Fan } from '../../components/entities/main-entities/fan.entity';
 
 @Entity('build_fans')
 export class BuildFan {

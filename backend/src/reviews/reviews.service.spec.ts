@@ -9,10 +9,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { ReviewsService } from './reviews.service';
 import { Review } from './entities/review.entity';
-import { BuildsService } from 'src/builds/builds.service';
-import { ComponentsService } from 'src/components/components.service';
-import { UsersService } from 'src/users/users.service';
-import { SignInData } from 'src/auth/interfaces/auth.interfaces';
+import { BuildsService } from '../builds/builds.service';
+import { ComponentsService } from '../components/components.service';
+import { UsersService } from '../users/users.service';
+import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { ReviewCreationDto } from './dtos/review-creation.dto';
 
 function makeUser(overrides = {}) {
