@@ -2,8 +2,6 @@ name: Backend unit tests
 
 on:
   push:
-    branches:
-      - 'main'
 
 jobs:
   test-backend:

@@ -2,8 +2,6 @@ name: Backend e2e tests
 
 on:
   push:
-    branches:
-      - 'main'
 
 jobs:
   e2e-backend:
@@ -11,6 +9,21 @@ jobs:
     defaults:
       run:
         working-directory: backend
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -29,12 +42,17 @@ jobs:
       - name: Run e2e tests with coverage
         run: npm run test:e2e
         env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_SECRET: testsecret
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: testuser
+          DB_PASSWORD: testpassword
+          DB_NAME: testdb
 
       - name: Upload e2e coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage-e2e/lcov.info
+          files: ./backend/coverage-e2e/lcov.info
           flags: e2e
           fail_ci_if_error: true
