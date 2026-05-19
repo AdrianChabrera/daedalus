@@ -4,6 +4,25 @@
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
-  }
+    "^.+\\.(t|j)s$": ["ts-jest", {
+      "tsconfig": "<rootDir>/../tsconfig.test.json"
+    }]
+  },
+  "moduleNameMapper": {
+    "^src/(.*)$": "<rootDir>/../src/$1"
+  },
+  "testTimeout": 60000,
+  "collectCoverage": true,
+  "collectCoverageFrom": [
+    "../src/**/*.ts",
+    "!../src/**/*.module.ts",
+    "!../src/main.ts",
+    "!../src/**/entities/**",
+    "!../src/**/dtos/**",
+    "!../src/**/migration/**",
+    "!../src/**/interfaces/**",
+    "!../src/**/consts/**"
+  ],
+  "coverageDirectory": "../coverage-e2e",
+  "coverageReporters": ["lcov", "text-summary"]
 }
