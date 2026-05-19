@@ -33,6 +33,6 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./backend/coverage-e2e/lcov.info
+          files: ./coverage-e2e/lcov.info
           flags: e2e
           fail_ci_if_error: true
