@@ -5,7 +5,10 @@
   "testRegex": "test/.+\\.e2e-spec\\.ts$",
   "transform": {
     "^.+\\.(t|j)s$": ["ts-jest", {
-      "tsconfig": "<rootDir>/tsconfig.test.json"
+      "tsconfig": "<rootDir>/tsconfig.test.json",
+      "diagnostics": false,
+      "compiler": "typescript",
+      "isolatedModules": true
     }]
   },
   "moduleNameMapper": {
@@ -26,5 +29,7 @@
     "!src/**/consts/**"
   ],
   "coverageDirectory": "coverage-e2e",
-  "coverageReporters": ["lcov", "text-summary"]
+  "coverageReporters": ["lcov", "text-summary"],
+  "coverageProvider": "v8"
+
 }
