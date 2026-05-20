@@ -10,5 +10,20 @@ services:
       - postgres_data:/var/lib/postgresql/data
     command: -c password_encryption=md5
 
+  postgres-loadtest:
+    image: postgres:16
+    container_name: postgres-loadtest
+    profiles:
+      - load-testing
+    environment:
+      POSTGRES_USER: loadtest
+      POSTGRES_PASSWORD: loadtest
+      POSTGRES_DB: daedalus_loadtest
+    ports:
+      - "5434:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    command: -c password_encryption=md5
+
 volumes:
   postgres_data:
