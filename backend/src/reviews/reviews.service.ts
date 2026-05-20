@@ -8,7 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { BuildsService } from '../builds/builds.service';
 import { ComponentsService } from '../components/components.service';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { Review } from './entities/review.entity';
 import { SignInData } from '../auth/interfaces/auth.interfaces';
@@ -80,12 +80,23 @@ export class ReviewsService {
       componentManufacturer = component?.manufacturer ?? '';
     }
 
-    const savedReview = await this.reviewRepository.save(newReview);
-    return new ReviewResponseDto(
-      savedReview,
-      componentName ?? '',
-      componentManufacturer ?? '',
-    );
+    try {
+      const savedReview = await this.reviewRepository.save(newReview);
+      return new ReviewResponseDto(
+        savedReview,
+        componentName ?? '',
+        componentManufacturer ?? '',
+      );
+    } catch (err) {
+      if (
+        err instanceof QueryFailedError &&
+        'code' in err &&
+        err.code === '23505'
+      ) {
+        throw new ConflictException('You have already reviewed this entity.');
+      }
+      throw err;
+    }
   }
 
   async listBuildReviews(

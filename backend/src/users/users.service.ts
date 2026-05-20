@@ -41,11 +41,22 @@ export class UsersService {
   }
 
   async addFavoriteBuild(userId: number, buildId: number): Promise<void> {
-    await this.userRepository
-      .createQueryBuilder()
-      .relation(User, 'favoriteBuilds')
-      .of(userId)
-      .add(buildId);
+    try {
+      await this.userRepository
+        .createQueryBuilder()
+        .relation(User, 'favoriteBuilds')
+        .of(userId)
+        .add(buildId);
+    } catch (e) {
+      if (
+        e instanceof Error &&
+        'code' in e &&
+        (e as { code: string }).code === '23505'
+      ) {
+        throw new ConflictException('Build already marked as favorite');
+      }
+      throw e;
+    }
   }
 
   async removeFavoriteBuild(userId: number, buildId: number): Promise<void> {
