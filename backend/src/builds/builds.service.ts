@@ -182,6 +182,8 @@ export class BuildsService {
         'storageDrives.storageDrive',
         'fans',
         'fans.fan',
+        'monitors',
+        'monitors.monitor',
         'reviews',
       ],
     });
