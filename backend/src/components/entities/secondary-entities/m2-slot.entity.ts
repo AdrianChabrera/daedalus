@@ -18,7 +18,7 @@ export class M2Slot {
   @Column({ type: 'varchar', length: 50, nullable: true })
   key!: string | null;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true, name: 'm2_interface' })
   m2Interface!: string | null;
 
   @ManyToOne(() => Motherboard, (m) => m.m2Slots)
