@@ -113,7 +113,7 @@ export default function BuildDetailsScreen() {
 
       <div className={styles.inner}>
 
-        <button className={styles.backBtn} onClick={() => navigate(-1)}>
+        <button className="backBtn" onClick={() => navigate(-1)}>
           <ArrowLeft size={15} />
           Back
         </button>

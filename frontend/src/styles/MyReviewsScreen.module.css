@@ -18,25 +18,6 @@
   margin: 0 auto;
 }
 
-.backBtn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-family: 'Exo 2', sans-serif;
-  font-size: 13px;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.15s;
-  align-self: flex-start;
-}
-
-.backBtn:hover {
-  color: var(--accent2);
-}
-
 .header {
   display: flex;
   align-items: center;

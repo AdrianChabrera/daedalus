@@ -40,7 +40,7 @@ export default function MyReviewsScreen() {
       <div className="bgGrid" aria-hidden />
 
       <div className={styles.inner}>
-        <button className={styles.backBtn} onClick={() => navigate('/profile')}>
+        <button className="backBtn" onClick={() => navigate(-1)}>
           <ArrowLeft size={15} />
           Back
         </button>

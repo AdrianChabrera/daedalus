@@ -28,6 +28,7 @@ interface BuildsListScreenProps {
   showCreateButton?: boolean;
   onBuildClick?: (build: BuildSummary) => void;
   headerExtra?: React.ReactNode;
+  headerTop?: React.ReactNode;
   cardVariant: 'my-builds' | 'public-builds';
   onDeleteBuild?: (build: BuildSummary) => void; 
   onEditBuild?: (build: BuildSummary) => void;
@@ -40,6 +41,7 @@ export function BuildsListScreen({
   showCreateButton = false,
   onBuildClick,
   headerExtra,
+  headerTop,
   cardVariant,
   onDeleteBuild,
   onEditBuild,
@@ -115,6 +117,7 @@ export function BuildsListScreen({
       <div className="bgGrid" aria-hidden />
 
       <div className={styles.inner}>
+        {headerTop}
         <div className={styles.topBar}>
           <div className={styles.topBarLeft}>
             <h1 className={styles.pageTitle}>{title}</h1>

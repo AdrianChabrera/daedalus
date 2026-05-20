@@ -15,6 +15,7 @@ import { useSortState } from '../../hooks/useSortState';
 import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
 import { useEffect } from 'react';
 import { useFavoriteComponents } from '../../hooks/useFavorites';
+import { ArrowLeft } from 'lucide-react';
 
 const PAGE_SIZE = 16;
 
@@ -97,6 +98,10 @@ export default function FavoriteComponentsScreen() {
       <div className="bgGlow" aria-hidden />
       <div className="bgGrid" aria-hidden />
       <div className={styles.inner}>
+        <button className="backBtn" onClick={() => navigate(-1)}>
+          <ArrowLeft size={15} />
+          Back
+        </button>
         <div className={styles.header}>
           <TypeDropdown
             current={currentType}

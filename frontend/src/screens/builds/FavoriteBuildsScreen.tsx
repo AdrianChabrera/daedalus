@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { BuildsListScreen } from '../builds/BuildsListScreen';
 import type { BuildSummary } from '../../types/BuildLists.type';
 import { API_ROUTES } from '../../config/api';
+import { ArrowLeft } from 'lucide-react';
 
 export default function FavoriteBuildsScreen() {
   const { user } = useAuth();
@@ -19,6 +20,12 @@ export default function FavoriteBuildsScreen() {
       authToken={user?.accessToken}
       onBuildClick={handleBuildClick}
       cardVariant="public-builds"
+      headerTop={
+        <button className="backBtn" onClick={() => navigate(-1)}>
+          <ArrowLeft size={15} />
+          Back
+        </button>
+      }
     />
   );
 }

@@ -5,6 +5,7 @@ import { BuildsListScreen } from './BuildsListScreen';
 import { API_ROUTES } from '../../config/api';
 import type { BuildSummary } from '../../types/BuildLists.type';
 import ConfirmModal from '../../components/general/ConfirmModal';
+import { ArrowLeft } from 'lucide-react';
 
 export default function MyBuildsScreen() {
   const { user } = useAuth();
@@ -53,6 +54,12 @@ export default function MyBuildsScreen() {
         onDeleteBuild={setBuildToDelete}
         onEditBuild={handleEditBuild}
         cardVariant="my-builds"
+        headerTop={
+          <button className="backBtn" onClick={() => navigate(-1)}>
+            <ArrowLeft size={15} />
+            Back
+          </button>
+        }
       />
 
       <ConfirmModal
