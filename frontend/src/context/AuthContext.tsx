@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { API_ROUTES } from '../config/api';
 
 interface AuthResult {
@@ -28,6 +28,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return null;
     }
   });
+
+  const logout = useCallback(() => {
+    setUser(null);
+    localStorage.removeItem('daedalus_auth');
+  }, []);
+
+  useEffect(() => {
+    const originalFetch = window.fetch;
+
+    window.fetch = async (...args) => {
+      const response = await originalFetch(...args);
+      if (response.status === 401) {
+        logout();
+      }
+      return response;
+    };
+
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, [logout]);
 
   const login = async (username: string, password: string) => {
     const res = await fetch(`${API_ROUTES.LOGIN}`, {
@@ -61,11 +82,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const data: AuthResult = await res.json();
     setUser(data);
     localStorage.setItem('daedalus_auth', JSON.stringify(data));
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('daedalus_auth');
   };
 
   return (

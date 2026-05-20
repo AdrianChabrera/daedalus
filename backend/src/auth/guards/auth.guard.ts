@@ -36,7 +36,9 @@ export class AuthGuard implements CanActivate {
       return true;
     } catch (error) {
       if (error instanceof Error && error.name === 'TokenExpiredError') {
-        throw new UnauthorizedException('Token expired');
+        throw new UnauthorizedException(
+          'Your session expired. Please log in again.',
+        );
       }
       throw new UnauthorizedException('Invalid token');
     }
