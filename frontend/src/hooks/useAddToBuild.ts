@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { API_ROUTES } from '../config/api';
 import type { AddToBuildStatus, BuildState, UserBuild, MultiComponentEntry, BuildComponent, UserBuildWithCount, BuildOpStatus } from '../types/CreateBuildTypes';
 import { MULTI_COMPONENT_TYPES, STORAGE_KEY, TYPE_TO_BUILD_KEY } from '../consts/CreateBuildConsts';
+import { SLOT_TO_API } from '../consts/BuildDetailsConsts';
 
 function loadDraftBuild(): BuildState | null {
   try {
@@ -53,32 +54,6 @@ function isSingleSlotOccupied(componentType: string): boolean {
   const slot = build[key];
   return !!slot && !Array.isArray(slot);
 }
-
-const backendTypeMap: Record<string, string> = {
-  cpu: 'cpu',
-  gpu: 'gpu',
-  motherboard: 'motherboard',
-  'pc-case': 'pcCase',
-  'power-supply': 'powerSupply',
-  'cpu-cooler': 'cpuCooler',
-  keyboard: 'keyboard',
-  mouse: 'mouse',
-  ram: 'ram',
-  'storage-drive': 'storageDrive',
-  fan: 'fan',
-  monitor: 'monitor',
-};
-
-const singleSlotBuildKey: Record<string, keyof UserBuild> = {
-  cpu: 'cpu',
-  gpu: 'gpu',
-  motherboard: 'motherboard',
-  'pc-case': 'pcCase',
-  'power-supply': 'powerSupply',
-  'cpu-cooler': 'cpuCooler',
-  keyboard: 'keyboard',
-  mouse: 'mouse',
-};
 
 export function useAddToBuild(componentType: string, componentId: string) {
   const { user } = useAuth();
@@ -170,18 +145,18 @@ export function useAddToBuild(componentType: string, componentId: string) {
   }, [componentType, componentId, isMulti, refreshLocalState]);
 
   const handleLocalAdd = useCallback(() => {
-  if (isMulti) {
-    addToLocalBuild();
-  } else {
-    if (localStatus === 'in-build') {
-      removeFromLocalBuild();
-    } else if (localOccupied) {
-      setLocalStatus('confirm-replace');
-    } else {
+    if (isMulti) {
       addToLocalBuild();
+    } else {
+      if (localStatus === 'in-build') {
+        removeFromLocalBuild();
+      } else if (localOccupied) {
+        setLocalStatus('confirm-replace');
+      } else {
+        addToLocalBuild();
+      }
     }
-  }
-}, [isMulti, localStatus, localOccupied, addToLocalBuild, removeFromLocalBuild]);
+  }, [isMulti, localStatus, localOccupied, addToLocalBuild, removeFromLocalBuild]);
 
   const handleConfirmReplace = useCallback(() => {
     addToLocalBuild();
@@ -199,10 +174,10 @@ export function useAddToBuild(componentType: string, componentId: string) {
     setDropdownOpen(true);
     setLoadingBuilds(true);
 
-    const mappedType = backendTypeMap[componentType] ?? componentType;
+    const slotMapping = SLOT_TO_API[componentType];
 
     try {
-      const res = await fetch(API_ROUTES.UNPUBLISHED_BUILDS(mappedType, componentId), {
+      const res = await fetch(API_ROUTES.UNPUBLISHED_BUILDS(componentType, componentId), {
         headers: { Authorization: `Bearer ${user!.accessToken}` },
       });
       if (!res.ok) throw new Error();
@@ -213,7 +188,7 @@ export function useAddToBuild(componentType: string, componentId: string) {
           let slotOccupiedBy: BuildComponent | undefined;
 
           if (!isMulti) {
-            const buildKey = singleSlotBuildKey[componentType];
+            const buildKey = slotMapping?.single as keyof UserBuild | undefined;
             const slot = buildKey ? (build[buildKey] as BuildComponent | undefined) : undefined;
             if (slot && slot.buildcoresId !== componentId) {
               slotOccupiedBy = slot;
@@ -281,7 +256,7 @@ export function useAddToBuild(componentType: string, componentId: string) {
         body: JSON.stringify({
           componentId,
           buildId,
-          componentType: backendTypeMap[componentType] ?? componentType,
+          componentType,
         }),
       });
       if (!res.ok) throw new Error();
@@ -299,9 +274,7 @@ export function useAddToBuild(componentType: string, componentId: string) {
       if (!isMulti) {
         setUserBuilds(prev =>
           prev.map(b =>
-            b.id === buildId
-              ? { ...b, confirmingReplace: false }
-              : b
+            b.id === buildId ? { ...b, confirmingReplace: false } : b
           )
         );
       }
@@ -327,7 +300,7 @@ export function useAddToBuild(componentType: string, componentId: string) {
         body: JSON.stringify({
           componentId,
           buildId,
-          componentType: backendTypeMap[componentType] ?? componentType,
+          componentType,
         }),
       });
       if (!res.ok) throw new Error();

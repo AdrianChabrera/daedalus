@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Plus, Check, ChevronDown, AlertTriangle, Loader2, Minus } from 'lucide-react';
 import { useAddToBuild } from '../../hooks/useAddToBuild';
 import styles from '../../styles/AddToBuildButton.module.css';
@@ -140,7 +141,14 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
                       return (
                         <li key={build.id} className={styles.buildItem}>
                           <div className={styles.buildRow}>
-                            <span className={styles.buildName}>{build.name}</span>
+                            <Link
+                              to={`/builds/${build.id}/edit`}
+                              className={styles.buildNameLink}
+                              title={`Edit "${build.name}"`}
+                              onClick={e => e.stopPropagation()}
+                            >
+                              <span className={styles.buildNameText}>{build.name}</span>
+                            </Link>
                             <div className={styles.confirmWarning}>
                               <span>
                                 Slot already occupied. Replace?
@@ -168,7 +176,14 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
                     return (
                       <li key={build.id} className={styles.buildItem}>
                         <div className={`${styles.buildRow} ${isError ? styles.buildRowError : ''}`}>
-                          <span className={styles.buildName}>{build.name}</span>
+                          <Link
+                            to={`/builds/${build.id}/edit`}
+                            className={styles.buildNameLink}
+                            title={`Edit "${build.name}"`}
+                            onClick={e => e.stopPropagation()}
+                          >
+                            <span className={styles.buildNameText}>{build.name}</span>
+                          </Link>
 
                           <div className={styles.buildStepper}>
                             {isLoading ? (

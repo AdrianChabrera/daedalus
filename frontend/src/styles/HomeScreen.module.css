@@ -338,7 +338,7 @@
 .buildCardImgWrap {
   position: relative;
   width: 100%;
-  aspect-ratio: 4/3;
+  height: 160px;
   overflow: hidden;
   background: white;
   align-items: center;

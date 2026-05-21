@@ -254,6 +254,30 @@
   text-align: left;
 }
 
+.buildNameLink {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 13px;
+  transition: color 0.15s;
+}
+
+.buildNameLink:hover {
+  color: var(--accent2);
+}
+
+.buildNameText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .buildStepper {
   display: flex;
   align-items: center;

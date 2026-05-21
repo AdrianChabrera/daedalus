@@ -184,6 +184,8 @@ export class BuildsService {
         'fans.fan',
         'monitors',
         'monitors.monitor',
+        'mouse',
+        'keyboard',
         'reviews',
       ],
     });
@@ -206,13 +208,16 @@ export class BuildsService {
       where: { user: { id: currentUser.userId }, published: false },
       relations: relationNames,
     });
+
+    const mappedComponentType = this.transformToCamelCase(componentType);
+
     const buildsWithComponentsCount = builds.map((b) => {
       const dto = new BuildWithComponentCountDto();
       dto.build = b;
       dto.quantity = this.findComponentCountInBuild(
         b,
         componentId,
-        componentType,
+        mappedComponentType,
       );
       return dto;
     });
@@ -397,7 +402,11 @@ export class BuildsService {
       throw new ConflictException("A published build can't be modified");
     }
 
-    const buildKey = this.componentTypeMap[componentAssignment.componentType];
+    const mappedComponentType = this.transformToCamelCase(
+      componentAssignment.componentType,
+    );
+
+    const buildKey = this.componentTypeMap[mappedComponentType];
 
     if (!buildKey) {
       throw new BadRequestException(
@@ -488,7 +497,11 @@ export class BuildsService {
       throw new ConflictException("A published build can't be modified");
     }
 
-    const buildKey = this.componentTypeMap[componentAssignment.componentType];
+    const mappedComponentType = this.transformToCamelCase(
+      componentAssignment.componentType,
+    );
+
+    const buildKey = this.componentTypeMap[mappedComponentType];
 
     if (!buildKey) {
       throw new BadRequestException(
@@ -831,5 +844,17 @@ export class BuildsService {
       where: { published: true },
     });
     return count;
+  }
+
+  // TODO: improve compound name components management in this module, this function is just a patch
+  transformToCamelCase(componentType: string): string {
+    const componentTypeParts = componentType.split('-');
+    const mappedComponentType =
+      componentTypeParts.length > 1
+        ? componentTypeParts[0] +
+          componentTypeParts[1].charAt(0).toUpperCase() +
+          componentTypeParts[1].slice(1)
+        : componentTypeParts[0];
+    return mappedComponentType;
   }
 }
