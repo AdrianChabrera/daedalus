@@ -7,7 +7,7 @@ import { SignInData } from '../auth/interfaces/auth.interfaces';
 import { BuildsService } from '../builds/builds.service';
 import { BuildCreationDto } from '../builds/dtos/BuildCreation.dto';
 import { BuildResponseDto } from '../builds/dtos/BuildResponse.dto';
-import { Build } from '../builds/entities/build';
+import { Build } from '../builds/entities/build.entity';
 import { CompatibilityService } from '../compatibility/compatibility.service';
 import { DataSource } from 'typeorm';
 

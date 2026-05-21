@@ -6,7 +6,7 @@ import {
   ParsedFilters,
 } from '../components/interfaces/pc-components.interfaces';
 import { Component } from '../components/entities/component.entity';
-import { Build } from '../builds/entities/build';
+import { Build } from '../builds/entities/build.entity';
 import { CompatibilityService } from './compatibility.service';
 import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';

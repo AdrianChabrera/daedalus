@@ -6,7 +6,7 @@ import {
 import { BuildsService } from '../builds/builds.service';
 import { CompatibilityIssueDto } from './dtos/CompatibilityIssue.dto';
 import { CheckCompatibilityDto } from './dtos/CheckCompatibility.dto';
-import { Build } from '../builds/entities/build';
+import { Build } from '../builds/entities/build.entity';
 import { ComponentsService } from '../components/components.service';
 import {
   PaginatedResult,

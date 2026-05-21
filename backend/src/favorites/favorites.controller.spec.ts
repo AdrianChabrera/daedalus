@@ -4,7 +4,7 @@ import { FavoritesService } from './favorites.service';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { ComponentType } from '../components/entities/component-type.enum';
 import { SignInData } from '../auth/interfaces/auth.interfaces';
-import { Build } from '../builds/entities/build';
+import { Build } from '../builds/entities/build.entity';
 import { Component } from '../components/entities/component.entity';
 
 const makeCurrentUser = (overrides: Partial<SignInData> = {}): SignInData => ({

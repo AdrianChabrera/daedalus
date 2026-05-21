@@ -5,7 +5,7 @@ import {
   JoinColumn,
   Column,
 } from 'typeorm';
-import { Build } from './build';
+import { Build } from './build.entity';
 import { Monitor } from '../../components/entities/main-entities/monitor.entity';
 
 @Entity('build_monitors')

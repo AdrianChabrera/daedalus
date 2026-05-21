@@ -5,7 +5,7 @@ import {
   JoinColumn,
   Column,
 } from 'typeorm';
-import { Build } from './build';
+import { Build } from './build.entity';
 import { Fan } from '../../components/entities/main-entities/fan.entity';
 
 @Entity('build_fans')

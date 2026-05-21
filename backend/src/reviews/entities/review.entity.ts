@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Build } from '../../builds/entities/build';
+import { Build } from '../../builds/entities/build.entity';
 
 @Unique('UQ_review_user_build', ['user', 'build'])
 @Unique('UQ_review_user_component', ['user', 'componentId', 'componentType'])

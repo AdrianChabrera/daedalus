@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { Build } from './entities/build';
+import { Build } from './entities/build.entity';
 import { BuildCreationDto } from './dtos/BuildCreation.dto';
 import { ComponentsService } from '../components/components.service';
 import { PcCase } from '../components/entities/main-entities/pc-case.entity';

@@ -11,7 +11,7 @@ import { BuildsService } from '../builds/builds.service';
 import { ComponentsService } from '../components/components.service';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
-import { Build } from '../builds/entities/build';
+import { Build } from '../builds/entities/build.entity';
 import { Component } from '../components/entities/component.entity';
 import { SignInData } from '../auth/interfaces/auth.interfaces';
 

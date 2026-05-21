@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import request, { Response } from 'supertest';
 import { createTestApp, closeTestApp } from '../test-app';
 import { User } from '../../src/users/user.entity';
-import { Build } from '../../src/builds/entities/build';
+import { Build } from '../../src/builds/entities/build.entity';
 import { Review } from '../../src/reviews/entities/review.entity';
 import { Cpu } from '../../src/components/entities/main-entities/cpu.entity';
 import { Gpu } from '../../src/components/entities/main-entities/gpu.entity';

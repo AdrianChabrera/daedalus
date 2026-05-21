@@ -5,7 +5,7 @@ import { DataSource, EntityManager } from 'typeorm';
 import { PublishService } from './publish.service';
 import { BuildsService } from '../builds/builds.service';
 import { CompatibilityService } from '../compatibility/compatibility.service';
-import { Build } from '../builds/entities/build';
+import { Build } from '../builds/entities/build.entity';
 import { BuildRam } from '../builds/entities/build-rams.entity';
 import { BuildStorageDrive } from '../builds/entities/build-storage-drives.entity';
 import { User } from '../users/user.entity';

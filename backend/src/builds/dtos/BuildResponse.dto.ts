@@ -7,7 +7,7 @@ import {
   IsBoolean,
   IsNumber,
 } from 'class-validator';
-import { Build } from '../entities/build';
+import { Build } from '../entities/build.entity';
 import { StorageDrive } from '../../components/entities/main-entities/storage.entity';
 import { Ram } from '../../components/entities/main-entities/ram.entity';
 import { PowerSupply } from '../../components/entities/main-entities/power-supply.entity';

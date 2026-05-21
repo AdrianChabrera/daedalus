@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CompatibilityRule } from '../../interfaces/compatibility-rule.interface';
 import { CompatibilityIssueDto } from '../../dtos/CompatibilityIssue.dto';
-import { Build } from '../../../builds/entities/build';
+import { Build } from '../../../builds/entities/build.entity';
 import { M2Slot } from '../../../components/entities/secondary-entities/m2-slot.entity';
 import { StorageDrive } from '../../../components/entities/main-entities/storage.entity';
 import {

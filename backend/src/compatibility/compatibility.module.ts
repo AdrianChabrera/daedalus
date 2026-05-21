@@ -16,7 +16,7 @@ import { Ram } from '../components/entities/main-entities/ram.entity';
 import { StorageDrive } from '../components/entities/main-entities/storage.entity';
 import { M2Slot } from '../components/entities/secondary-entities/m2-slot.entity';
 import { PcieSlot } from '../components/entities/secondary-entities/pcie-slot.entity';
-import { Build } from '../builds/entities/build';
+import { Build } from '../builds/entities/build.entity';
 import { BuildFan } from '../builds/entities/build-fans.entity';
 import { BuildRam } from '../builds/entities/build-rams.entity';
 import { BuildMonitor } from '../builds/entities/build-monitors.entity';

@@ -5,7 +5,7 @@ import {
   JoinColumn,
   Column,
 } from 'typeorm';
-import { Build } from './build';
+import { Build } from './build.entity';
 import { Ram } from '../../components/entities/main-entities/ram.entity';
 
 @Entity('build_rams')

@@ -9,7 +9,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { SelectQueryBuilder } from 'typeorm';
 
 import { BuildsService } from './builds.service';
-import { Build } from './entities/build';
+import { Build } from './entities/build.entity';
 import { BuildFan } from './entities/build-fans.entity';
 import { BuildRam } from './entities/build-rams.entity';
 import { BuildMonitor } from './entities/build-monitors.entity';

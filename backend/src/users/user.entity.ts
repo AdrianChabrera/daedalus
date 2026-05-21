@@ -1,5 +1,5 @@
 import { IsNotEmpty, Matches, MaxLength } from 'class-validator';
-import { Build } from '../builds/entities/build';
+import { Build } from '../builds/entities/build.entity';
 import {
   Entity,
   Column,

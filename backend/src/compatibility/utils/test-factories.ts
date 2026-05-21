@@ -1,4 +1,4 @@
-import { Build } from '../../builds/entities/build';
+import { Build } from '../../builds/entities/build.entity';
 import { BuildRam } from '../../builds/entities/build-rams.entity';
 import { BuildStorageDrive } from '../../builds/entities/build-storage-drives.entity';
 import { CpuCooler } from '../../components/entities/main-entities/cpu-cooler.entity';

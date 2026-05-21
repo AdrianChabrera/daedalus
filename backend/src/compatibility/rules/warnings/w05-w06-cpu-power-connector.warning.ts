@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CompatibilityRule } from '../../interfaces/compatibility-rule.interface';
 import { CompatibilityIssueDto } from '../../dtos/CompatibilityIssue.dto';
-import { Build } from '../../../builds/entities/build';
+import { Build } from '../../../builds/entities/build.entity';
 import { FEEL_FREE_TO_CONTRIBUTE } from '../../../compatibility/consts/compatibilityMessages';
 
 @Injectable()

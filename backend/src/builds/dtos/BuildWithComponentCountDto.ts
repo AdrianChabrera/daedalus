@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
-import { Build } from '../entities/build';
+import { Build } from '../entities/build.entity';
 
 export class BuildWithComponentCountDto {
   build!: Build;

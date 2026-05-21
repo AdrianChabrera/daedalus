@@ -12,7 +12,7 @@ import { UserFavoriteComponent } from './entities/userFavoriteComponent.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { Component } from '../components/entities/component.entity';
-import { Build } from '../builds/entities/build';
+import { Build } from '../builds/entities/build.entity';
 import {
   PaginatedResult,
   ParsedFilters,
