@@ -79,13 +79,13 @@ async function buildSummaryPage(build: BuildDetail, rows: ComponentRowFull[], lo
   });
 
   const IMAGE_W = 160;
-  const IMAGE_H = 130;
+  const IMAGE_H = 120;
 
-  let imageCol: Content | null = null;  
+  let imageCol: Content | null = null;
   if (build.photoUrl) {
-    const b64 = await fetchImageBase64(build.photoUrl);
-    if (b64) {
-      imageCol = { image: b64, width: IMAGE_W, height: IMAGE_H } as Content;
+    const result = await fetchImageBase64(build.photoUrl, IMAGE_W, IMAGE_H);
+    if (result) {
+      imageCol = { image: result.data, width: IMAGE_W, height: IMAGE_H } as Content;
     }
   }
 

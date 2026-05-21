@@ -104,36 +104,62 @@ export async function getLogoBase64(): Promise<string | null> {
   });
 }
 
-export async function fetchImageBase64(url: string): Promise<string | null> {
+export interface FetchedImage {
+  data: string;
+  width: number;
+  height: number;
+}
+
+export async function fetchImageBase64(
+  url: string,
+  cropWidth?: number,
+  cropHeight?: number,
+): Promise<FetchedImage | null> {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       try {
+        const srcW = img.naturalWidth  || img.width;
+        const srcH = img.naturalHeight || img.height;
+
+        const outW = cropWidth  ?? srcW;
+        const outH = cropHeight ?? srcH;
+
+        const scale = Math.max(outW / srcW, outH / srcH);
+        const scaledW = srcW * scale;
+        const scaledH = srcH * scale;
+
+        const offsetX = (outW - scaledW) / 2;
+        const offsetY = (outH - scaledH) / 2;
+
+        const SCALE = 4;
+
         const canvas = document.createElement('canvas');
-        const w = img.naturalWidth  || img.width;
-        const h = img.naturalHeight || img.height;
-        canvas.width  = w;
-        canvas.height = h;
+        canvas.width  = outW * SCALE;
+        canvas.height = outH * SCALE;
         const ctx = canvas.getContext('2d');
         if (!ctx) { resolve(null); return; }
 
-        const r = Math.min(w, h) * 0.05;
+        ctx.scale(SCALE, SCALE);
+
+        const r = Math.min(outW, outH) * 0.05;
         ctx.beginPath();
         ctx.moveTo(r, 0);
-        ctx.lineTo(w - r, 0);
-        ctx.quadraticCurveTo(w, 0, w, r);
-        ctx.lineTo(w, h - r);
-        ctx.quadraticCurveTo(w, h, w - r, h);
-        ctx.lineTo(r, h);
-        ctx.quadraticCurveTo(0, h, 0, h - r);
+        ctx.lineTo(outW - r, 0);
+        ctx.quadraticCurveTo(outW, 0, outW, r);
+        ctx.lineTo(outW, outH - r);
+        ctx.quadraticCurveTo(outW, outH, outW - r, outH);
+        ctx.lineTo(r, outH);
+        ctx.quadraticCurveTo(0, outH, 0, outH - r);
         ctx.lineTo(0, r);
         ctx.quadraticCurveTo(0, 0, r, 0);
         ctx.closePath();
         ctx.clip();
 
-        ctx.drawImage(img, 0, 0);
-        resolve(canvas.toDataURL('image/png'));
+        ctx.drawImage(img, offsetX, offsetY, scaledW, scaledH);
+
+        resolve({ data: canvas.toDataURL('image/png'), width: outW, height: outH });
       } catch {
         resolve(null);
       }
