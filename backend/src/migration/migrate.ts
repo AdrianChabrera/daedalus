@@ -36,7 +36,7 @@ dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
 
 type Mapper<T extends ObjectLiteral> = (
   raw: Record<string, unknown>,
-  dataSource: DataSource,
+  dataSource?: DataSource,
 ) => T | Promise<T>;
 
 interface CategoryConfig<T extends ObjectLiteral> {
@@ -44,6 +44,7 @@ interface CategoryConfig<T extends ObjectLiteral> {
   entity: EntityTarget<T>;
   mapper: Mapper<T>;
   conflictPath: keyof T & string;
+  afterUpsert?: (entity: T, dataSource: DataSource) => Promise<void>;
 }
 
 const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
@@ -100,6 +101,29 @@ const CATEGORIES: CategoryConfig<ObjectLiteral>[] = [
     entity: Motherboard,
     mapper: mapMotherboard,
     conflictPath: 'buildcoresId',
+    afterUpsert: async (entity: ObjectLiteral, dataSource: DataSource) => {
+      const mb = entity as Motherboard;
+      const pcieSlotRepo = dataSource.getRepository(PcieSlot);
+      const m2SlotRepo = dataSource.getRepository(M2Slot);
+
+      await pcieSlotRepo.delete({
+        motherboard: { buildcoresId: mb.buildcoresId },
+      });
+      if (mb.pcieSlots?.length) {
+        await pcieSlotRepo.save(
+          mb.pcieSlots.map((s) => ({ ...s, motherboard: mb })),
+        );
+      }
+
+      await m2SlotRepo.delete({
+        motherboard: { buildcoresId: mb.buildcoresId },
+      });
+      if (mb.m2Slots?.length) {
+        await m2SlotRepo.save(
+          mb.m2Slots.map((s) => ({ ...s, motherboard: mb })),
+        );
+      }
+    },
   },
   {
     repoFolder: 'Monitor',
@@ -248,6 +272,11 @@ async function migrateCategory(
           const entity = await config.mapper(rawJson, dataSource);
 
           await repo.upsert(entity, { conflictPaths: [config.conflictPath] });
+
+          if (config.afterUpsert) {
+            await config.afterUpsert(entity, dataSource);
+          }
+
           processed++;
 
           if (processed % 10 === 0) {
@@ -273,7 +302,7 @@ async function migrateCategory(
   return { processed, skipped, errors };
 }
 
-async function runMigration(): Promise<void> {
+export async function runMigration(): Promise<void> {
   const dataSource = createDataSource();
   await dataSource.initialize();
   console.log('Conection to database established.\n');
@@ -329,7 +358,9 @@ async function runMigration(): Promise<void> {
   console.log('══════════════════════════════════════════');
 }
 
-runMigration().catch((err) => {
-  console.error('Error at migration:', (err as Error).message);
-  process.exit(1);
-});
+if (require.main === module) {
+  runMigration().catch((err) => {
+    console.error('Error at migration:', (err as Error).message);
+    process.exit(1);
+  });
+}

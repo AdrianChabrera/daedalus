@@ -10,7 +10,6 @@ import { Monitor } from '../components/entities/main-entities/monitor.entity';
 import { Mouse } from '../components/entities/main-entities/mouse.entity';
 import { Keyboard } from '../components/entities/main-entities/keyboard.entity';
 import { Motherboard } from '../components/entities/main-entities/motherboard.entity';
-import { DataSource } from 'typeorm';
 import { PcieSlot } from '../components/entities/secondary-entities/pcie-slot.entity';
 import { M2Slot } from '../components/entities/secondary-entities/m2-slot.entity';
 import { Component } from '../components/entities/component.entity';
@@ -245,13 +244,7 @@ export function mapMonitor(raw: Record<string, unknown>): Monitor {
   return entity;
 }
 
-export async function mapMotherboard(
-  raw: Record<string, unknown>,
-  dataSource: DataSource,
-): Promise<Motherboard> {
-  const pcieSlotRepository = dataSource.getRepository(PcieSlot);
-  const m2SlotRepository = dataSource.getRepository(M2Slot);
-
+export function mapMotherboard(raw: Record<string, unknown>): Motherboard {
   const memory = obj(raw.memory);
   const storageDevices = obj(raw.storage_devices);
   const usbHeaders = obj(raw.usb_headers);
@@ -308,31 +301,21 @@ export async function mapMotherboard(
     })
     .reduce((sum, q) => sum + q, 0);
 
-  await pcieSlotRepository.delete({
-    motherboard: { buildcoresId: entity.buildcoresId },
+  entity.pcieSlots = pcieSlots.map((p) => {
+    const slot = new PcieSlot();
+    slot.gen = str(p.gen);
+    slot.quantity = num(p.quantity) || 1;
+    slot.lanes = num(p.lanes) || null;
+    return slot;
   });
-  await Promise.all(
-    pcieSlots.map((p) =>
-      pcieSlotRepository.save({
-        ...p,
-        lanes: num(p.lanes) || null,
-        motherboard: entity,
-      }),
-    ),
-  );
 
-  await m2SlotRepository.delete({
-    motherboard: { buildcoresId: entity.buildcoresId },
+  entity.m2Slots = m2Slots.map((m) => {
+    const slot = new M2Slot();
+    slot.m2Interface = str(m.interface);
+    slot.key = str(m.key);
+    slot.size = str(m.size);
+    return slot;
   });
-  await Promise.all(
-    m2Slots.map((m) =>
-      m2SlotRepository.save({
-        ...m,
-        m2Interface: str(m.interface),
-        motherboard: entity,
-      }),
-    ),
-  );
 
   return entity;
 }
