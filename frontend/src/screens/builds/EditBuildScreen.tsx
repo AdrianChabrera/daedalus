@@ -25,8 +25,13 @@ export default function EditBuildScreen() {
     warnings, saving, loadingBuild, loadError,
     currentPhotoUrl, setCurrentPhotoUrl,
     handleSelect, removeSingle, removeMulti,
-    changeQuantity, handleSave, handleSaveAndPublish,
+    changeQuantity, handleSave, saveSilent, handleSaveAndPublish,
   } = useEditBuild(buildId);
+
+  const handleSaveAndBrowse = async (path: string, state?: object) => {
+    const ok = await saveSilent();
+    if (ok) navigate(path, state ? { state } : undefined);
+  };
 
   const { issues, loading: compatLoading, error: compatError } = useCompatibility(build);
   const { user } = useAuth();
@@ -228,6 +233,7 @@ export default function EditBuildScreen() {
             setPickerSlot(null);
           }}
           onClose={() => setPickerSlot(null)}
+          onSaveAndBrowse={handleSaveAndBrowse}
         />
       )}
       <ConfirmModal

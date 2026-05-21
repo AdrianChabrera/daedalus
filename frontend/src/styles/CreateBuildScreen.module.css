@@ -703,6 +703,26 @@ slotAddBtn:active {
   color: var(--white);
 }
 
+.pickerCatalogLinkBtn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--accent2);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Exo 2', sans-serif;
+  font-size: inherit;
+  padding: 0;
+}
+
+.pickerCatalogLinkBtn:hover {
+  color: var(--white);
+}
+
 .specTags {
   display: flex;
   flex-wrap: wrap;

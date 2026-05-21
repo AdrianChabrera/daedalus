@@ -235,6 +235,60 @@ export function useEditBuild(buildId: number) {
     }
   };
 
+
+  const saveSilent = async (): Promise<boolean> => {
+    if (!name.trim()) { setWarnings(['Build title is required.']); return false; }
+    if (!user) { setWarnings(['You must be logged in to save a build.']); return false; }
+
+    setSaving(true);
+    setWarnings([]);
+
+    const body = {
+      name: name.trim(),
+      description: description.trim() || undefined,
+      pcCaseId:      build.pcCaseId,
+      cpuCoolerId:   build.cpuCoolerId,
+      cpuId:         build.cpuId,
+      gpuId:         build.gpuId,
+      keyboardId:    build.keyboardId,
+      motherboardId: build.motherboardId,
+      mouseId:       build.mouseId,
+      powerSupplyId: build.powerSupplyId,
+      fanIds:        build.fanIds,
+      monitorIds:    build.monitorIds,
+      ramIds:        build.ramIds,
+      storageDriveIds: build.storageDriveIds,
+    };
+
+    try {
+      const res = await fetch(API_ROUTES.GET_BUILD(buildId), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        const msgs: string[] = [];
+        if (Array.isArray(err.message)) msgs.push(...err.message);
+        else if (typeof err.message === 'string') msgs.push(err.message);
+        else msgs.push('An error occurred while saving the build.');
+        setWarnings(msgs);
+        return false;
+      }
+
+      return true;
+    } catch {
+      setWarnings(['Network error. Please try again.']);
+      return false;
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleSaveAndPublish = async () => {
     if (!name.trim()) { setWarnings(['Build title is required.']); return; }
     if (!user) { setWarnings(['You must be logged in to publish a build.']); return; }
@@ -299,6 +353,6 @@ export function useEditBuild(buildId: number) {
     currentPhotoUrl, setCurrentPhotoUrl,
     warnings, saving, loadingBuild, loadError,
     handleSelect, removeSingle, removeMulti, changeQuantity,
-    handleSave, handleSaveAndPublish,
+    handleSave, saveSilent, handleSaveAndPublish,
   };
 }

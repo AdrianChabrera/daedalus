@@ -5,7 +5,7 @@ import styles from '../../styles/CreateBuildScreen.module.css';
 import { ChevronRight, Component, ShieldCheck, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-export function CreateBuildPcComponentPicker({ slot, build, hasErrors, onSelect, onClose }: ComponentPickerProps & { build: BuildState; hasErrors?: boolean }) {
+export function CreateBuildPcComponentPicker({ slot, build, hasErrors, onSelect, onClose, onSaveAndBrowse }: ComponentPickerProps & { build: BuildState; hasErrors?: boolean; onSaveAndBrowse?: (path: string, state?: object) => Promise<void> }) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<PickerResult[]>([]);
@@ -33,13 +33,14 @@ export function CreateBuildPcComponentPicker({ slot, build, hasErrors, onSelect,
     if (e.key === 'Enter') void doSearch();
   };
 
-  const handleBrowseCompatible = () => {
-    console.log('navigating to compatible', slot.endpoint, build);
+  const handleBrowseCompatible = async () => {
     onClose();
-    navigate(
-      `/components/compatible?type=${slot.endpoint}&page=1`,
-      { state: { build } },
-    );
+    const path = `/components/compatible?type=${slot.endpoint}&page=1`;
+    if (onSaveAndBrowse) {
+      await onSaveAndBrowse(path, { build });
+    } else {
+      navigate(path, { state: { build } });
+    }
   };
 
   return (
@@ -63,10 +64,20 @@ export function CreateBuildPcComponentPicker({ slot, build, hasErrors, onSelect,
           <button className={styles.pickerSearchBtn} onClick={() => void doSearch()}>Search</button>
         </div>
         <div className={styles.pickerCatalogLink}>
-          <Link to={`/components?type=${slot.endpoint}&page=1`}>
-            Browse full catalog
-            <Component size={12} />
-          </Link>
+          {onSaveAndBrowse ? (
+            <button
+              className={styles.pickerCatalogLinkBtn}   // ← cambiado
+              onClick={() => { onClose(); void onSaveAndBrowse(`/components?type=${slot.endpoint}&page=1`); }}
+            >
+              Browse full catalog
+              <Component size={12} />
+            </button>
+          ) : (
+            <Link to={`/components?type=${slot.endpoint}&page=1`}>
+              Browse full catalog
+              <Component size={12} />
+            </Link>
+          )}
           <span>·</span>
           <button
             className={styles.pickerCompatibleLink}
