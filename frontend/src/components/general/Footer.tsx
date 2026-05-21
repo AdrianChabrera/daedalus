@@ -3,8 +3,7 @@ import styles from '../../styles/Footer.module.css';
 
 const GITHUB_URL   = 'https://github.com/AdrianChabrera/daedalus';
 const LINKEDIN_URL = 'https://linkedin.com/in/adrián-chabrera-rubio-2846b13a5';
-//TODO: add discord url when server is ready
-const DISCORD_URL  = 'https://discord.gg';
+const DISCORD_URL  = 'https://discord.gg/TTCgnNSzD7';
 const BUILDCORES_URL = 'https://github.com/buildcores/buildcores-open-db';
 
   const PROJECT_DESCRIPTION = (
