@@ -271,6 +271,7 @@
   max-width: 1200px;
   padding: 0 40px 48px;
   animation: fadeUp 0.55s 0.4s cubic-bezier(.16,1,.3,1) both;
+  margin-top: 140px;
 }
 
 .bestRatedHeader {
