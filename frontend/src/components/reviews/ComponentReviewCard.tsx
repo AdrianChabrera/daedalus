@@ -5,14 +5,13 @@ import { Trash2 } from "lucide-react";
 import { StarDisplay } from "./StarDisplay";
 import placeholder from '../../assets/daedalus_placeholder.png';
 
-const availableLogos = import.meta.glob('../../assets/logos/*.svg', { eager: true });
+const availableLogos = import.meta.glob('../../assets/logos/*.svg', { eager: true }) as Record<string, { default: string }>;
 
 function getLogoUrl(manufacturer: string | undefined): string | undefined {
   if (!manufacturer) return undefined;
   const name = manufacturer.toLowerCase();
   const route = `../../assets/logos/${name}.svg`;
-  if (!availableLogos[route]) return undefined;
-  return new URL(route, import.meta.url).href;
+  return availableLogos[route]?.default;
 }
 
 function formatDate(iso: string) {

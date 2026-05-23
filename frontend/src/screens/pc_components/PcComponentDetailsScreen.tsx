@@ -59,11 +59,11 @@ export default function ComponentDetailScreen() {
 
   const attrs = type ? (COMPONENT_ATTRS[type] ?? BASE_ATTRS) : BASE_ATTRS;
 
-  const availableLogos = import.meta.glob('../../assets/logos/*.svg', { eager: true });
+  const availableLogos = import.meta.glob('../../assets/logos/*.svg', { eager: true }) as Record<string, { default: string }>;
   const manufacturerName = component?.manufacturer ? component.manufacturer.toLowerCase() : '';
   const route = `../../assets/logos/${manufacturerName}.svg`;
-  const logoExists = !!availableLogos[route];
-  const logo = logoExists ? new URL(route, import.meta.url).href : undefined;
+  const logo = availableLogos[route]?.default;
+
 
   const m2Slots: M2SlotData[] = (component as (PcComponent & { m2Slots?: M2SlotData[] }) | null)?.m2Slots ?? [];
   const pcieSlots: PcieSlotData[] = (component as (PcComponent & { pcieSlots?: PcieSlotData[] }) | null)?.pcieSlots ?? [];
@@ -96,7 +96,7 @@ export default function ComponentDetailScreen() {
           <>
             <div className={styles.hero}>
               <div className={styles.heroImage}>
-                {logoExists ? (
+                {logo ? (
                   <img src={logo} alt={component.manufacturer ?? ''} className={styles.heroLogo} />
                 ) : (
                   <ImagePlaceholder />
