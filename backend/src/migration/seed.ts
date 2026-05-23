@@ -1,18 +1,3 @@
-/**
- * seed.ts — Daedalus dev seeder
- *
- * Pasos:
- *   1. Llama a runMigration() de migrate.ts directamente.
- *   2. Crea tres usuarios de prueba.
- *   3. Crea 3 / 3 / 4 builds (published=true) por usuario, con componentes
- *      reales recién migrados.
- *   4. Crea reviews cruzadas (hechas por los otros usuarios) para cada build.
- *
- * Uso:
- *   cd backend
- *   npx ts-node -r tsconfig-paths/register src/migration/seed.ts
- */
-
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { DataSource } from 'typeorm';
