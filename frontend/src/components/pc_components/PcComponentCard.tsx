@@ -12,22 +12,18 @@ export function PcComponentCard({
   onClick: () => void;
 }) {
 
-  const availableLogos = import.meta.glob('../../assets/logos/*.svg', { eager: true });
+  const availableLogos = import.meta.glob('../../assets/logos/*.svg', { eager: true }) as Record<string, { default: string }>;
 
   const manufacturerName = component.manufacturer ? component.manufacturer.toLowerCase() : '';
   const route = `../../assets/logos/${manufacturerName}.svg`;
 
-  const logoExists = !!availableLogos[route];
-
-  const logo = logoExists
-    ? new URL(route, import.meta.url).href
-    : undefined; 
+  const logo = availableLogos[route]?.default;
 
   return (
     <button className={styles.card} onClick={onClick} type="button">
       <div className={styles.cardImage}>
-        {logoExists ? (
-          <img className={styles.cardLogo} src={logo} alt={component.manufacturer ?? ''}/>
+        {logo ? (
+          <img className={styles.cardLogo} src={logo} alt={component.manufacturer ?? ''} />
         ) : (
           <img src={placeholder} alt="" className={styles.cardLogo} />
         )}
