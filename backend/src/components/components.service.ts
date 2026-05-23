@@ -17,7 +17,7 @@ import { PowerSupply } from './entities/main-entities/power-supply.entity';
 import { Ram } from './entities/main-entities/ram.entity';
 import { PcCase } from './entities/main-entities/pc-case.entity';
 import { CpuCooler } from './entities/main-entities/cpu-cooler.entity';
-import { StorageDrive } from './entities/main-entities/storage.entity';
+import { StorageDrive } from './entities/main-entities/storage-drive.entity';
 import {
   FilterOptions,
   PaginatedResult,
@@ -212,15 +212,17 @@ export class ComponentsService {
           .andWhere(`similarity(${alias}.name, :search) > :threshold`, {
             search: trimmedSearch,
             threshold: SIMILARITY_THRESHOLD,
-          })
-          .orderBy('similarity_score', 'DESC')
-          .addOrderBy(`${alias}.name`, 'ASC');
-      } else {
-        if (orderField === 'rating') {
-          qb.orderBy('avg_rating', direction, 'NULLS LAST');
-        } else if (orderField) {
-          qb.orderBy(`${alias}.${orderField}`, direction, 'NULLS LAST');
-        }
+          });
+      }
+
+      if (orderField === 'rating') {
+        qb.orderBy('avg_rating', direction, 'NULLS LAST');
+      } else if (orderField) {
+        qb.orderBy(`${alias}.${orderField}`, direction, 'NULLS LAST');
+      }
+
+      if (trimmedSearch) {
+        qb.addOrderBy('similarity_score', 'DESC');
       }
 
       this.applyFilters(qb, alias, cType, filters);

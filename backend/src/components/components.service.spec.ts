@@ -15,7 +15,7 @@ import { Motherboard } from './entities/main-entities/motherboard.entity';
 import { Mouse } from './entities/main-entities/mouse.entity';
 import { PowerSupply } from './entities/main-entities/power-supply.entity';
 import { Ram } from './entities/main-entities/ram.entity';
-import { StorageDrive } from './entities/main-entities/storage.entity';
+import { StorageDrive } from './entities/main-entities/storage-drive.entity';
 import { ParsedFilters } from './interfaces/pc-components.interfaces';
 
 const EMPTY_FILTERS: ParsedFilters = {
@@ -486,7 +486,7 @@ describe('ComponentsService', () => {
         );
       });
 
-      it('does not use leftJoin for rating when a search term is provided', async () => {
+      it('still orders by avg_rating when a search term is provided', async () => {
         const gpuRepo = makeRepoMock();
         const { service } = await buildModule({ Gpu: gpuRepo });
 
@@ -499,10 +499,10 @@ describe('ComponentsService', () => {
           'RTX',
         );
 
-        expect(gpuRepo._qb.orderBy).not.toHaveBeenCalledWith(
+        expect(gpuRepo._qb.orderBy).toHaveBeenCalledWith(
           'avg_rating',
-          expect.any(String),
-          expect.any(String),
+          'DESC',
+          'NULLS LAST',
         );
       });
     });

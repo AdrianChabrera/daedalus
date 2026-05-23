@@ -1,18 +1,3 @@
-/**
- * seed.ts — Daedalus dev seeder
- *
- * Pasos:
- *   1. Llama a runMigration() de migrate.ts directamente.
- *   2. Crea tres usuarios de prueba.
- *   3. Crea 3 / 3 / 4 builds (published=true) por usuario, con componentes
- *      reales recién migrados.
- *   4. Crea reviews cruzadas (hechas por los otros usuarios) para cada build.
- *
- * Uso:
- *   cd backend
- *   npx ts-node -r tsconfig-paths/register src/migration/seed.ts
- */
-
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { DataSource } from 'typeorm';
@@ -21,7 +6,7 @@ import { runMigration } from './migrate';
 
 import { Cpu } from '../components/entities/main-entities/cpu.entity';
 import { Ram } from '../components/entities/main-entities/ram.entity';
-import { StorageDrive } from '../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage-drive.entity';
 import { Gpu } from '../components/entities/main-entities/gpu.entity';
 import { CpuCooler } from '../components/entities/main-entities/cpu-cooler.entity';
 import { PowerSupply } from '../components/entities/main-entities/power-supply.entity';
@@ -51,7 +36,7 @@ interface BuildComponents {
   mouseId?: string;
   keyboardId?: string;
   rams?: { id: string; quantity: number }[];
-  storages?: { id: string; quantity: number }[];
+  storage_drives?: { id: string; quantity: number }[];
   fans?: { id: string; quantity: number }[];
   monitors?: { id: string; quantity: number }[];
   photoUrl?: string;
@@ -147,7 +132,7 @@ interface BuildComponents {
   mouseId?: string;
   keyboardId?: string;
   rams?: { id: string; quantity: number }[];
-  storages?: { id: string; quantity: number }[];
+  storage_drives?: { id: string; quantity: number }[];
   fans?: { id: string; quantity: number }[];
   monitors?: { id: string; quantity: number }[];
 }
@@ -164,7 +149,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '0003299a-f31d-4bd2-9198-bd8a052247df',
       keyboardId: '0026ff70-04f8-476b-bd67-a6c8575e15fa',
       rams: [{ id: '01d28304-01a0-4d29-85c4-f9f5f8daed14', quantity: 2 }],
-      storages: [{ id: '000e2e21-7ddc-48cd-9a02-7d8b3947263f', quantity: 1 }],
+      storage_drives: [{ id: '000e2e21-7ddc-48cd-9a02-7d8b3947263f', quantity: 1 }],
       fans: [{ id: '008d554c-6382-4394-92b0-97bc068625fa', quantity: 1 }],
       monitors: [{ id: '00077353-e930-4159-82b3-ee19e30b9a25', quantity: 1 }],
       photoUrl:
@@ -180,7 +165,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '00306c7b-d24a-4cc0-beae-e0320bf8a0af',
       keyboardId: '00935e59-e148-4afe-91df-bf4ff735ea19',
       rams: [{ id: '02af6bd9-efaa-465d-98a9-7808ba97992a', quantity: 2 }],
-      storages: [
+      storage_drives: [
         { id: '000e2e21-7ddc-48cd-9a02-7d8b3947263f', quantity: 1 },
         { id: '00ada96b-bca9-401d-8594-3f259b20deeb', quantity: 1 },
       ],
@@ -199,7 +184,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '0003299a-f31d-4bd2-9198-bd8a052247df',
       keyboardId: '0026ff70-04f8-476b-bd67-a6c8575e15fa',
       rams: [{ id: '03278174-479d-45ee-a6c2-61b6dd9bb6db', quantity: 2 }],
-      storages: [{ id: '00b812fe-7098-4716-8ce9-855ea3674b76', quantity: 1 }],
+      storage_drives: [{ id: '00b812fe-7098-4716-8ce9-855ea3674b76', quantity: 1 }],
       photoUrl:
         'https://res.cloudinary.com/dycqjfp3q/image/upload/v1779360439/Build_4_ouejzu.jpg',
     },
@@ -216,7 +201,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '00306c7b-d24a-4cc0-beae-e0320bf8a0af',
       keyboardId: '00935e59-e148-4afe-91df-bf4ff735ea19',
       rams: [{ id: '02af6bd9-efaa-465d-98a9-7808ba97992a', quantity: 2 }],
-      storages: [{ id: '00ada96b-bca9-401d-8594-3f259b20deeb', quantity: 1 }],
+      storage_drives: [{ id: '00ada96b-bca9-401d-8594-3f259b20deeb', quantity: 1 }],
       fans: [{ id: '0062e156-8eb9-442f-8875-b95a8a06c0be', quantity: 3 }],
       monitors: [{ id: '0098be6b-ff22-4d6a-a66a-4f602f500559', quantity: 1 }],
       photoUrl:
@@ -232,7 +217,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '0003299a-f31d-4bd2-9198-bd8a052247df',
       keyboardId: '0026ff70-04f8-476b-bd67-a6c8575e15fa',
       rams: [{ id: '01392bfb-931b-4145-9826-77540d9f7cea', quantity: 2 }],
-      storages: [{ id: '000e2e21-7ddc-48cd-9a02-7d8b3947263f', quantity: 1 }],
+      storage_drives: [{ id: '000e2e21-7ddc-48cd-9a02-7d8b3947263f', quantity: 1 }],
       monitors: [{ id: '00077353-e930-4159-82b3-ee19e30b9a25', quantity: 1 }],
       photoUrl:
         'https://res.cloudinary.com/dycqjfp3q/image/upload/v1779360440/Build_1_i7fup3.jpg',
@@ -247,7 +232,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '00306c7b-d24a-4cc0-beae-e0320bf8a0af',
       keyboardId: '00935e59-e148-4afe-91df-bf4ff735ea19',
       rams: [{ id: '01392bfb-931b-4145-9826-77540d9f7cea', quantity: 2 }],
-      storages: [{ id: '000e2e21-7ddc-48cd-9a02-7d8b3947263f', quantity: 1 }],
+      storage_drives: [{ id: '000e2e21-7ddc-48cd-9a02-7d8b3947263f', quantity: 1 }],
       fans: [{ id: '008d554c-6382-4394-92b0-97bc068625fa', quantity: 1 }],
       monitors: [{ id: '0098be6b-ff22-4d6a-a66a-4f602f500559', quantity: 1 }],
       photoUrl:
@@ -266,7 +251,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '00306c7b-d24a-4cc0-beae-e0320bf8a0af',
       keyboardId: '00935e59-e148-4afe-91df-bf4ff735ea19',
       rams: [{ id: '000c0c27-8b0a-4760-92ec-89ef39e630d8', quantity: 2 }],
-      storages: [
+      storage_drives: [
         { id: '000e2e21-7ddc-48cd-9a02-7d8b3947263f', quantity: 1 },
         { id: '00ada96b-bca9-401d-8594-3f259b20deeb', quantity: 1 },
       ],
@@ -285,7 +270,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '0003299a-f31d-4bd2-9198-bd8a052247df',
       keyboardId: '0026ff70-04f8-476b-bd67-a6c8575e15fa',
       rams: [{ id: '032573d7-b548-47e4-bcbc-2ebcf4131f21', quantity: 2 }],
-      storages: [{ id: '00b812fe-7098-4716-8ce9-855ea3674b76', quantity: 1 }],
+      storage_drives: [{ id: '00b812fe-7098-4716-8ce9-855ea3674b76', quantity: 1 }],
       monitors: [{ id: '00077353-e930-4159-82b3-ee19e30b9a25', quantity: 1 }],
       photoUrl:
         'https://res.cloudinary.com/dycqjfp3q/image/upload/v1779360441/Build_8_jml1c1.jpg',
@@ -300,7 +285,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '00306c7b-d24a-4cc0-beae-e0320bf8a0af',
       keyboardId: '00935e59-e148-4afe-91df-bf4ff735ea19',
       rams: [{ id: '032573d7-b548-47e4-bcbc-2ebcf4131f21', quantity: 2 }],
-      storages: [{ id: '00ada96b-bca9-401d-8594-3f259b20deeb', quantity: 1 }],
+      storage_drives: [{ id: '00ada96b-bca9-401d-8594-3f259b20deeb', quantity: 1 }],
       fans: [{ id: '008d554c-6382-4394-92b0-97bc068625fa', quantity: 1 }],
       monitors: [{ id: '0098be6b-ff22-4d6a-a66a-4f602f500559', quantity: 1 }],
       photoUrl:
@@ -316,7 +301,7 @@ export const BUILD_COMPONENTS: BuildComponents[][] = [
       mouseId: '00306c7b-d24a-4cc0-beae-e0320bf8a0af',
       keyboardId: '00935e59-e148-4afe-91df-bf4ff735ea19',
       rams: [{ id: '00a55598-4e9c-4255-bcda-1e97600884d6', quantity: 2 }],
-      storages: [
+      storage_drives: [
         { id: '000e2e21-7ddc-48cd-9a02-7d8b3947263f', quantity: 1 },
         { id: '00ada96b-bca9-401d-8594-3f259b20deeb', quantity: 1 },
       ],
@@ -436,7 +421,7 @@ async function seedBuilds(
         const ram = await repo.ramComp.findOneByOrFail({ buildcoresId: id });
         await repo.ram.save(repo.ram.create({ build, ram, quantity }));
       }
-      for (const { id, quantity } of components.storages ?? []) {
+      for (const { id, quantity } of components.storage_drives ?? []) {
         const storageDrive = await repo.storage2.findOneByOrFail({
           buildcoresId: id,
         });

@@ -7,7 +7,7 @@ import { Cpu } from '../../src/components/entities/main-entities/cpu.entity';
 import { Gpu } from '../../src/components/entities/main-entities/gpu.entity';
 import { Ram } from '../../src/components/entities/main-entities/ram.entity';
 import { Motherboard } from '../../src/components/entities/main-entities/motherboard.entity';
-import { StorageDrive } from '../../src/components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../src/components/entities/main-entities/storage-drive.entity';
 import { PcCase } from '../../src/components/entities/main-entities/pc-case.entity';
 import { CpuCooler } from '../../src/components/entities/main-entities/cpu-cooler.entity';
 import { PowerSupply } from '../../src/components/entities/main-entities/power-supply.entity';

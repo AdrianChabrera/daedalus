@@ -167,7 +167,7 @@
   justify-content: space-between;
   gap: 8px;
   padding: 10px 14px 8px;
-  background: rgba(176, 38, 200, 0.07);
+  background: var(--accent-dim);
   border-bottom: 1px solid var(--border);
 }
 
@@ -212,10 +212,9 @@
 }
 
 .starEmpty {
-  font-size: 14px;
-  color: var(--accent);
+  font-size: 13px;
+  color: var(--border2);
   line-height: 1;
-  opacity: 0.5;
 }
 
 .cardBody {

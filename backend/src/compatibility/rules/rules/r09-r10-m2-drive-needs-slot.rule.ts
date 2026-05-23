@@ -13,7 +13,7 @@ import {
   M2Key,
 } from '../../utils/m2-slot-utils';
 import { M2Slot } from '../../../components/entities/secondary-entities/m2-slot.entity';
-import { StorageDrive } from '../../../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../../components/entities/main-entities/storage-drive.entity';
 
 function driveKey(drive: StorageDrive): M2Key | null {
   const iface = parseDriveInterface(drive.storageInterface);

@@ -20,7 +20,7 @@ import { Motherboard } from '../components/entities/main-entities/motherboard.en
 import { Mouse } from '../components/entities/main-entities/mouse.entity';
 import { PowerSupply } from '../components/entities/main-entities/power-supply.entity';
 import { Ram } from '../components/entities/main-entities/ram.entity';
-import { StorageDrive } from '../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage-drive.entity';
 import { Monitor } from '../components/entities/main-entities/monitor.entity';
 import { BuildResponseDto } from './dtos/BuildResponse.dto';
 import { SignInData } from '../auth/interfaces/auth.interfaces';
@@ -249,49 +249,6 @@ export class BuildsService {
     const direction = orderDir.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
     try {
-      if (orderField === 'rating') {
-        const rankedQb = this.buildRepository
-          .createQueryBuilder('build')
-          .leftJoin('build.reviews', 'reviews')
-          .select('build.id', 'id')
-          .addSelect('AVG(reviews.stars)', 'avg_rating')
-          .groupBy('build.id')
-          .orderBy('avg_rating', direction, 'NULLS LAST');
-
-        this.applyBuildFilters(rankedQb, currentUser, allowedIds);
-
-        const ranked = await rankedQb.getRawMany<{
-          id: number;
-          avg_rating: string;
-        }>();
-
-        if (ranked.length === 0) {
-          return { data: [], total: 0, page, limit };
-        }
-
-        const total = ranked.length;
-        const pageIds = ranked.slice(skip, skip + limit).map((r) => r.id);
-
-        if (pageIds.length === 0) {
-          return { data: [], total, page, limit };
-        }
-
-        const data = await this.buildRepository
-          .createQueryBuilder('build')
-          .leftJoin('build.user', 'user')
-          .addSelect(['user.username'])
-          .leftJoinAndSelect('build.reviews', 'reviews')
-          .whereInIds(pageIds)
-          .getMany();
-
-        const dataMap = new Map(data.map((b) => [b.id, b]));
-        const orderedData = pageIds
-          .map((id) => dataMap.get(id)!)
-          .filter(Boolean);
-
-        return { data: orderedData, total, page, limit };
-      }
-
       const qb = this.buildRepository
         .createQueryBuilder('build')
         .leftJoin('build.user', 'user')
@@ -299,6 +256,18 @@ export class BuildsService {
         .leftJoinAndSelect('build.reviews', 'reviews')
         .skip(skip)
         .take(limit);
+
+      qb.leftJoin(
+        (sub) =>
+          sub
+            .select('r.build_id', 'bid')
+            .addSelect('AVG(r.stars)', 'avg_rating')
+            .from('reviews', 'r')
+            .groupBy('r.build_id'),
+        'rating_agg',
+        'rating_agg.bid = build.id',
+      );
+      qb.addSelect('rating_agg.avg_rating', 'avg_rating');
 
       this.applyBuildFilters(qb, currentUser, allowedIds);
 
@@ -310,14 +279,20 @@ export class BuildsService {
           threshold: SIMILARITY_THRESHOLD,
         })
           .addSelect(`similarity(build.name, :search)`, 'search_similarity')
-          .orderBy('search_similarity', 'DESC')
-          .addOrderBy('build.name', 'ASC');
+          .setParameter('search', trimmedSearch);
+      }
+
+      if (orderField === 'rating') {
+        qb.orderBy('avg_rating', direction, 'NULLS LAST');
       } else {
         qb.orderBy(`build.${orderField}`, direction, 'NULLS LAST');
       }
 
-      const [data, total] = await qb.getManyAndCount();
+      if (trimmedSearch) {
+        qb.addOrderBy('search_similarity', 'DESC');
+      }
 
+      const [data, total] = await qb.getManyAndCount();
       return { data, total, page, limit };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
