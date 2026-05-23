@@ -13,7 +13,7 @@ import {
   PhysicalPcieSlot,
   ParsedPcieInterface,
 } from '../../utils/pcie-slot-utils';
-import { StorageDrive } from '../../../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../../components/entities/main-entities/storage-drive.entity';
 import { isM2Drive } from '../../utils/m2-slot-utils';
 
 function needsFullSizePcieSlot(drive: StorageDrive): boolean {

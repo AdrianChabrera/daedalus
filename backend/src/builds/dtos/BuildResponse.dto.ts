@@ -8,7 +8,7 @@ import {
   IsNumber,
 } from 'class-validator';
 import { Build } from '../entities/build.entity';
-import { StorageDrive } from '../../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../components/entities/main-entities/storage-drive.entity';
 import { Ram } from '../../components/entities/main-entities/ram.entity';
 import { PowerSupply } from '../../components/entities/main-entities/power-supply.entity';
 import { Mouse } from '../../components/entities/main-entities/mouse.entity';

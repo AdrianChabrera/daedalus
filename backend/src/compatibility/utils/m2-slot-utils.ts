@@ -1,5 +1,5 @@
 import { M2Slot } from '../../components/entities/secondary-entities/m2-slot.entity';
-import { StorageDrive } from '../../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../components/entities/main-entities/storage-drive.entity';
 
 const KNOWN_WIDTHS = [22, 25];
 

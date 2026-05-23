@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { DataSource, EntityTarget, ObjectLiteral, Repository } from 'typeorm';
 import { Cpu } from '../components/entities/main-entities/cpu.entity';
 import { Ram } from '../components/entities/main-entities/ram.entity';
-import { StorageDrive } from '../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage-drive.entity';
 import { Octokit } from '@octokit/rest';
 import { Gpu } from '../components/entities/main-entities/gpu.entity';
 import { CpuCooler } from '../components/entities/main-entities/cpu-cooler.entity';

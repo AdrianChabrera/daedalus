@@ -8,7 +8,7 @@ import { Build } from '../../src/builds/entities/build.entity';
 import { Cpu } from '../../src/components/entities/main-entities/cpu.entity';
 import { Gpu } from '../../src/components/entities/main-entities/gpu.entity';
 import { Ram } from '../../src/components/entities/main-entities/ram.entity';
-import { StorageDrive } from '../../src/components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../src/components/entities/main-entities/storage-drive.entity';
 import { Motherboard } from '../../src/components/entities/main-entities/motherboard.entity';
 import { PcCase } from '../../src/components/entities/main-entities/pc-case.entity';
 import { PowerSupply } from '../../src/components/entities/main-entities/power-supply.entity';
