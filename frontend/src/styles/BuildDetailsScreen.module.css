@@ -102,6 +102,9 @@
   line-height: 1.2;
   letter-spacing: 0.3px;
   text-align: justify;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
 }
 
 .ratingContainer {
@@ -373,6 +376,8 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 16px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 @media (max-width: 1000px) {
@@ -481,4 +486,3 @@
 .favouriteBtnActive:hover:not(:disabled) {
   background: rgba(224, 80, 112, 0.2) !important;
 }
- 
