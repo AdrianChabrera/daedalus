@@ -7,6 +7,7 @@ import { API_ROUTES } from '../../config/api';
 import styles from '../../styles/HomeScreen.module.css';
 import { Counter } from '../../components/general/Counter';
 import { HomeBuildCard } from '../../components/home/HomeBuildCard';
+import logo from '../../assets/daedalus_logo.png';
 
 function useCount(url: string) {
   const [count, setCount] = useState<number | null>(null);
@@ -76,7 +77,7 @@ export default function HomeScreen() {
 
         <div className={styles.heroLogoWrap} aria-hidden>
           <img
-            src="/src/assets/daedalus_logo.png"
+            src={logo}
             alt=""
             className={styles.heroLogoSvg}
           />
