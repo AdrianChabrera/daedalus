@@ -1,6 +1,7 @@
 import {
   IsEnum,
   IsInt,
+  IsNotEmpty,
   IsOptional,
   IsString,
   IsUUID,
@@ -19,6 +20,7 @@ export class ReviewCreationDto {
   @IsInt()
   @Min(1)
   @Max(5)
+  @IsNotEmpty()
   stars?: number;
 
   @IsInt()

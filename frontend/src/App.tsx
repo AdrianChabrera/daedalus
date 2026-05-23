@@ -17,8 +17,16 @@ import FavoriteBuildsScreen from './screens/builds/FavoriteBuildsScreen';
 import FavoriteComponentsScreen from './screens/pc_components/FavoriteComponentsScreen';
 import CompatibleComponentsScreen from './screens/pc_components/CompatibleComponentsScreen';
 import MyReviewsScreen from './screens/reviews/MyReviewsScreen';
+import MobileBlockScreen from './screens/home/MobileBlockScreen';
+import { useIsMobile } from './hooks/useIsMobile';
 
 export default function App() {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return <MobileBlockScreen />;
+  }
+
   return (
     <BrowserRouter>
       <AuthProvider>
