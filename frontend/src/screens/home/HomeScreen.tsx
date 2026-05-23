@@ -123,7 +123,6 @@ export default function HomeScreen() {
 
       {!user && (
         <section className={styles.banner}>
-          <div className={styles.bannerGlow} aria-hidden />
           <div className={styles.bannerContent}>
             <Star size={22} className={styles.bannerIcon} />
             <div>
