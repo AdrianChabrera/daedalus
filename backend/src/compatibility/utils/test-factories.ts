@@ -8,7 +8,7 @@ import { Motherboard } from '../../components/entities/main-entities/motherboard
 import { PcCase } from '../../components/entities/main-entities/pc-case.entity';
 import { PowerSupply } from '../../components/entities/main-entities/power-supply.entity';
 import { Ram } from '../../components/entities/main-entities/ram.entity';
-import { StorageDrive } from '../../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../components/entities/main-entities/storage-drive.entity';
 import { M2Slot } from '../../components/entities/secondary-entities/m2-slot.entity';
 import { PcieSlot } from '../../components/entities/secondary-entities/pcie-slot.entity';
 

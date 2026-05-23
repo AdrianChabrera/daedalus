@@ -17,7 +17,7 @@ import { PowerSupply } from './entities/main-entities/power-supply.entity';
 import { Ram } from './entities/main-entities/ram.entity';
 import { PcCase } from './entities/main-entities/pc-case.entity';
 import { CpuCooler } from './entities/main-entities/cpu-cooler.entity';
-import { StorageDrive } from './entities/main-entities/storage.entity';
+import { StorageDrive } from './entities/main-entities/storage-drive.entity';
 import {
   FilterOptions,
   PaginatedResult,

@@ -13,7 +13,7 @@ import { Motherboard } from '../components/entities/main-entities/motherboard.en
 import { PcieSlot } from '../components/entities/secondary-entities/pcie-slot.entity';
 import { M2Slot } from '../components/entities/secondary-entities/m2-slot.entity';
 import { Component } from '../components/entities/component.entity';
-import { StorageDrive } from '../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage-drive.entity';
 
 function mapBaseEntity<T extends Component>(
   entity: T,

@@ -20,7 +20,7 @@ import { Fan } from '../components/entities/main-entities/fan.entity';
 import { BuildMonitor } from '../builds/entities/build-monitors.entity';
 import { Monitor } from '../components/entities/main-entities/monitor.entity';
 import { BuildStorageDrive } from '../builds/entities/build-storage-drives.entity';
-import { StorageDrive } from '../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage-drive.entity';
 
 @Injectable()
 export class CompatibilityService {

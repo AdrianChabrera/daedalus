@@ -20,7 +20,7 @@ import { Motherboard } from '../components/entities/main-entities/motherboard.en
 import { Mouse } from '../components/entities/main-entities/mouse.entity';
 import { PowerSupply } from '../components/entities/main-entities/power-supply.entity';
 import { Ram } from '../components/entities/main-entities/ram.entity';
-import { StorageDrive } from '../components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../components/entities/main-entities/storage-drive.entity';
 import { Monitor } from '../components/entities/main-entities/monitor.entity';
 import { BuildResponseDto } from './dtos/BuildResponse.dto';
 import { SignInData } from '../auth/interfaces/auth.interfaces';

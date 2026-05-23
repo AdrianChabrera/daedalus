@@ -12,7 +12,7 @@ import { Motherboard } from '../../src/components/entities/main-entities/motherb
 import { PcCase } from '../../src/components/entities/main-entities/pc-case.entity';
 import { PowerSupply } from '../../src/components/entities/main-entities/power-supply.entity';
 import { Ram } from '../../src/components/entities/main-entities/ram.entity';
-import { StorageDrive } from '../../src/components/entities/main-entities/storage.entity';
+import { StorageDrive } from '../../src/components/entities/main-entities/storage-drive.entity';
 import { App } from 'supertest/types';
 
 const IDS = {

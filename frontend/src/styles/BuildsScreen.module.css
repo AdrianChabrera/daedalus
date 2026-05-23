@@ -212,10 +212,9 @@
 }
 
 .starEmpty {
-  font-size: 14px;
-  color: var(--accent);
+  font-size: 13px;
+  color: var(--border2);
   line-height: 1;
-  opacity: 0.5;
 }
 
 .cardBody {
