@@ -15,7 +15,7 @@ import { Motherboard } from './entities/main-entities/motherboard.entity';
 import { Mouse } from './entities/main-entities/mouse.entity';
 import { PowerSupply } from './entities/main-entities/power-supply.entity';
 import { Ram } from './entities/main-entities/ram.entity';
-import { StorageDrive } from './entities/main-entities/storage.entity';
+import { StorageDrive } from './entities/main-entities/storage-drive.entity';
 import { ParsedFilters } from './interfaces/pc-components.interfaces';
 
 const EMPTY_FILTERS: ParsedFilters = {
