@@ -452,6 +452,12 @@ describe('Components (integration)', () => {
       }
     });
 
+    it('returns 400 for an unsupported component type', async () => {
+      await request(app.getHttpServer() as App)
+        .get('/components/unsupported-type')
+        .expect(400);
+    });
+
     it('is case-insensitive for the component type param (CPU vs cpu)', async () => {
       const res: Response = await request(app.getHttpServer() as App)
         .get('/components/CPU')
