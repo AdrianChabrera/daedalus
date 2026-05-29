@@ -3,7 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from './guards/auth.guard';
-import { AuthDto } from './dto/auth.dto';
+import { AuthDto } from './dtos/auth.dto';
 import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 import { UnauthorizedException } from '@nestjs/common/exceptions/unauthorized.exception';
 
