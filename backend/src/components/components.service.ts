@@ -207,22 +207,22 @@ export class ComponentsService {
       const trimmedSearch = search.trim();
 
       if (trimmedSearch) {
-        qb.addSelect(`similarity(${alias}.name, :search)`, 'similarity_score')
+        qb.addSelect(`word_similarity(:search, ${alias}.name)`, 'similarity_score')
           .setParameter('search', trimmedSearch)
-          .andWhere(`similarity(${alias}.name, :search) > :threshold`, {
+          .andWhere(`word_similarity(:search, ${alias}.name) > :threshold`, {
             search: trimmedSearch,
             threshold: SIMILARITY_THRESHOLD,
           });
       }
 
-      if (orderField === 'rating') {
-        qb.orderBy('avg_rating', direction, 'NULLS LAST');
-      } else if (orderField) {
-        qb.orderBy(`${alias}.${orderField}`, direction, 'NULLS LAST');
+      if (trimmedSearch) {
+        qb.orderBy('similarity_score', 'DESC');
       }
 
-      if (trimmedSearch) {
-        qb.addOrderBy('similarity_score', 'DESC');
+      if (orderField === 'rating') {
+        qb.addOrderBy('avg_rating', direction, 'NULLS LAST');
+      } else if (orderField) {
+        qb.addOrderBy(`${alias}.${orderField}`, direction, 'NULLS LAST');
       }
 
       this.applyFilters(qb, alias, cType, filters);

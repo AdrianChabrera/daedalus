@@ -274,22 +274,22 @@ export class BuildsService {
       const trimmedSearch = search.trim();
 
       if (trimmedSearch) {
-        qb.andWhere(`similarity(build.name, :search) > :threshold`, {
-          search: trimmedSearch,
-          threshold: SIMILARITY_THRESHOLD,
-        })
-          .addSelect(`similarity(build.name, :search)`, 'search_similarity')
-          .setParameter('search', trimmedSearch);
-      }
-
-      if (orderField === 'rating') {
-        qb.orderBy('avg_rating', direction, 'NULLS LAST');
-      } else {
-        qb.orderBy(`build.${orderField}`, direction, 'NULLS LAST');
+        qb.addSelect(`word_similarity(:search, build.name)`, 'search_similarity')
+          .setParameter('search', trimmedSearch)
+          .andWhere(`word_similarity(:search, build.name) > :threshold`, {
+            search: trimmedSearch,
+            threshold: SIMILARITY_THRESHOLD,
+          });
       }
 
       if (trimmedSearch) {
-        qb.addOrderBy('search_similarity', 'DESC');
+        qb.orderBy('search_similarity', 'DESC');
+      }
+
+      if (orderField === 'rating') {
+        qb.addOrderBy('avg_rating', direction, 'NULLS LAST');
+      } else {
+        qb.addOrderBy(`build.${orderField}`, direction, 'NULLS LAST');
       }
 
       const [data, total] = await qb.getManyAndCount();
