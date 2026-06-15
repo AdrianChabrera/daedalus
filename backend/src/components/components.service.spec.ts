@@ -193,7 +193,7 @@ describe('ComponentsService', () => {
         'memory-DESC',
       );
 
-      expect(gpuRepo._qb.orderBy).toHaveBeenCalledWith(
+      expect(gpuRepo._qb.addOrderBy).toHaveBeenCalledWith(
         expect.stringContaining('memory'),
         'DESC',
         'NULLS LAST',
@@ -460,7 +460,7 @@ describe('ComponentsService', () => {
           'rating-DESC',
         );
 
-        expect(gpuRepo._qb.orderBy).toHaveBeenCalledWith(
+        expect(gpuRepo._qb.addOrderBy).toHaveBeenCalledWith(
           'avg_rating',
           'DESC',
           'NULLS LAST',
@@ -479,7 +479,7 @@ describe('ComponentsService', () => {
           'rating-ASC',
         );
 
-        expect(gpuRepo._qb.orderBy).toHaveBeenCalledWith(
+        expect(gpuRepo._qb.addOrderBy).toHaveBeenCalledWith(
           'avg_rating',
           'ASC',
           'NULLS LAST',
@@ -500,6 +500,10 @@ describe('ComponentsService', () => {
         );
 
         expect(gpuRepo._qb.orderBy).toHaveBeenCalledWith(
+          'similarity_score',
+          'DESC',
+        );
+        expect(gpuRepo._qb.addOrderBy).toHaveBeenCalledWith(
           'avg_rating',
           'DESC',
           'NULLS LAST',

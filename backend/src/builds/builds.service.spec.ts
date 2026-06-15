@@ -439,7 +439,7 @@ describe('BuildsService', () => {
         const { service } = await buildModule(buildRepo);
         await service.findAllBuilds(null, 1, 16, 'rating-DESC', '');
 
-        expect(buildRepo._qb.orderBy).toHaveBeenCalledWith(
+        expect(buildRepo._qb.addOrderBy).toHaveBeenCalledWith(
           'avg_rating',
           'DESC',
           'NULLS LAST',
@@ -453,7 +453,7 @@ describe('BuildsService', () => {
         const { service } = await buildModule(buildRepo);
         await service.findAllBuilds(null, 1, 16, 'rating-ASC', '');
 
-        expect(buildRepo._qb.orderBy).toHaveBeenCalledWith(
+        expect(buildRepo._qb.addOrderBy).toHaveBeenCalledWith(
           'avg_rating',
           'ASC',
           'NULLS LAST',
@@ -555,6 +555,24 @@ describe('BuildsService', () => {
 
         expect(result).toEqual({ data: [], total: 0, page: 1, limit: 16 });
         expect(buildRepo._qb.getManyAndCount).not.toHaveBeenCalled();
+      });
+
+      it('still orders by avg_rating when a search term is provided', async () => {
+        const buildRepo = makeBuildRepoMock();
+        buildRepo._qb.getManyAndCount.mockResolvedValue([[], 0]);
+
+        const { service } = await buildModule(buildRepo);
+        await service.findAllBuilds(null, 1, 16, 'rating-DESC', 'gaming');
+
+        expect(buildRepo._qb.orderBy).toHaveBeenCalledWith(
+          'search_similarity',
+          'DESC',
+        );
+        expect(buildRepo._qb.addOrderBy).toHaveBeenCalledWith(
+          'avg_rating',
+          'DESC',
+          'NULLS LAST',
+        );
       });
     });
   });
