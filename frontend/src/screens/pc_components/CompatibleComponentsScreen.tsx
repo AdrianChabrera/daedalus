@@ -23,7 +23,6 @@ export default function CompatibleComponentsScreen() {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // The build state is passed via navigation state from CreateBuildScreen
   const build = location.state?.build as BuildState | undefined;
   const locationState = location.state as { build: BuildState } | null;
 

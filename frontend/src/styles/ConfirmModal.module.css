@@ -19,6 +19,7 @@
   overflow: hidden;
   padding: 32px 36px 28px;
   animation: slideUp .2s ease;
+  margin: 20px;
 }
 
 .modal::before {

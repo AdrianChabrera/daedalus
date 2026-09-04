@@ -1,4 +1,3 @@
-
 .sidebar {
   width: 200px;
   flex-shrink: 0;
@@ -19,6 +18,53 @@
   justify-content: space-between;
   padding: 10px 14px 9px;
   border-bottom: 1px solid var(--border);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  cursor: default;
+  font: inherit;
+  color: inherit;
+}
+
+.sidebarHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebarHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebarIcon {
+  display: none;
+  color: var(--muted);
+}
+
+.activeDot {
+  display: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent2);
+}
+
+.sidebarChevron {
+  display: none;
+  color: var(--muted);
+  transition: transform 0.2s;
+}
+
+.sidebarChevronOpen {
+  transform: rotate(180deg);
+}
+
+.sidebarBody {
+  display: block;
 }
 
 .sidebarTitle {
@@ -79,6 +125,7 @@
   text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 8px;
+  text-align: left;
 }
 
 .checkList {
@@ -173,7 +220,7 @@
 
 .rangeWrap {
   position: relative;
-  height: 18px;       
+  height: 18px;
   margin-bottom: 8px;
 }
 
@@ -299,6 +346,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow: hidden;
 }
 
 .skeletonGroup {
@@ -327,4 +375,40 @@
 @keyframes shimmer {
   0%, 100% { opacity: 0.45; }
   50%       { opacity: 0.9; }
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    position: static;
+    top: auto;
+  }
+
+  .sidebarHeader {
+    cursor: pointer;
+  }
+
+  .sidebarIcon,
+  .activeDot,
+  .sidebarChevron {
+    display: flex;
+  }
+
+  .sidebarBody {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+  }
+
+  .sidebarOpen .sidebarBody {
+    grid-template-rows: 1fr;
+  }
+
+  .checkLabel {
+    max-width: none;
+  }
+
+  .filterList {
+    max-height: 320px;
+  }
 }

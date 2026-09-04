@@ -135,6 +135,7 @@
 .heroActions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   margin-top: 4px;
 }
@@ -316,6 +317,24 @@
 
   .mainContent {
     flex-direction: column;
+  }
+
+  .techSection {
+    width: 100%;
+  }
+
+  .hero {
+    flex-direction: column;
+  }
+
+  .heroImage {
+    width: 100%;
+    height: 200px;
+  }
+
+  .mainContent {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .techSection {

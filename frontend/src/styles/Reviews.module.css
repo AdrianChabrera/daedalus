@@ -386,3 +386,58 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+@media (max-width: 480px) {
+  .sectionHeader {
+    flex-wrap: wrap;
+  }
+
+  .writeBtn {
+    white-space: nowrap;
+  }
+
+  .card {
+    padding: 12px 14px;
+  }
+
+  .cardHeader {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .cardRight {
+    margin-left: auto;
+  }
+
+  .backdrop {
+    padding: 12px;
+  }
+
+  .modal {
+    padding: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+    gap: 14px;
+  }
+
+  .modalTitle {
+    font-size: 18px;
+  }
+
+  .starsRow {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .modalActions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .cancelBtn,
+  .submitBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 18px;
+  }
+}

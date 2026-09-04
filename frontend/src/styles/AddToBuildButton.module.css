@@ -7,11 +7,14 @@
 .addToBuildBtn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  height: 42px;
+  box-sizing: border-box;
   background: var(--accent);
   border: none;
   border-radius: 8px;
-  padding: 10px 20px;
+  padding: 0 20px;
   margin-right: 4px;
   color: var(--white);
   font-family: 'Rajdhani', sans-serif;
@@ -82,29 +85,38 @@
 }
 
 .confirmWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: contents;
 }
 
 .confirmWarning {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   font-family: 'Exo 2', sans-serif;
   font-size: 12px;
   color: var(--warning, #f59e0b);
+  line-height: 1.4;
+}
+
+.confirmWarning svg {
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .confirmActions {
   display: flex;
-  gap: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .confirmBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  box-sizing: border-box;
   flex-shrink: 0;
-  padding: 10px 20px;
-  margin-right: 6px;
+  padding: 0 20px;
   background: var(--accent);
   border: none;
   border-radius: 8px;
@@ -121,9 +133,13 @@
 }
 
 .cancelBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  box-sizing: border-box;
   flex-shrink: 0;
-  padding: 10px 20px;
-  margin-right: 6px;
+  padding: 0 20px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;

@@ -24,8 +24,34 @@
   margin-right: 16px;
   text-decoration: none;
   transition: opacity 0.15s;
+  flex-shrink: 0;
 }
 .logo:hover { opacity: 0.85; }
+
+.menuToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.menuToggle:hover { border-color: var(--accent); color: var(--white); }
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
 
 .navBtn {
   display: flex;
@@ -40,6 +66,7 @@
   padding: 4px 10px;
   text-decoration: none;
   transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
 }
 .navBtn svg {
   width: 14px;
@@ -61,6 +88,7 @@
   align-items: center;
   font-size: 12px;
   color: var(--muted);
+  white-space: nowrap;
 }
 .authLink {
   color: var(--muted);
@@ -78,4 +106,54 @@
   height: 40px;
   object-fit: contain;
   display: block;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .nav { padding: 0 18px; gap: 6px; }
+  .navBtn { padding: 5px 8px; font-size: 11px; }
+}
+
+@media (max-width: 720px) {
+  .nav { padding: 0 16px; }
+  .logo { margin-right: 0; font-size: 20px; }
+  .logoImg { width: 32px; height: 32px; }
+
+  .menuToggle { display: flex; }
+
+  .navLinks {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    background: #0a0a0e;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px 16px;
+    transform: translateY(-8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.18s, transform 0.18s, visibility 0.18s;
+    max-height: calc(100vh - var(--nav-height));
+    overflow-y: auto;
+  }
+  .navLinksOpen {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .navBtn { padding: 10px 12px; font-size: 13px; }
+
+  .spacer { display: none; }
+
+  .authLinks {
+    justify-content: center;
+    padding: 10px 0 0;
+    font-size: 13px;
+  }
 }

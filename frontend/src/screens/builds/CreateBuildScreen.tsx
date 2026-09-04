@@ -133,7 +133,7 @@ export default function CreateBuildScreen() {
 
             <div className={styles.actions}>
               <button
-                className={styles.actionBtnSecondary}
+                className={styles.actionBtnPrimary}
                 onClick={() => void exportPdfFromState(build, populated, name, description, user?.username, pendingPhotoPreview)}
                 disabled={pdfExporting}
                 aria-label="Export to PDF"

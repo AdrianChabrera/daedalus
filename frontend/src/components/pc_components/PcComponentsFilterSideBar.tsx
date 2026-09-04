@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown, SlidersHorizontal, X } from 'lucide-react';
 import type { FilterSchema, ActiveFilters } from '../../hooks/useComponentsFilters';
 import styles from '../../styles/PcComponentsFilterSideBar.module.css';
 
@@ -307,81 +307,105 @@ export function FilterSidebar({
   onClear: () => void;
   hasActiveFilters: boolean;
 }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const entries = Object.entries(schema).sort(([, a], [, b]) => {
     const order = { 'multi-string': 0, range: 1, boolean: 2 };
     return order[a.type] - order[b.type];
   });
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.sidebarHeader}>
-        <span className={styles.sidebarTitle}>Filters</span>
-        {hasActiveFilters && (
-          <button className={styles.clearBtn} onClick={onClear} type="button">
-            <X size={12} />
-            Clear
-          </button>
+    <aside className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ''}`}>
+      <button
+        className={styles.sidebarHeader}
+        onClick={() => setMobileOpen(v => !v)}
+        type="button"
+        aria-expanded={mobileOpen}
+      >
+        <span className={styles.sidebarHeaderLeft}>
+          <SlidersHorizontal size={13} className={styles.sidebarIcon} />
+          <span className={styles.sidebarTitle}>Filters</span>
+          {hasActiveFilters && <span className={styles.activeDot} aria-hidden />}
+        </span>
+        <span className={styles.sidebarHeaderRight}>
+          {hasActiveFilters && (
+            <span
+              className={styles.clearBtn}
+              onClick={e => { e.stopPropagation(); onClear(); }}
+              role="button"
+              tabIndex={0}
+            >
+              <X size={12} />
+              Clear
+            </span>
+          )}
+          <ChevronDown
+            size={14}
+            className={`${styles.sidebarChevron} ${mobileOpen ? styles.sidebarChevronOpen : ''}`}
+          />
+        </span>
+      </button>
+
+      <div className={styles.sidebarBody}>
+        {loading ? (
+          <div className={styles.skeletonWrap}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className={styles.skeletonGroup}>
+                <div className={styles.skeletonLabel} />
+                <div className={styles.skeletonLine} />
+                <div className={styles.skeletonLine} style={{ width: '70%' }} />
+                <div className={styles.skeletonLine} style={{ width: '85%' }} />
+              </div>
+            ))}
+          </div>
+        ) : entries.length === 0 ? null : (
+          <div className={styles.filterList}>
+            {entries.map(([key, def]) => {
+              const label = formatFilterLabel(key);
+
+              if (def.type === 'multi-string') {
+                return (
+                  <MultiStringFilter
+                    key={key}
+                    label={label}
+                    values={def.values}
+                    selected={activeFilters.multiStrings[key] ?? []}
+                    onToggle={v => onMultiStringToggle(key, v)}
+                  />
+                );
+              }
+
+              if (def.type === 'range' && def.min !== null && def.max !== null) {
+                return (
+                  <RangeFilter
+                    key={key}
+                    label={label}
+                    min={Number(def.min)}
+                    max={Number(def.max)}
+                    currentMin={activeFilters.ranges[key]?.min}
+                    currentMax={activeFilters.ranges[key]?.max}
+                    onChangeMin={v => onRangeChange(key, 'min', v)}
+                    onChangeMax={v => onRangeChange(key, 'max', v)}
+                  />
+                );
+              }
+
+              if (def.type === 'boolean') {
+                return (
+                  <BooleanFilter
+                    key={key}
+                    label={label}
+                    value={activeFilters.booleans[key]}
+                    onSelect={v => onBooleanSelect(key, v)}
+                  />
+                );
+              }
+
+              return null;
+            })}
+          </div>
         )}
       </div>
-
-      {loading ? (
-        <div className={styles.skeletonWrap}>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className={styles.skeletonGroup}>
-              <div className={styles.skeletonLabel} />
-              <div className={styles.skeletonLine} />
-              <div className={styles.skeletonLine} style={{ width: '70%' }} />
-              <div className={styles.skeletonLine} style={{ width: '85%' }} />
-            </div>
-          ))}
-        </div>
-      ) : entries.length === 0 ? null : (
-        <div className={styles.filterList}>
-          {entries.map(([key, def]) => {
-            const label = formatFilterLabel(key);
-
-            if (def.type === 'multi-string') {
-              return (
-                <MultiStringFilter
-                  key={key}
-                  label={label}
-                  values={def.values}
-                  selected={activeFilters.multiStrings[key] ?? []}
-                  onToggle={v => onMultiStringToggle(key, v)}
-                />
-              );
-            }
-
-            if (def.type === 'range' && def.min !== null && def.max !== null) {
-              return (
-                <RangeFilter
-                  key={key}
-                  label={label}
-                  min={Number(def.min)}
-                  max={Number(def.max)}
-                  currentMin={activeFilters.ranges[key]?.min}
-                  currentMax={activeFilters.ranges[key]?.max}
-                  onChangeMin={v => onRangeChange(key, 'min', v)}
-                  onChangeMax={v => onRangeChange(key, 'max', v)}
-                />
-              );
-            }
-
-            if (def.type === 'boolean') {
-              return (
-                <BooleanFilter
-                  key={key}
-                  label={label}
-                  value={activeFilters.booleans[key]}
-                  onSelect={v => onBooleanSelect(key, v)}
-                />
-              );
-            }
-
-            return null;
-          })}
-        </div>
-      )}
     </aside>
   );
 }

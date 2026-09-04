@@ -55,10 +55,10 @@ export function AddToBuildButton({ componentType, componentId }: Props) {
           <button className={styles.cancelBtn} onClick={handleCancelReplace}>
             Cancel
           </button>
-          <div className={styles.confirmWarning}>
-            <AlertTriangle size={14} />
-            <span>This slot already has a component. Replace it?</span>
-          </div>
+        </div>
+        <div className={styles.confirmWarning}>
+          <AlertTriangle size={14} />
+          <span>This slot already has a component. Replace it?</span>
         </div>
       </div>
     );

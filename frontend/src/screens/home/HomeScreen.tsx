@@ -59,7 +59,7 @@ export default function HomeScreen() {
           </div>
 
           <p className={styles.heroSub}>
-            Browse a wide variety of community builds,<br />
+            Browse a wide variety of community builds,
             explore compatible components and share your creations.
           </p>
 

@@ -117,25 +117,50 @@ export function CreteBuildPcComponentsSlotRow({
   if (slot.multi) {
     return (
       <>
-        {multi.map((comp) => {
+        {multi.map((comp, index) => {
           const entry: MultiComponentEntry | undefined = multiEntries.find(
             e => e.componentId === comp.id
           );
           const quantity = entry?.quantity ?? 1;
 
           return (
-            <div key={comp.id} className={`${styles.slotRow} ${styles.slotRowFilled}`}>
-              <div className={styles.slotIcon}>{slot.icon}</div>
-              <div className={styles.slotLabel}>{slot.label}</div>
+            <div
+              key={comp.id}
+              className={`${styles.slotRow} ${styles.slotRowFilled} ${
+                index > 0 ? styles.slotRowSecondary : ''
+              }`}
+            >
+              {index === 0 ? (
+                <>
+                  <div className={styles.slotIcon}>{slot.icon}</div>
+                  <div className={styles.slotLabel}>{slot.label}</div>
+                </>
+              ) : (
+                <div className={styles.slotDuplicateTag} />
+              )}
+
               <div className={styles.slotFilled}>
                 <div className={styles.slotCompInfo}>
-                  <Link to={`/components/${slot.endpoint}/${comp.id}`} className={styles.slotCompName}>{comp.name}</Link>
-                  <ComponentRating componentType={slot.endpoint} componentId={comp.id} />
+                  <Link
+                    to={`/components/${slot.endpoint}/${comp.id}`}
+                    className={styles.slotCompName}
+                  >
+                    {comp.name}
+                  </Link>
+
+                  <ComponentRating
+                    componentType={slot.endpoint}
+                    componentId={comp.id}
+                  />
+
                   <SpecTags specs={comp.specs} />
                 </div>
+
                 <QuantityControl
                   quantity={quantity}
-                  onIncrement={() => onQuantityChange(comp.id, quantity + 1)}
+                  onIncrement={() =>
+                    onQuantityChange(comp.id, quantity + 1)
+                  }
                   onDecrement={() => {
                     if (quantity > 1) {
                       onQuantityChange(comp.id, quantity - 1);
@@ -144,6 +169,7 @@ export function CreteBuildPcComponentsSlotRow({
                     }
                   }}
                 />
+
                 <button
                   className={styles.slotRemoveBtn}
                   onClick={() => onRemoveMulti(comp.id)}

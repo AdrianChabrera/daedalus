@@ -21,7 +21,16 @@
 .header {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
+}
+
+.header > *:first-child {
+  flex: 0 1 220px;
+}
+
+.header > *:last-child {
+  flex: 3 1 280px;
 }
 
 .body {
@@ -59,6 +68,7 @@
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
   min-width: 160px;
+  width: 100%;
 }
 
 .dropdownTrigger:hover {
@@ -96,6 +106,7 @@
   border-radius: 8px;
   overflow: hidden;
   min-width: 180px;
+  width: 100%;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
   animation: menuIn 0.15s ease;
   z-index: 200;
@@ -165,8 +176,19 @@
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 440px) {
-  .grid { grid-template-columns: 1fr; }
+@media (max-width: 600px) {
+  .page { padding: 16px; }
+}
+
+@media (max-width: 480px) {
+  .grid { gap: 8px; }
+  .inner { gap: 16px; }
+  .sortBar { flex-wrap: wrap; }
+  .sortLabel { width: 100%; }
+}
+
+@media (max-width: 400px) {
+  .page { padding: 12px; }
 }
 
 .card {
@@ -196,7 +218,6 @@
 
 .cardImage {
   aspect-ratio: 4 / 3;
-  background: var(--surface2);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -311,33 +332,34 @@
 .errorText {
   color: var(--error);
 }
- 
+
 .sortBar {
   display: flex;
   align-items: center;
   gap: 12px;
 }
- 
+
 .sortLabel {
   font-family: 'Exo 2', sans-serif;
   font-size: 13px;
   color: var(--muted);
   white-space: nowrap;
   flex-shrink: 0;
+  text-align: left;
 }
- 
+
 .sortButtons {
   display: flex;
   gap: 8px;
   flex: 1;
   flex-wrap: wrap;
 }
- 
+
 .sortBtn {
   display: flex;
   align-items: center;
   gap: 5px;
-  flex: 1;
+  flex: 1 1 120px;
   justify-content: center;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -351,13 +373,13 @@
   transition: border-color 0.15s, background 0.15s, color 0.15s;
   white-space: nowrap;
 }
- 
+
 .sortBtn:hover:not(:disabled) {
   border-color: var(--accent);
   background: var(--surface2);
   color: var(--white);
 }
- 
+
 .sortBtnActive {
   border-color: var(--accent);
   background: var(--accent-dim);
